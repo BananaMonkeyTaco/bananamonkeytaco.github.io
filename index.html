@@ -3,12 +3,25 @@
 <body>
 <h1>Hello World</h1>
 <p>I'm hosted with GitHub Pages.</p>
-<button type="button" onclick="">Try it</button>
+<button type="button" onclick="actionList(wander)">Wander</button>
 <p id="personName"></p>
+<button type="button" onlick=document.getElementById('realActionList').innerHTML =
+actions[0];>Update</button>
+<p id="realActionList"></p>
+<canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;"></canvas>
 <script>
 var person = {firstName: "John", lastName: "Doe", age: 50, eyeColor: "blue"};
 document.getElementById('personName').innerHTML =
 person.firstName + " " + person.lastName;
+setInterval(work, 30);
+function work(){
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  ctx.rect(50, 50, ranNum, 100);
+  ctx.stroke();
+  ranNum++;
+}
 </script>
+<script src="actions.js"></script>
 </body>
 </html>
