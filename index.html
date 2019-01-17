@@ -1,27 +1,19 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <script src="actions.js"></script>
+  <script src="main.js"></script>
+  <script src="locations.js"></script>
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
 <button type="button" onclick="actionList(wander)">Wander</button>
-<p id="personName"></p>
-<button type="button" onlick=document.getElementById('realActionList').innerHTML =
-actions[0];>Update</button>
+<button type="button" onlick="document.getElementById('realActionList').innerHTML =
+actions[0]">Update</button>
 <p id="realActionList"></p>
 <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;"></canvas>
+<p id="mana"></p>
 <script>
-var person = {firstName: "John", lastName: "Doe", age: 50, eyeColor: "blue"};
-document.getElementById('personName').innerHTML =
-person.firstName + " " + person.lastName;
-setInterval(work, 30);
-function work(){
-  var c = document.getElementById("myCanvas");
-  var ctx = c.getContext("2d");
-  ctx.rect(50, 50, ranNum, 100);
-  ctx.stroke();
-  ranNum++;
-}
+start();
 </script>
-<script src="actions.js"></script>
 </body>
 </html>
