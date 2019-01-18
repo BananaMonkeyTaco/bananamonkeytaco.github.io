@@ -3,7 +3,7 @@ function start(){
   setInterval(work, 30);
 }
 function work(){
-  document.getElementById("mana").innerHTML = mana;
+  document.getElementById("mana").innerHTML = "Mana = " + mana;
   if (mana > 0) {
     mana--;
   } else {

@@ -4,14 +4,20 @@
   <script src="actions.js"></script>
   <script src="main.js"></script>
   <script src="locations.js"></script>
+  <style>
+  .manaBar {
+    text-align: center;
+    width: 100%;
+  }
+  </style>
 </head>
 <body>
+  <div class="manaBar" id="mana"></div>
 <button type="button" onclick="actionList(wander)">Wander</button>
 <button type="button" onlick="document.getElementById('realActionList').innerHTML =
 actions[0]">Update</button>
 <p id="realActionList"></p>
 <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;"></canvas>
-<p id="mana"></p>
 <script>
 start();
 </script>
