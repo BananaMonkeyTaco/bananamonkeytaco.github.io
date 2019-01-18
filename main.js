@@ -8,11 +8,6 @@ function work(){
   document.getElementById("wanderTimes").innerHTML = actions.length;
   if (mana > 0) {
     mana--;
-  } else {
-    return;
   }
-/*  for (var i = 0; i < actions.length; i++) {
-    trueActionList = trueActionList + "<br/>" + actions[i].toString();
-  } */
   document.getElementById("actionBox").innerHTML = actions.join("<br/>");
 }
