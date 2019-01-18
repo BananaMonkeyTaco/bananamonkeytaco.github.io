@@ -4,18 +4,13 @@
   <script src="actions.js"></script>
   <script src="main.js"></script>
   <script src="locations.js"></script>
-  <style>
-  .manaBar {
-    text-align: center;
-    width: 100%;
-  }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="manaBar" id="mana"></div>
-<button type="button" onclick="actionList(wander)">Wander</button>
-<button type="button" onlick="document.getElementById('realActionList').innerHTML =
-actions[0]">Update</button>
+  <div class="actionBox" id="actionBox">Hi There</div>
+  <div id="wanderTimes">Null</div>
+<button type="button" onclick="wander()">Wander</button>
 <p id="realActionList"></p>
 <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;"></canvas>
 <script>

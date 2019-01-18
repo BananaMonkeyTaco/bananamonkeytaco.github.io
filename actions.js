@@ -1,15 +1,10 @@
 var actions = [];
-
+var actionsAmount = [];
 function actionList(x) {
-/*  let i = 0
-  while (actions[i] == null) {
-    i++;
-  }
-  var actions[i] = x;
-  */
-  actions[actions.length] = x;
+  actions.push(x);
+  actionsAmount.push("1");
 }
 
 function wander() {
-  actionlist("wander");
+  actionList("wander");
 }

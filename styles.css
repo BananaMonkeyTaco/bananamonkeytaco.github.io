@@ -1,0 +1,11 @@
+.manaBar {
+  text-align: center;
+  width: 100%;
+}
+.actionBox {
+  text-align: left;
+  width: 25%;
+  height: 25%;
+  background-color: green;
+  display: block;
+}
