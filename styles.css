@@ -2,10 +2,13 @@
   text-align: center;
   width: 100%;
 }
-.actionBox {
+.actionBoxAction {
   text-align: left;
   width: 25%;
   height: 25%;
   background-color: green;
   display: block;
+}
+.actionBoxOptions {
+  text-align: right;
 }
