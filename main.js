@@ -8,4 +8,5 @@ function work(){
   if (mana > 0) {
     mana--;
   }
+  updateActionProgressList();
 }

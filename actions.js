@@ -1,5 +1,7 @@
 var actionOrder = [];
 var actionAmount = [];
+var actionAmountCompleted = [];
+var actionOrderProgress = [];
 function addAction(action) {
   action = action.name;
   actionOrder.push(action);
@@ -23,18 +25,29 @@ function decreaseActionAmount(actionPlace) {
 }
 function Wander() {
   this.name = "Wander";
+  this.manaCost = "50";
 }
 function updateActionList() {
   var x = "";
   for(let i = 0; i < actionOrder.length; i++) {
-    x = x +
-    "<div>" +
-    "<span class=actionBoxAction>" + actionOrder[i] + "  x" + actionAmount[i] + "</span>" +
+    x = x + "<div>" +
+    "<span class=actionBoxActions>" +
+    actionOrder[i] + "  x" + actionAmount[i] +
     "<span class=actionBoxOptions>" +
     "<span onclick=increaseActionAmount(" + i + ")>" + " + " + "</span>" +
     "<span onclick=decreaseActionAmount(" + i + ")>" + " - " + "</span>" +
     "<span onclick=removeActionFromList(" + i + ")>" + " x " + "</span>" +
-    "</span></div>"
+    "</span></span></div>"
     document.getElementById('actionBoxActionList').innerHTML = x;
   }
+}
+function updateActionProgressList(){
+  var x = "";
+  for (let i = 0; i < actionOrder.length; i++) {
+    x = x + "<div>" +
+    "<span class=actionBoxProgressList>" + actionOrder[i] +
+    "  ( " + actionAmountCompleted[i] + " / " + actionAmount[i] + " )" +
+    actionOrderProgress[i] + "%" + "</span></div>";
+  }
+  document.getElementById("actionBoxProgressList").innerHTML = x;
 }

@@ -2,13 +2,19 @@
   text-align: center;
   width: 100%;
 }
-.actionBoxAction {
-  text-align: left;
-  width: 25%;
-  height: 25%;
+.actionBox {
+  float: left;
+  background-color: lightgreen;
+  display: grid;
+  grid: auto/ 50% 50%;
+  width: 33%;
+}
+.actionBoxActions {
   background-color: green;
 }
 .actionBoxOptions {
   float: right;
-  display: inline-block;
+  background-color: inherit;
+}
+.actionBoxProgressList {
 }
