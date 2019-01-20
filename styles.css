@@ -7,8 +7,8 @@
   width: 25%;
   height: 25%;
   background-color: green;
-  display: block;
 }
 .actionBoxOptions {
-  text-align: right;
+  float: right;
+  display: inline-block;
 }

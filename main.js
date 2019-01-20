@@ -8,5 +8,5 @@ function work(){
   if (mana > 0) {
     mana--;
   }
-  document.getElementById("actionBoxActions").innerHTML = listActions();
+  checkActionList();
 }
