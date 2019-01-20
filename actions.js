@@ -8,6 +8,7 @@ function addAction(action) {
 }
 function removeActionFromList(actionPlace) {
   actionOrder.splice(actionPlace, 1);
+  actionAmount.splice(actionPlace, 1);
   updateActionList();
 }
 function increaseActionAmount(actionPlace) {
@@ -15,7 +16,9 @@ function increaseActionAmount(actionPlace) {
   updateActionList();
 }
 function decreaseActionAmount(actionPlace) {
-  actionAmount[actionPlace]--;
+  if(actionAmount[actionPlace] > 0){
+    actionAmount[actionPlace]--;
+  }
   updateActionList();
 }
 function Wander() {
