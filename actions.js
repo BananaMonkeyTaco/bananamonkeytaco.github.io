@@ -3,9 +3,9 @@ var actionAmount = [];
 var actionAmountCompleted = [];
 var actionOrderProgress = [];
 function addAction(action) {
-  action = action.name;
-  actionOrder.push(action);
+  actionOrder.push(action.name);
   actionAmount.push("1");
+  console.log(action.name);
   updateActionList();
 }
 function removeActionFromList(actionPlace) {
@@ -23,10 +23,20 @@ function decreaseActionAmount(actionPlace) {
   }
   updateActionList();
 }
-function Wander() {
-  this.name = "Wander";
-  this.manaCost = "50";
+function initializeProgressList() {
+  for (var i = 0; i < actionOrder.length; i++) {
+    actionAmountCompleted[i] = 0;
+    actionOrderProgress[i] = 0;
+  }
 }
+var wander = {
+  name: "Wander",
+  manaCost: 50,
+};
+var smashPots = {
+  name:  "Smash Pots",
+  manaCost: 100,
+};
 function updateActionList() {
   var x = "";
   for(let i = 0; i < actionOrder.length; i++) {

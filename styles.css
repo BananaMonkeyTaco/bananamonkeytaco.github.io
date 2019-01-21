@@ -7,14 +7,17 @@
   background-color: lightgreen;
   display: grid;
   grid: auto/ 50% 50%;
-  width: 33%;
+  width: 600px;
 }
 .actionBoxActions {
-  background-color: green;
+    background-color: green;
 }
 .actionBoxOptions {
   float: right;
   background-color: inherit;
 }
 .actionBoxProgressList {
+}
+button {
+  margin: 5px;
 }
