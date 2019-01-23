@@ -10,7 +10,7 @@ var gamePaused = true;
 
 var currentCycleActionList = [];
 var currentCycleActionAmount = [];
-var currentActionPlace = -1;
+var currentActionPlace = 0;
 
 function start() {
   setInterval(work, 10);
@@ -34,7 +34,9 @@ function gamePlay() {
 function gameNewCycle() {
   currentCycleActionList.splice(0, currentCycleActionList.length);
   currentCycleActionAmount.splice(0, currentCycleActionAmount.length);
-  currentActionPlace = -1;
+  currentActionPlace = 0;
+  mana = 10000;
+  currentAction = undefined;
   for (let i = 0; i < actionOrder.length; i++) {
     currentCycleActionList.push(actionOrder[i]);
     currentCycleActionAmount.push(actionAmount[i]);
@@ -51,6 +53,10 @@ function work() {
       mana--;
       if (currentAction == undefined) {
         currentAction = findNextAction();
+        if (currentAction == undefined) {
+          gameNewCycle();
+          return;
+        }
         originalCost = calculateActualMana(currentAction);
         currentCostLeft = calculateActualMana(currentAction);
       }
@@ -96,9 +102,10 @@ function initializeProgressList() {
 function progressAction(action) {
   currentCostLeft--;
   actionOrderProgress[action] =
-  (Math.round((originalCost - currentCostLeft) / originalCost)) * 100;
+  Math.floor(((originalCost - currentCostLeft) / originalCost) * 100);
   if (currentCostLeft == 0) {
     actionAmountCompleted[action]++;
+    currentCycleActionList[action].finish();
     currentAction = undefined;
   }
   return;
@@ -107,9 +114,6 @@ function progressAction(action) {
 function findNextAction() {
   for (let i = 0; i < currentCycleActionList.length; i++) {
     if (actionAmountCompleted[i] < currentCycleActionAmount[i]) {
-      console.log("for loop" + i);
-      console.log("completed" + actionAmountCompleted[i]);
-      console.log("needed" + currentCycleActionAmount[i]);
       currentActionPlace = i;
       return currentCycleActionList[i];
     }
@@ -123,11 +127,17 @@ function calculateActualMana(action) {
 var wander = {
   name: "Wander",
   manaCost: 500,
+  finish: function() {
+    return;
+  }
 };
 
 var smashPots = {
   name:  "Smash Pots",
   manaCost: 10,
+  finish: function() {
+    mana = mana + 50;
+  }
 };
 
 function updateActionList() {
