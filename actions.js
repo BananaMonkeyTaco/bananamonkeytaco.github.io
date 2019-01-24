@@ -12,6 +12,8 @@ var currentCycleActionList = [];
 var currentCycleActionAmount = [];
 var currentActionPlace = 0;
 
+var wanderProgressBar = 0;
+
 function start() {
   setInterval(work, 10);
 }
@@ -42,6 +44,7 @@ function gameNewCycle() {
     currentCycleActionAmount.push(actionAmount[i]);
   }
   initializeProgressList();
+  save();
 }
 
 function work() {
@@ -128,7 +131,8 @@ var wander = {
   name: "Wander",
   manaCost: 500,
   finish: function() {
-    return;
+    wanderProgressBar++;
+    document.getElementById("wanderProgress").innerHTML = wanderProgressBar;
   }
 };
 
