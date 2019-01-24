@@ -4,11 +4,13 @@
 }
 
 .actionBox {
-  float: left;
   background-color: lightgreen;
   display: grid;
   grid: auto/ 50% 50%;
   width: 600px;
+  height: 800px;
+  margin: 5px;
+  vertical-align: top;
 }
 
 .actionBoxActions {
@@ -21,6 +23,24 @@
 }
 
 .actionBoxProgressList {
+}
+
+.townInfo {
+  vertical-align: top;
+  width: 600px;
+}
+
+.progressBarEmpty {
+  width: 500px;
+  height: 5px;
+  background-color: lightgrey;
+  float: left;
+}
+
+.progressBarFill {
+  background-color: green;
+  height: 100%;
+  width: 0%;
 }
 
 button {
