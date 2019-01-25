@@ -11,9 +11,9 @@
 <body>
   <div class="manaBar">
     <span id="mana"></span>
-    <button type="button" onclick="gamePause()">Pause</button>
-    <button type="button" onclick="gamePlay()">Play</button>
-    <button type="button" onclick="gameNewCycle()">Restart</button>
+    <button type="button" onclick=gamePause()>Pause</button>
+    <button type="button" onclick=gamePlay()>Play</button>
+    <button type="button" onclick=gameNewCycle()>Restart</button>
   </div>
   <div class="actionColumn" style="display: inline-block; vertical-align: top; margin: 10px">
     <div class="actionBox">
@@ -22,19 +22,7 @@
     </div>
   </div>
   <div class="townColumn" style="display: inline-block; vertical-align: top; margin: 10px">
-    <div class="townInfo">
-      <div class="towntitle" style="text-align: center;">
-        <button type="button" onclick="changeLocation('left')"> < </button>
-        <span id="townTitle"></span>
-        <button type="button" onclick="changeLocation('right')"> > </button>
-      </div>
-      <div class="progressBarEmpty">
-        <div class="progressBarFill" id="wanderProgressBar"></div>
-      </div>
-      <div class="townButtons">
-        <button type="button" onclick="addAction(wander)">Wander</button>
-        <button type="button" onclick="addAction(smashPots)">Smash Pots</button>
-      </div>
+    <div id="townBox">
     </div>
   </div>
   <script>
@@ -42,3 +30,26 @@
 </script>
 </body>
 </html>
+<!--
+
+townColumn
+  div towntitle space for four direction
+  div town progresshit list
+    with resource amounts
+  div town buttons in grid
+  <div class="townInfo" id="">
+    <div class="towntitle" style="text-align: center;">
+      <button type="button" onclick="changeLocation('left')"> < </button>
+      <span id="townTitle"></span>
+      <button type="button" onclick="changeLocation('right')"> > </button>
+    </div>
+    <div class="progressBarEmpty">
+      <div class="progressBarFill" id="wanderProgressBar"></div>
+    </div>
+    <div class="townButtons">
+      <button type="button" onclick="addAction(wander)">Wander</button>
+      <button type="button" onclick="addAction(smashPots)">Smash Pots</button>
+    </div>
+
+
+-->

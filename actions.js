@@ -3,7 +3,7 @@ var actionOrderList = [];
 var actionAmount = [];
 var actionAmountCompleted = [];
 var actionOrderProgress = [];
-var mana = 10000;
+var mana = 100;
 var currentAction;
 var currentCostLeft;
 var gamePaused = true;
@@ -16,7 +16,7 @@ var wanderProgressBar = 0;
 
 var wander = {
   name: "Wander",
-  manaCost: 50,
+  manaCost: 100,
   finish: function() {
     wanderProgressBar++;
     if (wanderProgressBar >= 100) {
@@ -29,8 +29,8 @@ var wander = {
 
 var smashPots = {
   name:  "Smash Pots",
-  manaCost: 10,
+  manaCost: 25,
   finish: function() {
-    mana = mana + 50;
+    mana = mana + 100;
   }
 };

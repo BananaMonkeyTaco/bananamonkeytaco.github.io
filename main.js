@@ -1,5 +1,6 @@
 function start() {
   setInterval(work, 10);
+  buildTownBox();
 }
 
 function gamePause() {
@@ -21,7 +22,7 @@ function gameNewCycle() {
   currentCycleActionList.splice(0, currentCycleActionList.length);
   currentCycleActionAmount.splice(0, currentCycleActionAmount.length);
   currentActionPlace = 0;
-  mana = 10000;
+  mana = 100;
   currentAction = undefined;
   for (let i = 0; i < actionOrder.length; i++) {
     currentCycleActionList.push(actionOrder[i]);
@@ -33,7 +34,6 @@ function gameNewCycle() {
 
 function work() {
   document.getElementById("mana").innerHTML = "Mana = " + mana;
-  document.getElementById("townTitle").innerHTML = location[currentLocation].name;
   if (gamePaused == false) {
     if (mana == 0) {
       gamePaused;
