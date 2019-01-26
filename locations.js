@@ -13,7 +13,10 @@ function changeLocation(direction) {
   if (location[currentLocation][direction] != undefined) {
     currentLocation = location[currentLocation][direction];
   }
+  buildTownBox();
 }
+
+
 
 function buildTownBox() {
   let newTownBox = "";
@@ -35,6 +38,12 @@ function buildTownBox() {
     if (location[currentLocation].progressBars[x].visible) {
       newTownBox += "<div class=progressBarEmpty>" +
       "<div class=progressBarFill id=" + x + "></div></div>";
+      if (location[currentLocation].progressBars[x].resource.name != undefined) {
+        newTownBox += "<div class=progressBarResource id=" +
+        location[currentLocation].progressBars[x].resource.name + ">"
+        "</div>"
+
+      }
     }
   }
   newTownBox += "</div>";
@@ -48,13 +57,14 @@ function buildTownBox() {
     }
   }
   newTownBox += "</div>";
-
-
-
-
-
   newTownBox += "</div>";
   document.getElementById("townBox").innerHTML = newTownBox;
+}
+
+function updateResources(resource) {
+  let x = reliableAmountText + usedAmount + "/" + reliableAmount +
+
+  document.getElementById(resource).innerHTML = x
 }
 
 location[0] = {
@@ -65,6 +75,16 @@ location[0] = {
       currentXP: 0,
       currentLevel: 0,
       visible: true,
+      resource: {
+        name: "Pots",
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "Mana filled pots smashed",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "Pots not checked for mana",
+        unreliableAmount: 0,
+        unreliableAmountText: "Pots with no mana",
+      },
     },
   },
   buttons: {

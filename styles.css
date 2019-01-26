@@ -3,6 +3,12 @@
   width: 100%;
 }
 
+.column {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+}
+
 .actionBox {
   background-color: lightgreen;
   display: grid;
@@ -30,6 +36,10 @@
   width: 600px;
 }
 
+.townName {
+  text-align: center;
+}
+
 .progressBarEmpty {
   width: 500px;
   height: 5px;
@@ -41,6 +51,14 @@
   background-color: green;
   height: 100%;
   width: 0%;
+}
+
+tooltip {
+  display: none;
+}
+
+div:hover tooltip {
+  display: block;
 }
 
 button {

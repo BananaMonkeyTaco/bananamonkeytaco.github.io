@@ -11,17 +11,18 @@
 <body>
   <div class="manaBar">
     <span id="mana"></span>
+    <tooltip>hey there</tooltip>
     <button type="button" onclick=gamePause()>Pause</button>
     <button type="button" onclick=gamePlay()>Play</button>
     <button type="button" onclick=gameNewCycle()>Restart</button>
   </div>
-  <div class="actionColumn" style="display: inline-block; vertical-align: top; margin: 10px">
+  <div class="column">
     <div class="actionBox">
       <span id="actionBoxProgressList"></span>
       <span id="actionBoxActionList">Hi There</span>
     </div>
   </div>
-  <div class="townColumn" style="display: inline-block; vertical-align: top; margin: 10px">
+  <div class="column">
     <div id="townBox">
     </div>
   </div>
@@ -32,24 +33,22 @@
 </html>
 <!--
 
-townColumn
-  div towntitle space for four direction
-  div town progresshit list
-    with resource amounts
-  div town buttons in grid
-  <div class="townInfo" id="">
-    <div class="towntitle" style="text-align: center;">
-      <button type="button" onclick="changeLocation('left')"> < </button>
-      <span id="townTitle"></span>
-      <button type="button" onclick="changeLocation('right')"> > </button>
-    </div>
-    <div class="progressBarEmpty">
-      <div class="progressBarFill" id="wanderProgressBar"></div>
-    </div>
-    <div class="townButtons">
-      <button type="button" onclick="addAction(wander)">Wander</button>
-      <button type="button" onclick="addAction(smashPots)">Smash Pots</button>
-    </div>
+
+reliable mana filled pots left 0/75
+ALERT 25 pots unchecked
+hover 750 empty of mana
+
+mana filled pots left #/#
+pots unchecked
+empty pots
+
+villages in need
+tasks to help with
+
+fucntion (id) {
+  document.getElementById(id).innerHTML =
+}
+
 
 
 -->

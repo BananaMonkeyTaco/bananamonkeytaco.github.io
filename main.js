@@ -36,7 +36,11 @@ function work() {
   document.getElementById("mana").innerHTML = "Mana = " + mana;
   if (gamePaused == false) {
     if (mana == 0) {
-      gamePaused;
+      if (actionOrder.length > 0){
+        gameNewCycle();
+      } else {
+        gamePaused;
+      }
     } else {
       mana--;
       if (currentAction == undefined) {
