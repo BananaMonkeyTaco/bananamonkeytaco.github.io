@@ -40,6 +40,10 @@
   text-align: center;
 }
 
+.progressBarName {
+
+}
+
 .progressBarEmpty {
   width: 500px;
   height: 5px;
@@ -57,9 +61,16 @@
   display: block;
 }
 
+.progressBarEmpty:hover tooltip {
+  display: block;
+}
+
 tooltip {
   display: none;
   position: absolute;
+  background-color: lightgreen;
+  border: 50px;
+  border-color: black;
 }
 
 button:hover tooltip {

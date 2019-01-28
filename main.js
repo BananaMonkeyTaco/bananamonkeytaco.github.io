@@ -141,7 +141,3 @@ function updateActionProgressList() {
   }
   document.getElementById("actionBoxProgressList").innerHTML = x;
 }
-
-function updateProgressBars() {
-
-}

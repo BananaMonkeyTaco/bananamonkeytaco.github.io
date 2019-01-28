@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="actions.js"></script>
   <script src="locations.js"></script>
+  <script src="actions.js"></script>
   <script src="main.js"></script>
   <script src="saving.js"></script>
   <link rel="stylesheet" href="styles.css">
-  <script>load()</script>
 </head>
 <body>
   <div class="manaBar">
@@ -14,6 +13,7 @@
     <button type="button" onclick=gamePause()>Pause</button>
     <button type="button" onclick=gamePlay()>Play</button>
     <button type="button" onclick=gameNewCycle()>Restart</button>
+    <button type="button" onclick=deleteSave()>Clear Save</button>
   </div>
   <div class="column">
     <div class="actionBox">
@@ -26,6 +26,7 @@
     </div>
   </div>
   <script>
+  load();
   start();
 </script>
 </body>

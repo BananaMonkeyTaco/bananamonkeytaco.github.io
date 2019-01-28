@@ -37,7 +37,11 @@ function buildTownBox() {
   newTownBox += "<div class='townProgressBars'>";
   for (x in location[currentLocation].progressBars) {
     if (location[currentLocation].progressBars[x].visible) {
-      newTownBox += "<div class=progressBarEmpty>" +
+      newTownBox += "<div class=progressBarName id=" +
+      location[currentLocation].progressBars[x].id + ">" +
+      location[currentLocation].progressBars[x].name +
+      location[currentLocation].progressBars[x].currentLevel + "%</div>" +
+      "<div class=progressBarEmpty>" +
       "<div class=progressBarFill id=" + x + "></div></div>";
       if (location[currentLocation].progressBars[x].resource.name != undefined) {
         newTownBox += "<div class=progressBarResource id=" +
@@ -81,19 +85,34 @@ location[0] = {
   toRight: 1,
   progressBars: {
     wanderProgressBar: {
+      name: "City Explored: ",
+      id: "cityExplored",
       currentXP: 0,
       currentLevel: 0,
+      toNextLevel: 100,
+      getNextLevel: function() {
+        location[0].progressBars.wanderProgressBar.toNextLevel =
+        (location[0].progressBars.wanderProgressBar.currentLevel + 1) * 100;
+      },
+      checkLevel: function() {
+        let x = location[0].progressBars.wanderProgressBar;
+        if (x.currentXP >= x.toNextLevel) {
+          x.currentLevel++;
+          x.currentXP = 0;
+          x.getNextLevel();
+        }
+      },
       visible: true,
       resource: {
         name: "Pots",
         visible: true,
         usedAmount: 0,
         reliableAmount: 0,
-        reliableAmountText: "Mana filled pots smashed:",
+        reliableAmountText: "Mana filled pots smashed: ",
         uncheckedAmount: 0,
-        uncheckedAmountText: "Pots not checked for mana:",
+        uncheckedAmountText: "Pots not checked for mana: ",
         unreliableAmount: 0,
-        unreliableAmountText: "Pots with no mana:",
+        unreliableAmountText: "Pots with no mana: ",
       },
     },
   },
