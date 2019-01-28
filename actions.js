@@ -32,5 +32,6 @@ var smashPots = {
   manaCost: 25,
   finish: function() {
     mana = mana + 100;
+    updateResources(location[0].progressBars.wanderProgressBar.resource);
   }
 };

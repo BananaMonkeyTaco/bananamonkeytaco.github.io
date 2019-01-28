@@ -20,6 +20,7 @@ function changeLocation(direction) {
 
 function buildTownBox() {
   let newTownBox = "";
+  let resourcesToUpdate = [];
   newTownBox += "<div class='townName'>";
   if (location[currentLocation].toLeft != undefined) {
     newTownBox +=
@@ -41,8 +42,8 @@ function buildTownBox() {
       if (location[currentLocation].progressBars[x].resource.name != undefined) {
         newTownBox += "<div class=progressBarResource id=" +
         location[currentLocation].progressBars[x].resource.name + ">"
-        "</div>"
-
+        "</div>";
+        resourcesToUpdate.push(location[currentLocation].progressBars[x].resource);
       }
     }
   }
@@ -59,12 +60,20 @@ function buildTownBox() {
   newTownBox += "</div>";
   newTownBox += "</div>";
   document.getElementById("townBox").innerHTML = newTownBox;
+  for (let i = 0; i < resourcesToUpdate.length; i++) {
+    updateResources(resourcesToUpdate[i]);
+  }
 }
 
 function updateResources(resource) {
-  let x = reliableAmountText + usedAmount + "/" + reliableAmount +
-
-  document.getElementById(resource).innerHTML = x
+  let x = "<div>" + resource.reliableAmountText + resource.usedAmount + "/" +
+  resource.reliableAmount;
+  if (resource.uncheckedAmount > 0) {
+    x += resource.uncheckedAmountText + resource.uncheckedAmount;
+  }
+  x += "<tooltip>" + resource.unreliableAmountText + resource.unreliableAmount +
+  "</tooltip>" + "</div>";
+  document.getElementById(resource.name).innerHTML = x;
 }
 
 location[0] = {
@@ -77,13 +86,14 @@ location[0] = {
       visible: true,
       resource: {
         name: "Pots",
+        visible: true,
         usedAmount: 0,
         reliableAmount: 0,
-        reliableAmountText: "Mana filled pots smashed",
+        reliableAmountText: "Mana filled pots smashed:",
         uncheckedAmount: 0,
-        uncheckedAmountText: "Pots not checked for mana",
+        uncheckedAmountText: "Pots not checked for mana:",
         unreliableAmount: 0,
-        unreliableAmountText: "Pots with no mana",
+        unreliableAmountText: "Pots with no mana:",
       },
     },
   },

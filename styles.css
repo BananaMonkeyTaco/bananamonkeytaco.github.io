@@ -53,11 +53,16 @@
   width: 0%;
 }
 
-tooltip {
-  display: none;
+.progressBarResource:hover tooltip {
+  display: block;
 }
 
-div:hover tooltip {
+tooltip {
+  display: none;
+  position: absolute;
+}
+
+button:hover tooltip {
   display: block;
 }
 
