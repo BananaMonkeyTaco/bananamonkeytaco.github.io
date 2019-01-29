@@ -16,37 +16,29 @@ function changeLocation(direction) {
   buildTownBox();
 }
 
-
-
 function buildTownBox() {
   let newTownBox = "";
   let resourcesToUpdate = [];
+  let progressBarsToUpdate = [];
   newTownBox += "<div class='townName'>";
   if (location[currentLocation].toLeft != undefined) {
-    newTownBox +=
-    "<button type='button' onclick=changeLocation('left')> < </button>";
+    newTownBox += "<button type='button' onclick=changeLocation('left')> < </button>";
   }
-  newTownBox += "<span class='townName'>" +
-  location[currentLocation].name; +
-  "</span>";
+  newTownBox += "<span class='townName'>" + location[currentLocation].name; + "</span>";
   if (location[currentLocation].toRight != undefined) {
-    newTownBox +=
-    "<button type='button' onclick=changeLocation('right')> > </button>";
+    newTownBox += "<button type='button' onclick=changeLocation('right')> > </button>";
   }
   newTownBox += "</div>";
   newTownBox += "<div class='townProgressBars'>";
   for (x in location[currentLocation].progressBars) {
     if (location[currentLocation].progressBars[x].visible) {
-      newTownBox += "<div class=progressBarName id=" +
-      location[currentLocation].progressBars[x].id + ">" +
-      location[currentLocation].progressBars[x].name +
-      location[currentLocation].progressBars[x].currentLevel + "%</div>" +
-      "<div class=progressBarEmpty>" +
-      "<div class=progressBarFill id=" + x + "></div></div>";
+      newTownBox += "<div class=progressBarName id=" + location[currentLocation].progressBars[x].nameId + ">" +
+      location[currentLocation].progressBars[x].name + location[currentLocation].progressBars[x].currentLevel +
+      "%</div>" + "<div class=progressBarEmpty>" + "<div class=progressBarFill id=" + x + "></div></div>";
+      progressBarsToUpdate.push(location[currentLocation].progressBars[x]);
       if (location[currentLocation].progressBars[x].resource.name != undefined) {
-        newTownBox += "<div class=progressBarResource id=" +
-        location[currentLocation].progressBars[x].resource.name + ">"
-        "</div>";
+        newTownBox += "<div class=progressBarResource id=" + location[currentLocation].progressBars[x].resource.name +
+        ">" + "</div>";
         resourcesToUpdate.push(location[currentLocation].progressBars[x].resource);
       }
     }
@@ -55,9 +47,7 @@ function buildTownBox() {
   newTownBox += "<div class=townButtons>";
   for (x in location[currentLocation].buttons) {
     if (location[currentLocation].buttons[x].visible) {
-      newTownBox +=
-      "<button type='button' onclick=addAction(" + x + ")>" +
-      location[currentLocation].buttons[x].name +
+      newTownBox += "<button type='button' onclick=addAction(" + x + ")>" + location[currentLocation].buttons[x].name +
       "</button>";
     }
   }
@@ -65,19 +55,31 @@ function buildTownBox() {
   newTownBox += "</div>";
   document.getElementById("townBox").innerHTML = newTownBox;
   for (let i = 0; i < resourcesToUpdate.length; i++) {
-    updateResources(resourcesToUpdate[i]);
+    updateResourceText(resourcesToUpdate[i]);
+  }
+  for (let i = 0; i < progressBarsToUpdate.length; i++) {
+    updateProgressBar(progressBarsToUpdate[i]);
   }
 }
 
-function updateResources(resource) {
-  let x = "<div>" + resource.reliableAmountText + resource.usedAmount + "/" +
-  resource.reliableAmount;
+function updateResourceText(resource) {
+  let x = "<div>" + resource.reliableAmountText + resource.usedAmount + "/" + resource.reliableAmount;
   if (resource.uncheckedAmount > 0) {
     x += resource.uncheckedAmountText + resource.uncheckedAmount;
   }
-  x += "<tooltip>" + resource.unreliableAmountText + resource.unreliableAmount +
-  "</tooltip>" + "</div>";
+  x += "<tooltip>" + resource.unreliableAmountText + resource.unreliableAmount + "</tooltip>" + "</div>";
   document.getElementById(resource.name).innerHTML = x;
+}
+
+function updateResources(resource) {
+  console.log(resource);
+  resource.reliableAmount = floor((resource.totalAmount - resource.uncheckedAmount) * resource.efficiency);
+}
+
+function updateProgressBar(progressBar) {
+  let x = document.getElementById(progressBar.barId);
+  x.style.width = (progressBar.currentXP / progressBar.toNextLevel) * 100 + "%";
+  document.getElementById(progressBar.nameId).innerHTML = progressBar.name + progressBar.currentLevel + "%";
 }
 
 location[0] = {
@@ -86,7 +88,8 @@ location[0] = {
   progressBars: {
     wanderProgressBar: {
       name: "City Explored: ",
-      id: "cityExplored",
+      nameId: "cityExplored",
+      barId: "wanderProgressBar",
       currentXP: 0,
       currentLevel: 0,
       toNextLevel: 100,
@@ -98,6 +101,7 @@ location[0] = {
         let x = location[0].progressBars.wanderProgressBar;
         if (x.currentXP >= x.toNextLevel) {
           x.currentLevel++;
+          x.totalAmount += x.totalEfficiency;
           x.currentXP = 0;
           x.getNextLevel();
         }
@@ -113,6 +117,9 @@ location[0] = {
         uncheckedAmountText: "Pots not checked for mana: ",
         unreliableAmount: 0,
         unreliableAmountText: "Pots with no mana: ",
+        totalAmount: 0,
+        totalEfficiency: 10,
+        reliableEfficiency: .10,
       },
     },
   },

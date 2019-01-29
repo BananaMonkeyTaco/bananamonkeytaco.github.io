@@ -119,9 +119,7 @@ function calculateActualMana(action) {
 function updateActionList() {
   var x = "";
   for(let i = 0; i < actionOrderList.length; i++) {
-    x = x + "<div>" +
-    "<span class=actionBoxActions>" +
-    actionOrderList[i] + "  x" + actionAmount[i] +
+    x = x + "<div>" + "<span class=actionBoxActions>" + actionOrderList[i] + "  x" + actionAmount[i] +
     "<span class=actionBoxOptions>" +
     "<span onclick=increaseActionAmount(" + i + ")>" + " + " + "</span>" +
     "<span onclick=decreaseActionAmount(" + i + ")>" + " - " + "</span>" +
@@ -129,15 +127,17 @@ function updateActionList() {
     "</span></span></div>"
     document.getElementById('actionBoxActionList').innerHTML = x;
   }
+  if (actionOrderList.length == 0) {
+    document.getElementById('actionBoxActionList').innerHTML = "";
+  }
 }
 
 function updateActionProgressList() {
   var x = "";
   for (let i = 0; i < currentCycleActionList.length; i++) {
-    x = x + "<div>" +
-    "<span class=actionBoxProgressList>" + currentCycleActionList[i].name +
-    "  ( " + actionAmountCompleted[i] + " / " + currentCycleActionAmount[i] + " )" +
-    actionOrderProgress[i] + "%" + "</span></div>";
+    x = x + "<div>" + "<span class=actionBoxProgressList>" + currentCycleActionList[i].name + "  ( " +
+    actionAmountCompleted[i] + " / " + currentCycleActionAmount[i] + " )" + actionOrderProgress[i] +
+    "%" + "</span></div>";
   }
   document.getElementById("actionBoxProgressList").innerHTML = x;
 }
