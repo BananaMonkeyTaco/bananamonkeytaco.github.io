@@ -119,11 +119,12 @@ function calculateActualMana(action) {
 function updateActionList() {
   var x = "";
   for(let i = 0; i < actionOrderList.length; i++) {
-    x = x + "<div>" + "<span class=actionBoxActions>" + actionOrderList[i] + "  x" + actionAmount[i] +
+    x = x + "<div>" + "<span class=actionBoxActions>" +
+    "<img src=images/" + actionOrderList[i] + ".svg class=actionIcon></img>" + "  x" + actionAmount[i] +
     "<span class=actionBoxOptions>" +
-    "<span onclick=increaseActionAmount(" + i + ")>" + " + " + "</span>" +
-    "<span onclick=decreaseActionAmount(" + i + ")>" + " - " + "</span>" +
-    "<span onclick=removeActionFromList(" + i + ")>" + " x " + "</span>" +
+    "<i class='actionButton fas fa-plus' onclick=increaseActionAmount(" + i + ")>" + "</i>" +
+    "<i class='actionButton fas fa-minus' onclick=decreaseActionAmount(" + i + ")>" + "</i>" +
+    "<i class='actionButton fas fa-times-circle' onclick=removeActionFromList(" + i + ")>" + "</i>" +
     "</span></span></div>"
     document.getElementById('actionBoxActionList').innerHTML = x;
   }

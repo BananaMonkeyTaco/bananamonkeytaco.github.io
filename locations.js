@@ -2,14 +2,6 @@ var location;
 var currentLocation = 0;
 
 function changeLocation(direction) {
-  switch (direction) {
-    case "left":
-      direction = "toLeft";
-      break;
-    case "right":
-      direction = "toRight";
-      break;
-  }
   if (location[currentLocation][direction] != undefined) {
     currentLocation = location[currentLocation][direction];
   }
@@ -20,15 +12,51 @@ function buildTownBox() {
   let newTownBox = "";
   let resourcesToUpdate = [];
   let progressBarsToUpdate = [];
-  newTownBox += "<div class='townName'>";
-  if (location[currentLocation].toLeft != undefined) {
-    newTownBox += "<button type='button' onclick=changeLocation('left')> < </button>";
-  }
-  newTownBox += "<span class='townName'>" + location[currentLocation].name; + "</span>";
-  if (location[currentLocation].toRight != undefined) {
-    newTownBox += "<button type='button' onclick=changeLocation('right')> > </button>";
+
+  newTownBox += "<div class=townName>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toUpLeft != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-left' style=transform:rotate(45deg) onclick=changeLocation('toUpLeft')></i>";
   }
   newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toUp != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-up' onclick=changeLocation('toUp')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toUpRight != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-right' style=transform:rotate(-45deg) onclick=changeLocation('toUpRight')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toLeft != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-left' onclick=changeLocation('toLeft')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>" + location[currentLocation].name + "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toRight != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-right' onclick=changeLocation('toRight')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toDownLeft != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-left' style=transform:rotate(-45deg) onclick=changeLocation('toDownLeft')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toDown != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-down' onclick=changeLocation('toDown')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "<div>";
+  if (location[currentLocation].toDownRight != undefined) {
+    newTownBox += "<i class='actionButton fas fa-arrow-right' style=transform:rotate(45deg) onclick=changeLocation('toDownRight')></i>";
+  }
+  newTownBox += "</div>";
+  newTownBox += "</div>";
+
   newTownBox += "<div class='townProgressBars'>";
   for (x in location[currentLocation].progressBars) {
     if (location[currentLocation].progressBars[x].visible) {
