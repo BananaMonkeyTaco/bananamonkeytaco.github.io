@@ -28,6 +28,7 @@ function gameNewCycle() {
     currentCycleActionList.push(actionOrder[i]);
     currentCycleActionAmount.push(actionAmount[i]);
   }
+  location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
   initializeProgressList();
   save();
 }

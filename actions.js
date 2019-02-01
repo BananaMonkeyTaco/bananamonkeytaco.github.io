@@ -20,18 +20,28 @@ var wander = {
   finish: function() {
     location[0].progressBars.wanderProgressBar.currentXP += 100;
     location[0].progressBars.wanderProgressBar.checkLevel();
-    updateProgressBar(location[0].progressBars.wanderProgressBar)
+    updateProgressBar(location[0].progressBars.wanderProgressBar);
+    updateResources(location[0].progressBars.wanderProgressBar.resource);
+    updateResourceText(location[0].progressBars.wanderProgressBar.resource);
   }
 };
 
 var smashPots = {
-  name:  "Smash Pots",
+  name:  "SmashPots",
   manaCost: 25,
-  resource: location[0].progressBars.wanderProgressBar,
+  resource: location[0].progressBars.wanderProgressBar.resource,
   finish: function() {
-    if (this.resource.usedAmount < this.resource.reliableAmount) {
-      mana = mana + 100;
-      this.resource.usedAmount++;
+    if (document.getElementById("PotsLootFirst").checked) {
+      if (this.resource.usedAmount < this.resource.reliableAmount) {
+        mana += 100;
+        this.resource.usedAmount++;
+        updateResourceText(this.resource);
+        return;
+      }
+    }
+    if (this.resource.uncheckedAmount > 0) {
+      this.resource.uncheckedAmount--;
+      updateResources(location[0].progressBars.wanderProgressBar.resource);
       updateResourceText(this.resource);
     }
   }

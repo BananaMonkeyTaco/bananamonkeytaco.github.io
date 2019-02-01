@@ -65,8 +65,14 @@ function buildTownBox() {
       "%</div>" + "<div class=progressBarEmpty>" + "<div class=progressBarFill id=" + x + "></div></div>";
       progressBarsToUpdate.push(location[currentLocation].progressBars[x]);
       if (location[currentLocation].progressBars[x].resource.name != undefined) {
-        newTownBox += "<div class=progressBarResource id=" + location[currentLocation].progressBars[x].resource.name +
-        ">" + "</div>";
+        newTownBox += "<div class=progressBarResource>" + location[currentLocation].progressBars[x].resource.reliableAmountText +
+        "<span id=" + location[currentLocation].progressBars[x].resource.name + "usedAmount></span>" + "/" +
+        "<span id=" + location[currentLocation].progressBars[x].resource.name + "reliableAmount></span>" + "</br>" +
+        "<input type=checkbox id=" + location[currentLocation].progressBars[x].resource.name + "LootFirst>Reliable First" +
+        "<span style=float:right>" + location[currentLocation].progressBars[x].resource.uncheckedAmountText +
+        "<span id=" + location[currentLocation].progressBars[x].resource.name + "uncheckedAmount></span></span>" +
+        "<tooltip>" + location[currentLocation].progressBars[x].resource.unreliableAmountText +
+        "<span id=" + location[currentLocation].progressBars[x].resource.name + "unreliableAmount></span></tooltip></div>";
         resourcesToUpdate.push(location[currentLocation].progressBars[x].resource);
       }
     }
@@ -91,23 +97,25 @@ function buildTownBox() {
 }
 
 function updateResourceText(resource) {
-  let x = "<div>" + resource.reliableAmountText + resource.usedAmount + "/" + resource.reliableAmount;
-  if (resource.uncheckedAmount > 0) {
-    x += resource.uncheckedAmountText + resource.uncheckedAmount;
-  }
-  x += "<tooltip>" + resource.unreliableAmountText + resource.unreliableAmount + "</tooltip>" + "</div>";
-  document.getElementById(resource.name).innerHTML = x;
+  let x = resource.name + "usedAmount";
+  document.getElementById(x).innerHTML = resource.usedAmount;
+  x = resource.name + "reliableAmount";
+  document.getElementById(x).innerHTML = resource.reliableAmount;
+  x = resource.name + "uncheckedAmount";
+  document.getElementById(x).innerHTML = resource.uncheckedAmount;
+  x = resource.name + "unreliableAmount";
+  document.getElementById(x).innerHTML = resource.unreliableAmount;
 }
 
 function updateResources(resource) {
-  console.log(resource);
-  resource.reliableAmount = floor((resource.totalAmount - resource.uncheckedAmount) * resource.efficiency);
+  resource.reliableAmount = Math.floor((resource.totalAmount - resource.uncheckedAmount) * resource.reliableEfficiency);
+  resource.unreliableAmount = resource.totalAmount - resource.reliableAmount;
 }
 
-function updateProgressBar(progressBar) {
-  let x = document.getElementById(progressBar.barId);
-  x.style.width = (progressBar.currentXP / progressBar.toNextLevel) * 100 + "%";
-  document.getElementById(progressBar.nameId).innerHTML = progressBar.name + progressBar.currentLevel + "%";
+function updateProgressBar(progressBars) {
+  let x = document.getElementById(progressBars.barId);
+  x.style.width = (progressBars.currentXP / progressBars.toNextLevel) * 100 + "%";
+  document.getElementById(progressBars.nameId).innerHTML = progressBars.name + progressBars.currentLevel + "%";
 }
 
 location[0] = {
@@ -124,6 +132,10 @@ location[0] = {
       getNextLevel: function() {
         location[0].progressBars.wanderProgressBar.toNextLevel =
         (location[0].progressBars.wanderProgressBar.currentLevel + 1) * 100;
+        location[0].progressBars.wanderProgressBar.resource.totalAmount +=
+        location[0].progressBars.wanderProgressBar.resource.totalEfficiency;
+        location[0].progressBars.wanderProgressBar.resource.uncheckedAmount +=
+        location[0].progressBars.wanderProgressBar.resource.totalEfficiency;
       },
       checkLevel: function() {
         let x = location[0].progressBars.wanderProgressBar;

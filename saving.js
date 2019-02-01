@@ -34,4 +34,5 @@ function load() {
 function deleteSave() {
   localStorage.clear();
   load();
+  buildTownBox();
 }
