@@ -6,13 +6,12 @@ var actionOrderProgress = [];
 var mana = 100;
 var currentAction;
 var currentCostLeft;
+var multiplier;
 var gamePaused = true;
-
 var currentCycleActionList = [];
 var currentCycleActionAmount = [];
 var currentActionPlace = 0;
 
-var wanderProgressBar = 0;
 
 var wander = {
   name: "Wander",

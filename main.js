@@ -97,7 +97,7 @@ function initializeProgressList() {
 
 function progressAction(action) {
   currentCostLeft--;
-  increaseStats(currentCycleActionList[action].stats);
+  increaseStats(currentCycleActionList[action], multiplier);
   actionOrderProgress[action] = Math.floor(((originalCost - currentCostLeft) / originalCost) * 100);
   if (currentCostLeft == 0) {
     actionAmountCompleted[action]++;
@@ -117,7 +117,12 @@ function findNextAction() {
 }
 
 function calculateActualMana(action) {
-  return action.manaCost;
+  let finalCost = 0;
+  for (x in action.stats) {
+    finalCost += (action.manaCost * action.stats[x]) / (1 + (mainCharacter[x].level / 100));
+  }
+  multiplier = action.manaCost / finalCost;
+  return finalCost;
 }
 
 function updateActionList() {
