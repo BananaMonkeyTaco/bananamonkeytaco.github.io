@@ -13,7 +13,7 @@
   background-color: lightgreen;
   display: grid;
   grid: auto/ 50% 50%;
-  width: 600px;
+  width: 300px;
   height: 800px;
   margin: 5px;
   padding: 5px;
@@ -31,9 +31,6 @@
   background-color: inherit;
 }
 
-.actionBoxProgressList {
-}
-
 .townInfo {
   vertical-align: top;
   width: 600px;
@@ -41,14 +38,27 @@
 
 .townName {
   display: grid;
-  grid: 33% 33% 33% / 30% 40% 40%;
+  grid: 33% 33% 33% / 30% 40% 30%;
   height: 50px;
   width: 100%;
   text-align: center;
 }
 
-.progressBarName {
+.statList {
+  width: 100%;
+  display: grid;
+  grid: 15px 5px 5px / 42% 16% 16% 16%;
+  grid-row-gap: 2px;
+}
 
+.statBox {
+  height: 500px;
+  width: 250px;
+}
+
+.statBox .progressBarEmpty {
+  width: 200px;
+  grid-column: 1/5;
 }
 
 .progressBarEmpty {
@@ -76,6 +86,11 @@
 .actionButton:hover {
   cursor: pointer;
   color: blue;
+}
+
+.characterPage {
+  position: absolute;
+  width: inherit;
 }
 
 .progressBarResource:hover tooltip {

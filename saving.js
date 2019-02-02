@@ -8,6 +8,7 @@ function save() {
   localStorage.potstotalAmount = location[0].progressBars.wanderProgressBar.resource.totalAmount;
   localStorage.potstotalEfficiency = location[0].progressBars.wanderProgressBar.resource.totalEfficiency;
   localStorage.potsreliableEfficiency = location[0].progressBars.wanderProgressBar.resource.reliableEfficiency;
+  localStorage.mainCharacter = JSON.stringify(mainCharacter);
 }
 
 function load() {
@@ -29,6 +30,13 @@ function load() {
   Number(localStorage.potstotalEfficiency) : 10;
   location[0].progressBars.wanderProgressBar.resource.reliableEfficiency = !(isNaN(Number(localStorage.potsreliableEfficiency))) ?
   Number(localStorage.potsreliableEfficiency) : .10;
+  if (localStorage.mainCharacter != undefined) {
+    mainCharacter = JSON.parse(localStorage.mainCharacter);
+    characters[0] = mainCharacter;
+  } else {
+    mainCharacter = new Person("You");
+    characters[0] = mainCharacter;
+  }
 }
 
 function deleteSave() {

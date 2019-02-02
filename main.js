@@ -1,6 +1,8 @@
 function start() {
   setInterval(work, 10);
   buildTownBox();
+  buildStatBox();
+  updateStats();
 }
 
 function gamePause() {
@@ -55,6 +57,7 @@ function work() {
       }
       progressAction(currentActionPlace);
       updateActionProgressList();
+      updateStats();
     }
   }
 }
@@ -94,8 +97,8 @@ function initializeProgressList() {
 
 function progressAction(action) {
   currentCostLeft--;
-  actionOrderProgress[action] =
-  Math.floor(((originalCost - currentCostLeft) / originalCost) * 100);
+  increaseStats(currentCycleActionList[action].stats);
+  actionOrderProgress[action] = Math.floor(((originalCost - currentCostLeft) / originalCost) * 100);
   if (currentCostLeft == 0) {
     actionAmountCompleted[action]++;
     currentCycleActionList[action].finish();

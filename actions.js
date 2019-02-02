@@ -23,6 +23,11 @@ var wander = {
     updateProgressBar(location[0].progressBars.wanderProgressBar);
     updateResources(location[0].progressBars.wanderProgressBar.resource);
     updateResourceText(location[0].progressBars.wanderProgressBar.resource);
+  },
+  stats: {
+    speed: .5,
+    perception: .2,
+    charisma: .3,
   }
 };
 
@@ -43,6 +48,11 @@ var smashPots = {
       this.resource.uncheckedAmount--;
       updateResources(location[0].progressBars.wanderProgressBar.resource);
       updateResourceText(this.resource);
+    } else if (this.resource.usedAmount < this.resource.reliableAmount) {
+      mana += 100;
+      this.resource.usedAmount++;
+      updateResourceText(this.resource);
+      return;
     }
   }
 };
