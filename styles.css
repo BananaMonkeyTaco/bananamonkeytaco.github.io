@@ -1,3 +1,51 @@
+img {
+  width: 50px;
+  height: 50px;
+}
+
+.actionIcon {
+  width: 18px;
+  height: 18px;
+}
+
+button:hover tooltip {
+  display: block;
+}
+
+button {
+  margin: 5px;
+}
+
+tooltip {
+  display: none;
+  padding: 4px;
+  position: absolute;
+  background-color: lightgreen;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.progressBarEmpty {
+  width: 500px;
+  height: 5px;
+  background-color: lightgrey;
+  float: left;
+}
+
+.progressBarFill {
+  background-color: green;
+  height: 100%;
+  width: 0%;
+}
+
+.progressBarResource:hover tooltip {
+  display: block;
+}
+
+.progressBarEmpty:hover tooltip {
+  display: block;
+}
+
 .manaBar {
   text-align: center;
   width: 100%;
@@ -7,6 +55,28 @@
   display: inline-block;
   vertical-align: top;
   margin: 10px;
+}
+
+.statBox {
+  height: 500px;
+  width: 250px;
+}
+
+.statList {
+  width: 100%;
+  display: grid;
+  grid: 15px 5px 5px / 42% 16% 16% 16%;
+  grid-row-gap: 2px;
+}
+
+.statBox .progressBarEmpty {
+  width: 200px;
+  grid-column: 1/5;
+}
+
+.characterPage {
+  position: absolute;
+  width: inherit;
 }
 
 .actionBox {
@@ -31,6 +101,15 @@
   background-color: inherit;
 }
 
+.actionButton {
+  margin-right: 5px;
+}
+
+.actionButton:hover {
+  cursor: pointer;
+  color: blue;
+}
+
 .townInfo {
   vertical-align: top;
   width: 600px;
@@ -44,81 +123,23 @@
   text-align: center;
 }
 
-.statList {
-  width: 100%;
+.buttonBoxTitle {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.townButtons {
   display: grid;
-  grid: 15px 5px 5px / 42% 16% 16% 16%;
-  grid-row-gap: 2px;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  grid-gap: 5px;
 }
 
-.statBox {
-  height: 500px;
-  width: 250px;
-}
-
-.statBox .progressBarEmpty {
-  width: 200px;
-  grid-column: 1/5;
-}
-
-.progressBarEmpty {
-  width: 500px;
-  height: 5px;
-  background-color: lightgrey;
-  float: left;
-}
-
-.progressBarFill {
-  background-color: green;
-  height: 100%;
-  width: 0%;
-}
-
-.actionButton {
-  margin-right: 5px;
-}
-
-.actionIcon {
-  width: 18px;
-  height: 18px;
-}
-
-.actionButton:hover {
-  cursor: pointer;
-  color: blue;
-}
-
-.characterPage {
-  position: absolute;
-  width: inherit;
-}
-
-.progressBarResource:hover tooltip {
-  display: block;
-}
-
-.progressBarEmpty:hover tooltip {
-  display: block;
-}
-
-tooltip {
-  display: none;
-  padding: 4px;
-  position: absolute;
-  background-color: lightgreen;
-  border: 1px solid black;
-  border-radius: 5px;
-}
-
-img {
-  width: 50px;
-  height: 50px;
-}
-
-button:hover tooltip {
-  display: block;
-}
-
-button {
-  margin: 5px;
+.townButtons .button {
+  width: 100px;
+  height: 100px;
+  border: 1px;
+  border-style: groove;
+  text-align: center;
 }

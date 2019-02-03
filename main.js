@@ -25,12 +25,14 @@ function gameNewCycle() {
   currentCycleActionAmount.splice(0, currentCycleActionAmount.length);
   currentActionPlace = 0;
   mana = 100;
+  gold = 0;
   currentAction = undefined;
   for (let i = 0; i < actionOrder.length; i++) {
     currentCycleActionList.push(actionOrder[i]);
     currentCycleActionAmount.push(actionAmount[i]);
   }
   location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
+  hasMap = false;
   initializeProgressList();
   save();
 }
@@ -99,7 +101,7 @@ function progressAction(action) {
   currentCostLeft--;
   increaseStats(currentCycleActionList[action], multiplier);
   actionOrderProgress[action] = Math.floor(((originalCost - currentCostLeft) / originalCost) * 100);
-  if (currentCostLeft == 0) {
+  if (currentCostLeft <= 0) {
     actionAmountCompleted[action]++;
     currentCycleActionList[action].finish();
     currentAction = undefined;
@@ -119,7 +121,7 @@ function findNextAction() {
 function calculateActualMana(action) {
   let finalCost = 0;
   for (x in action.stats) {
-    finalCost += (action.manaCost * action.stats[x]) / (1 + (mainCharacter[x].level / 100));
+    finalCost += ((action.manaCost * action.stats[x]) / (1 + (mainCharacter[x].level / 100)));
   }
   multiplier = action.manaCost / finalCost;
   return finalCost;
@@ -150,4 +152,8 @@ function updateActionProgressList() {
     "%" + "</span></div>";
   }
   document.getElementById("actionBoxProgressList").innerHTML = x;
+}
+
+function capitalize(string) {
+  return string.slice(0, 1).toUpperCase() + string.slice(1);
 }

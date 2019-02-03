@@ -78,11 +78,12 @@ function buildTownBox() {
     }
   }
   newTownBox += "</div>";
+  newTownBox += "<div class=buttonBoxTitle><b>Actions</b></div>";
   newTownBox += "<div class=townButtons>";
   for (x in location[currentLocation].buttons) {
     if (location[currentLocation].buttons[x].visible) {
-      newTownBox += "<button type='button' onclick=addAction(" + x + ")>" + location[currentLocation].buttons[x].name +
-      "</button>";
+      newTownBox += "<div class=button onclick=addAction(" + x + ")>" + location[currentLocation].buttons[x].name +
+      "<div><img src=images/" + x + ".svg></div></div>";
     }
   }
   newTownBox += "</div>";
@@ -118,34 +119,32 @@ function updateProgressBar(progressBars) {
   document.getElementById(progressBars.nameId).innerHTML = progressBars.name + progressBars.currentLevel + "%";
 }
 
+function getNextLevel(x) {
+  x.toNextLevel = (x.currentLevel + 1) * 100;
+  x.resource.totalAmount += x.resource.totalEfficiency;
+  x.resource.uncheckedAmount += x.resource.totalEfficiency;
+}
+
+function checkLevel(x) {
+  if (x.currentXP >= x.toNextLevel) {
+    x.currentLevel++;
+    x.totalAmount += x.totalEfficiency;
+    x.currentXP = 0;
+    getNextLevel(x);
+  }
+}
+
 location[0] = {
   name: "Noobton",
   toRight: 1,
   progressBars: {
     wanderProgressBar: {
-      name: "City Explored: ",
-      nameId: "cityExplored",
+      name: "Village Explored: ",
+      nameId: "villageExplored",
       barId: "wanderProgressBar",
       currentXP: 0,
       currentLevel: 0,
       toNextLevel: 100,
-      getNextLevel: function() {
-        location[0].progressBars.wanderProgressBar.toNextLevel =
-        (location[0].progressBars.wanderProgressBar.currentLevel + 1) * 100;
-        location[0].progressBars.wanderProgressBar.resource.totalAmount +=
-        location[0].progressBars.wanderProgressBar.resource.totalEfficiency;
-        location[0].progressBars.wanderProgressBar.resource.uncheckedAmount +=
-        location[0].progressBars.wanderProgressBar.resource.totalEfficiency;
-      },
-      checkLevel: function() {
-        let x = location[0].progressBars.wanderProgressBar;
-        if (x.currentXP >= x.toNextLevel) {
-          x.currentLevel++;
-          x.totalAmount += x.totalEfficiency;
-          x.currentXP = 0;
-          x.getNextLevel();
-        }
-      },
       visible: true,
       resource: {
         name: "Pots",
@@ -162,6 +161,29 @@ location[0] = {
         reliableEfficiency: .10,
       },
     },
+    meetPeopleProgressBar: {
+      name: "People Met: ",
+      nameId: "peopleMet",
+      barId: "meetPeopleProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      visible: true,
+      resource: {
+        name: "Favours",
+        visible: true,
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "Favours rewarded: ",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "Favours never done: ",
+        unreliableAmount: 0,
+        unreliableAmountText: "Favours without a reward: ",
+        totalAmount: 0,
+        totalEfficiency: 1,
+        reliableEfficiency: .20,
+      }
+    }
   },
   buttons: {
     wander: {
@@ -170,6 +192,18 @@ location[0] = {
     },
     smashPots: {
       name: "Smash Pots",
+      visible: true,
+    },
+    meetPeople: {
+      name: "Meet People",
+      visible: true,
+    },
+    doFavours: {
+      name: "Do Favours",
+      visible: true,
+    },
+    buyMap: {
+      name: "Buy a Map",
       visible: true,
     },
   },
