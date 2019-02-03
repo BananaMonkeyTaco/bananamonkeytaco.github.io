@@ -4,8 +4,8 @@ img {
 }
 
 .actionIcon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
 button:hover tooltip {
@@ -91,8 +91,13 @@ tooltip {
   border-radius: 5px;
 }
 
+#actionBoxProgressList div:nth-child(even), #actionBoxActionList div:nth-child(even) {
+  background-color: lightgrey;
+  border-top: 1px groove;
+  border-bottom: 1px groove;
+}
+
 .actionBoxActions {
-    background-color: green;
     padding: 2px;
 }
 

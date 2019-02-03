@@ -147,8 +147,8 @@ function updateActionList() {
 function updateActionProgressList() {
   var x = "";
   for (let i = 0; i < currentCycleActionList.length; i++) {
-    x = x + "<div>" + "<span class=actionBoxProgressList>" + currentCycleActionList[i].name + "  ( " +
-    actionAmountCompleted[i] + " / " + currentCycleActionAmount[i] + " )" + actionOrderProgress[i] +
+    x = x + "<div>" + "<span class=actionBoxProgressList>" + "<img src=images/" + currentCycleActionList[i].name +
+     ".svg class=actionIcon></img>  ( " + actionAmountCompleted[i] + " / " + currentCycleActionAmount[i] + " )" + actionOrderProgress[i] +
     "%" + "</span></div>";
   }
   document.getElementById("actionBoxProgressList").innerHTML = x;

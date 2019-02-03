@@ -41,10 +41,6 @@ function increaseStats(action) {
     if (mainCharacter[x].talentXP >= mainCharacter[x].toNextTalent) {
       levelUp(mainCharacter, x, "talent");
     }
-    let y = document.getElementById(mainCharacter.name + x + "XP");
-    y.style.width = (mainCharacter[x].levelXP / mainCharacter[x].toNextLevel) * 100 + "%";
-    y = document.getElementById(mainCharacter.name + x + "TalentXP");
-    y.style.width = (mainCharacter[x].talentXP / mainCharacter[x].toNextTalent) * 100 + "%";
   }
 }
 
@@ -56,6 +52,10 @@ function updateStats() {
       document.getElementById(y).innerHTML = characters[i][x].level;
       y = characters[i].name + x + "Talent";
       document.getElementById(y).innerHTML = characters[i][x].talent;
+      y = document.getElementById(mainCharacter.name + x + "XP");
+      y.style.width = (mainCharacter[x].levelXP / mainCharacter[x].toNextLevel) * 100 + "%";
+      y = document.getElementById(mainCharacter.name + x + "TalentXP");
+      y.style.width = (mainCharacter[x].talentXP / mainCharacter[x].toNextTalent) * 100 + "%";
     }
   }
 }
