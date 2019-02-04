@@ -65,29 +65,53 @@ function work() {
 }
 
 function addAction(action) {
-  actionOrder.push(action);
-  actionOrderList.push(action.name);
-  actionAmount.push("1");
-  updateActionList();
-}
-
-function removeActionFromList(actionPlace) {
-  actionOrder.splice(actionPlace, 1);
-  actionOrderList.splice(actionPlace, 1);
-  actionAmount.splice(actionPlace, 1);
-  updateActionList();
-}
-
-function increaseActionAmount(actionPlace) {
-  actionAmount[actionPlace]++;
-  updateActionList();
-}
-
-function decreaseActionAmount(actionPlace) {
-  if(actionAmount[actionPlace] > 0){
-    actionAmount[actionPlace]--;
+  let newAction;
+  let icon;
+  let xMark;
+  let actionAmount;
+  let actionCount;
+  let faIcon;
+  let options;
+  newAction = document.createElement("div");
+  newAction.className = "actionBoxActions";
+  icon = document.createElement("img");
+  console.log(action);
+  icon.src = "images/" + action.name + ".svg";
+  icon.className = "actionIcon";
+  newAction.appendChild(icon);
+  xMark = document.createTextNode("x");
+  newAction.appendChild(xMark);
+  actionAmount = document.createElement("span");
+  actionCount = document.getElementById("actionBoxActionList").childElementCount;
+  actionAmount.id = "actionListAmount" + actionCount;
+  actionAmount.innerText = 1;
+  newAction.appendChild(actionAmount);
+  options = document.createElement("span");
+  options.className = "actionBoxOptions";
+  faIcon = document.createElement("i");
+  faIcon.className = "actionButton fas fa-plus";
+  faIcon.onclick = function() {
+    document.getElementById("actionListAmount" + actionCount).innerHTML =
+    Number(document.getElementById("actionListAmount" + actionCount).innerHTML) + 1;
   }
-  updateActionList();
+  options.appendChild(faIcon);
+  faIcon = document.createElement("i");
+  faIcon.className = "actionButton fas fa-minus";
+  faIcon.onclick = function() {
+    document.getElementById("actionListAmount" + actionCount).innerHTML =
+    Number(document.getElementById("actionListAmount" + actionCount).innerHTML) - 1;
+  }
+  options.appendChild(faIcon);
+  faIcon = document.createElement("i");
+  faIcon.className = "actionButton fas fa-times";
+  faIcon.onclick = function() {
+    document.getElementById("actionBoxActionList").removeChild(
+      document.getElementById("actionBoxActionList").childNodes[actionCount]
+    );
+  }
+  options.appendChild(faIcon);
+  newAction.appendChild(options);
+  document.getElementById("actionBoxActionList").appendChild(newAction);
 }
 
 function initializeProgressList() {
@@ -125,23 +149,6 @@ function calculateActualMana(action) {
   }
   multiplier = action.manaCost / finalCost;
   return finalCost;
-}
-
-function updateActionList() {
-  var x = "";
-  for(let i = 0; i < actionOrderList.length; i++) {
-    x = x + "<div>" + "<span class=actionBoxActions>" +
-    "<img src=images/" + actionOrderList[i] + ".svg class=actionIcon></img>" + "  x" + actionAmount[i] +
-    "<span class=actionBoxOptions>" +
-    "<i class='actionButton fas fa-plus' onclick=increaseActionAmount(" + i + ")>" + "</i>" +
-    "<i class='actionButton fas fa-minus' onclick=decreaseActionAmount(" + i + ")>" + "</i>" +
-    "<i class='actionButton fas fa-times-circle' onclick=removeActionFromList(" + i + ")>" + "</i>" +
-    "</span></span></div>"
-    document.getElementById('actionBoxActionList').innerHTML = x;
-  }
-  if (actionOrderList.length == 0) {
-    document.getElementById('actionBoxActionList').innerHTML = "";
-  }
 }
 
 function updateActionProgressList() {
