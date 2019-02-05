@@ -34,24 +34,45 @@ function addAction(action) {
   newAction.appendChild(options);
 }
 
-function updateActionList() {
-  let x = "";
-  for (let i = 0)
+function initializeProgressList() {
+  for (i = 0; i < cyclePlan.length; i++) {
+    let action = cyclePlan[i];
+    let newAction;
+    let miscText;
+    let actionAmount;
+    let progress;
+    newAction = document.createElement("div");
+    newAction.className = "actionBoxProgressList";
+    icon = document.createElement("img");
+    icon.src = "images/" + action.name + ".svg";
+    icon.className = "actionIcon";
+    newAction.appendChild(icon);
+    miscText = document.createTextNode("(");
+    newAction.appendChild(miscText);
+    progress = document.createElement("span");
+    progress.id = "completed" + i;
+    newAction.appendChild(progress);
+    miscText = document.createTextNode("/" + document.getElementById("actionListAmount" + i).outerText);
+    newAction.appendChild(miscText);
+    progress = document.createElement("span");
+    progress.id = "progress" + i;
+    progress.style.float = "right";
+    miscText = document.createTextNode("%");
+    progress.appendChild(miscText);
+    newAction.appendChild(progress);
+  }
 }
 
-function updateActionList() {
+function updateActionProgressList() {
   var x = "";
-  for(let i = 0; i < actionOrderList.length; i++) {
-    x = x + "<div>" + "<span class=actionBoxActions>" +
-    "<img src=images/" + actionOrderList[i] + ".svg class=actionIcon></img>" + "  x" + actionAmount[i] +
-    "<span class=actionBoxOptions>" +
-    "<i class='actionButton fas fa-plus' onclick=increaseActionAmount(" + i + ")>" + "</i>" +
-    "<i class='actionButton fas fa-minus' onclick=decreaseActionAmount(" + i + ")>" + "</i>" +
-    "<i class='actionButton fas fa-times-circle' onclick=removeActionFromList(" + i + ")>" + "</i>" +
-    "</span></span></div>"
-    document.getElementById('actionBoxActionList').innerHTML = x;
+  for (let i = 0; i < currentCycleActionList.length; i++) {
+    x = x + "<div>" + "<span class=actionBoxProgressList>" + "<img src=images/" + currentCycleActionList[i].name +
+     ".svg class=actionIcon></img>  ( " + actionAmountCompleted[i] + " / " + currentCycleActionAmount[i] + " )" + actionOrderProgress[i] +
+    "%" + "</span></div>";
   }
-  if (actionOrderList.length == 0) {
-    document.getElementById('actionBoxActionList').innerHTML = "";
-  }
+  document.getElementById("actionBoxProgressList").innerHTML = x;
+}
+
+function capitalize(string) {
+  return string.slice(0, 1).toUpperCase() + string.slice(1);
 }

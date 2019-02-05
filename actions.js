@@ -1,8 +1,6 @@
-var actionOrder = [];
-var actionOrderList = [];
-var actionAmount = [];
-var actionAmountCompleted = [];
-var actionOrderProgress = [];
+var cyclePlan = [];
+var cycleGoal = [];
+var cycleList = [];
 var mana = 100;
 var gold = 0;
 var currentAction;
