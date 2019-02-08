@@ -27,6 +27,7 @@ function gameNewCycle() {
   currentAction = undefined;
   location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
   hasMap = false;
+  cyclePlan
   initializeProgressList();
   save();
 }
@@ -98,9 +99,9 @@ function addAction(action) {
   faIcon = document.createElement("i");
   faIcon.className = "actionButton fas fa-times";
   faIcon.onclick = function() {
-    document.getElementById("actionBoxActionList").removeChild(
-      document.getElementById("actionBoxActionList").childNodes[actionCount]
-    );
+    let element = document.getElementById("actionListAmount" + actionCount);
+    element = element.parentNode;
+    element.parentNode.removeChild(element);
     cyclePlan.splice(actionCount, 1);
   }
   options.appendChild(faIcon);
@@ -110,7 +111,7 @@ function addAction(action) {
 
 function initializeProgressList() {
   document.getElementById("actionBoxProgressList").innerHTML = "";
-  for (i = 0; i < cyclePlan.length; i++) {
+  for (let i = 0; i < cyclePlan.length; i++) {
     let action = cyclePlan[i];
     let newAction;
     let miscText;
