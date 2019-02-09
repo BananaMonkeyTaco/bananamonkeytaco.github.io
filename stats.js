@@ -5,30 +5,60 @@ var statNamesUpperCase = ["Dexterity", "Strength", "Constitution", "Speed", "Per
 "Charisma", "Intelligence", "Wisdom", "Luck", "Spirit"];
 
 function buildStatBox() {
-  let newStatBox = "";
+  let characterPage = document.createElement("div");
+  characterPage.className = "characterPage";
+  let characterPageTitle = document.createElement("div");
+  characterPageTitle.className = "characterPageTitle";
+  let characterPageText = document.createTextNode("Characters");
+  characterPageTitle.appendChild(characterPageText);
+  characterPage.appendChild(characterPageTitle);
+  /*
+  code here for character selection
+  */
   for (let i = 0; i < characters.length; i++) {
     let x = characters[i];
-    newStatBox += "<div class=characterPage id=" + x.name + ">";
-
-    newStatBox += "<div class=characterPageTitle id=characterPageTitle></div>";
-    newStatBox += "<div class=characterChoice></div>";
-    newStatBox += "<div class=statList>";
-
-    for (let i = 0; i < statNames.length; i++) {
-      newStatBox += "<div>" + statNamesUpperCase[i] + "</div>";
-      newStatBox += "<div id=" + x.name + statNames[i] + "Level></div>";
-      newStatBox += "<div id=" + x.name + statNames[i] + "Talent></div>";
-      newStatBox += "<div id=" + x.name + statNames[i] + "Bonus></div>";
-      newStatBox += "<div class=progressBarEmpty>";
-      newStatBox += "<div class=progressBarFill id=" + x.name + statNames[i] + "XP></div></div>";
-      newStatBox += "<div class=progressBarEmpty>";
-      newStatBox += "<div class=progressBarFill id=" + x.name + statNames[i] + "TalentXP></div></div>";
+    let statList = document.createElement("div");
+    statList.className = "statList";
+    statList.id = x.name;
+    for (let j = 0; j < statNames.length; j++) {
+      let y = statNames[j];
+      let box = document.createElement("div");
+      let miscText = document.createTextNode(capitalize(y));
+      box.appendChild(miscText);
+      statList.appendChild(box);
+      box = document.createElement("div");
+      box.id = x.name + y + "Level";
+      miscText = document.createTextNode(x[y].level);
+      box.appendChild(miscText);
+      statList.appendChild(box);
+      box = document.createElement("div");
+      box.id = x.name + y + "Talent";
+      miscText = document.createTextNode(x[y].talent);
+      box.appendChild(miscText);
+      statList.appendChild(box);
+      box = document.createElement("div");
+      box.id = x.name + y + "Bonus";
+      statList.appendChild(box);
+      let progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      let progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill";
+      progressBarFill.id = x.name + y + "XP";
+      progressBarFill.style.width = (x[y].levelXP / x[y].toNextLevel) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      statList.appendChild(progressBarEmpty);
+      progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill";
+      progressBarFill.id = x.name + y + "TalentXP";
+      progressBarFill.style.width = (x[y].talentXP / x[y].toNextTalent) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      statList.appendChild(progressBarEmpty);
     }
-    newStatBox += "</div>";
-    newStatBox += "</div>";
-    newStatBox += "</div>";
-    document.getElementById("statBox").innerHTML = newStatBox;
+    characterPage.appendChild(statList);
   }
+  document.getElementById("statBox").appendChild(characterPage);
 }
 
 function increaseStats(action) {
@@ -73,7 +103,7 @@ function levelUp(object, stat, select) {
 }
 
 function Person (name) {
-  this.name = name;
+  this.name = name,
   this.dexterity = {
     level: 0,
     levelXP: 0,

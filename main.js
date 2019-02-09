@@ -21,26 +21,29 @@ function gamePlay() {
 }
 
 function gameNewCycle() {
-  currentActionPlace = 0;
-  mana = 100;
-  gold = 0;
-  currentAction = undefined;
-  location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
-  hasMap = false;
-  cyclePlan
-  initializeProgressList();
-  save();
+  if (cyclePlan.length > 0) {
+    currentActionPlace = 0;
+    mana = 100;
+    gold = 0;
+    document.getElementById("goldBox").style.display = "none";
+    currentAction = undefined;
+    location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
+    hasMap = false;
+    initializeProgressList();
+    save();
+  } else {
+    gamePaused = true;
+  }
 }
 
 function work() {
-  document.getElementById("mana").innerHTML = "Mana = " + mana;
+  document.getElementById("mana").innerHTML = mana;
+  if (gold != 0) {
+    document.getElementById("goldBox").style.display = "block";
+  }
   if (gamePaused == false) {
     if (mana == 0) {
-      if (cyclePlan.length > 0){
-        gameNewCycle();
-      } else {
-        gamePaused;
-      }
+      gameNewCycle();
     } else {
       mana--;
       if (currentAction == undefined) {
@@ -102,6 +105,10 @@ function addAction(action) {
     let element = document.getElementById("actionListAmount" + actionCount);
     element = element.parentNode;
     element.parentNode.removeChild(element);
+    for (let i = actionCount + 1; i < document.getElementById("actionBoxActionList").childElementCount + 1; i++) {
+      let x = document.getElementById("actionListAmount" + i);
+      x.id = "actionListAmount" + (i - 1);
+    }
     cyclePlan.splice(actionCount, 1);
   }
   options.appendChild(faIcon);
@@ -110,13 +117,22 @@ function addAction(action) {
 }
 
 function initializeProgressList() {
-  document.getElementById("actionBoxProgressList").innerHTML = "";
+  while (cycleGoal.length > 0) {
+    cycleGoal.pop();
+  }
+  while (cycleList.length > 0) {
+    cycleList.pop();
+  }
+  while (document.getElementById("actionBoxProgressList").hasChildNodes()) {
+    document.getElementById("actionBoxProgressList").removeChild(document.getElementById("actionBoxProgressList").firstElementChild);
+  }
   for (let i = 0; i < cyclePlan.length; i++) {
     let action = cyclePlan[i];
     let newAction;
     let miscText;
     let actionAmount;
     let progress;
+    let icon;
     newAction = document.createElement("div");
     newAction.className = "actionBoxProgressList";
     icon = document.createElement("img");
@@ -147,9 +163,12 @@ function initializeProgressList() {
 function progressAction(action) {
   currentCostLeft--;
   increaseStats(cycleList[currentAction], multiplier);
-  document.getElementById("progress" + currentAction).innerHTML = Math.floor(((originalCost - currentCostLeft) / originalCost) * 100) + "%";
+  document.getElementById("progress" + currentAction).innerHTML =
+  Math.floor(((originalCost - currentCostLeft) / originalCost) * 100) + "%";
   if (currentCostLeft <= 0) {
     cycleList[currentAction].finish();
+    document.getElementById("completed" + currentAction).innerHTML =
+    Number(document.getElementById("completed" + currentAction).innerHTML) + 1;
     currentAction = undefined;
   }
   return;
@@ -157,7 +176,7 @@ function progressAction(action) {
 
 function findNextAction() {
   for (let i = 0; i < cyclePlan.length; i++) {
-    if (document.getElementById("completed" + i).outerText < cycleGoal[i]) {
+    if (Number(document.getElementById("completed" + i).outerText) < cycleGoal[i]) {
       return i;
     }
   }

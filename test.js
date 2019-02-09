@@ -1,149 +1,76 @@
-function buildTownBox() {
-  let box;
-  let arrow;
-  let miscText;
-  let barName;
-  let x;
-  let y;
-  let progress;
-  let progressEmpty;
-  let progressFill;
-  let resourceBox;
-  let resource;
-  let townProgressBars;
-  let townButtons;
-  let button;
-  let icon;
-  let line;
-  for (i = 0; i < document.getElementById("townBox").childElementCount; i++) {
-    let town = document.getElementById("town" + i);
-    townName = document.createElement("div");
-    townName.className = "townName";
-    for (j = 0; j < directions.length; j++) {
-      x = directions[j];
+var characters = [];
+var statNames = ["dexterity", "strength", "constitution", "speed", "perception",
+"charisma", "intelligence", "wisdom", "luck", "spirit"];
+var statNamesUpperCase = ["Dexterity", "Strength", "Constitution", "Speed", "Perception",
+"Charisma", "Intelligence", "Wisdom", "Luck", "Spirit"];
+
+
+function buildStatBox() {
+  let characterPage = document.createElement("div");
+  characterPage.className = "characterPage";
+  let characterPageTitle = document.createElement("div");
+  characterPageTitle.className = "characterPageTitle";
+  let characterPageText = document.createTextNode("Characters");
+  characterPageTitle.appendChild(characterPageText);
+  characterPage.appendChild(characterPageTitle);
+  /*
+  code here for character selection
+  */
+  for (let i = 0; i < characters.length; i++) {
+    let x = characters[i];
+    let statList = document.createElement("div");
+    statList.className = "statList";
+    statList.id = x.name;
+    for (let j = 0; j < statNames.length; j++) {
+      let y = statNames[j];
+      let box = document.createElement("div");
+      let miscText = document.createTextNode(capitalize(y));
+      box.appendChild(miscText);
+      statList.appendChild(box);
       box = document.createElement("div");
-      if (location[i][x] != undefined) {
-        if (x != "name") {
-          arrow = document.createElement("i");
-          arrow.className = "actionButton fas fa-arrow-right";
-          arrow.style.transform = 'rotate(point[j] + "deg")';
-          arrow.onclick = function() {
-            location[i].display = none;
-            location[i][x].display = block;
-          }
-        } else if (x == "name") {
-          arrow = document.createElement("div");
-          miscText = document.createTextNode(location[i][x]);
-          arrow.appendChild(miscText);
-        }
-        box.appendChild(arrow);
-      }
-      townName.appendChild(box);
+      box.id = x.name + y + "Level";
+      miscText = document.createTextNode(x[y].level);
+      box.appendChild(miscText);
+      statList.appendChild(box);
+      box = document.createElement("div");
+      box.id = x.name + y + "Talent";
+      miscText = document.createTextNode(x[y].talent);
+      box.appendChild(miscText);
+      statList.appendChild(box);
+      box = document.createElement("div");
+      box.id = x.name + y + "Bonus";
+      statList.appendChild(box);
+      let progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      let progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill";
+      progressBarFill.id = x.name + y + "XP";
+      progressBarFill.style.width = (x[y].levelXP / x[y].toNextLevel) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      statList.appendChild(progressBarEmpty);
+      progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill";
+      progressBarFill.id = x.name + y + "TalentXP";
+      progressBarFill.style.width = (x[y].talentXP / x[y].toNextTalent) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      statList.appendChild(progressBarEmpty);
     }
-    town.appendChild(townName);
-    townProgressBars = document.createElement("div");
-    townProgressBars.className = "townProgressBars";
-    for (x in location[i].progressBars) {
-      if (location[i].progressBars[x].visible) {
-        box = document.createElement("div");
-        box.className = "townProgressBars";
-        y = location[i].progressBars[x];
-        barName = document.createElement("div");
-        barName.className = "progressBarName";
-        miscText = document.createTextNode(y.name);
-        barName.appendChild(miscText);
-        progress = document.createElement("span");
-        progress.id = y.nameId;
-        miscText = document.createTextNode(y.currentLevel + "%");
-        progress.appendChild(miscText);
-        barName.appendChild(progress);
-        box.appendChild(barName);
-        progressEmpty = document.createElement("div");
-        progressEmpty.className = "progressBarEmpty";
-        progressFill = document.createElement("div");
-        progressFill.className = "progressBarFill";
-        progressFill.id = x;
-        progressFill.style.width = (y.currentXP / y.toNextLevel) * 100 + "%";
-        progressEmpty.appendChild(progressFill);
-        box.appendChild(progressEmpty);
-        if (y.resource.name != undefined) {
-          y = y.resource;
-          resourceBox = document.createElement("div");
-          resourceBox.className = "progressBarResource";
-          miscText = document.createTextNode(y.reliableAmountText);
-          resourceBox.appendChild(miscText)
-          resource = document.createElement("span");
-          resource.id = y.name + "usedAmount";
-          miscText = document.createTextNode(y.usedAmount);
-          resource.appendChild(miscText);
-          resourceBox.appendChild(resource);
-          miscText = document.createTextNode("/");
-          resourceBox.appendChild(miscText);
-          resource = document.createElement("span");
-          resource.id = y.name + "reliableAmount";
-          miscText = document.createTextNode(y.reliableAmount);
-          resource.appendChild(miscText);
-          resourceBox.appendChild(resource);
-          line = document.createElement("span");
-          line.style.display = "block";
-          resource = document.createElement("input");
-          resource.type = "checkbox";
-          resource.id = y.name + "LootFirst";
-          line.appendChild(resource);
-          miscText = document.createTextNode("Reliable First");
-          line.appendChild(miscText);
-          resource = document.createElement("span");
-          resource.style.float = "right";
-          miscText = document.createTextNode(y.uncheckedAmountText);
-          resource.appendChild(miscText);
-          progress = document.createElement("span");
-          progress.id = y.name + "uncheckedAmount";
-          miscText = document.createTextNode(y.uncheckedAmount);
-          progress.appendChild(miscText);
-          resource.appendChild(progress);
-          line.appendChild(resource);
-          resourceBox.appendChild(line);
-          resource = document.createElement("tooltip");
-          miscText = document.createTextNode(y.unreliableAmountText);
-          resource.appendChild(miscText);
-          progress = document.createElement("span");
-          progress.id = y.name + "unreliableAmount";
-          miscText = document.createTextNode(y.unreliableAmount);
-          progress.appendChild(miscText);
-          resource.appendChild(progress);
-          resourceBox.appendChild(resource);
-          box.appendChild(resourceBox);
-        }
-        townProgressBars.appendChild(box);
-      }
-    }
-    town.appendChild(townProgressBars);
-    line = document.createElement("div");
-    line.className = "buttonBoxTitle";
-    miscText = document.createTextNode("Actions");
-    line.appendChild(miscText);
-    town.appendChild(line);
-    townButtons = document.createElement("div");
-    townButtons.className = "townButtons";
-    for (x in location[0].buttons) {
-      console.log(x);
-      console.log(townButtons);
-      if (location[0].buttons[x].visible == true) {
-        button = document.createElement("div");
-        button.className = "button";
-        button.onclick = function() {
-          addAction(x);
-        };
-        miscText = document.createTextNode(capitalize(x));
-        button.appendChild(miscText);
-        miscText = document.createElement("div");
-        icon = document.createElement("img");
-        icon.src = "images/" + capitalize(x) + ".svg";
-        miscText.appendChild(icon);
-        button.appendChild(miscText);
-        townButtons.appendChild(button);
-      }
-    }
-    town.appendChild(townButtons);
+    characterPage.appendChild(statList);
   }
+  document.getElementById("statBox").appendChild(characterPage);
 }
+
+function Person (name) {
+  this.name = name,
+  for (let i = 0; i < statNames.length; i++) {
+    let x = statNames[i];
+    this[x].level: 0,
+    this[x].levelXP: 0,
+    this[x].toNextLevel: 100,
+    this[x].talent: 0,
+    this[x].talentXP: 0,
+    this[x].toNextTalent: 100,
+  }
+};
