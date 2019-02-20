@@ -1,9 +1,3 @@
-var location;
-var currentLocation = 0;
-var directions = ["toNorthWest", "toNorth", "toNorthEast", "toWest", "name",
-"toEast", "toSouthWest", "toSouth", "toSouthEast"];
-var point = [225, 270, 315, 180, 0, 0, 135, 90, 45];
-
 function buildTownBox() {
   let box;
   let arrow;
@@ -55,7 +49,7 @@ function buildTownBox() {
     for (x in location[i].progressBars) {
       if (location[i].progressBars[x].visible) {
         box = document.createElement("div");
-        box.className = "townProgressBars";
+        box.className = "townProgressBar";
         y = location[i].progressBars[x];
         barName = document.createElement("div");
         barName.className = "progressBarName";
@@ -127,6 +121,75 @@ function buildTownBox() {
       }
     }
     town.appendChild(townProgressBars);
+    let townActionBars = document.createElement("div");
+    townActionBars.className = "townActionBars";
+    for (x in location[i].actionBars) {
+      x = location[i].actionBars[x];
+      if (x.visible) {
+        let bar = document.createElement("div");
+        bar.id = x.id + "Bar";
+        let name = document.createElement("div");
+        let miscText = document.createTextNode(x.name);
+        name.appendChild(miscText);
+        let completedText = document.createElement("span");
+        completedText.style.float = "right";
+        miscText = document.createTextNode(x.completedName);
+        completedText.appendChild(miscText);
+        let tempElement = document.createElement("span");
+        tempElement.id = x.id + "Completed";
+        miscText = document.createTextNode(x.completedAmount);
+        tempElement.appendChild(miscText);
+        completedText.appendChild(tempElement);
+        name.appendChild(completedText);
+        bar.appendChild(name);
+        let segmentBar = document.createElement("div");
+        segmentBar.className = "actionBar";
+        let previousGoals = [];
+        for (let i = 0; i < x.segmentStats.length; i++){
+          let tempBar = document.createElement("div");
+          tempBar.className = "progressBarEmpty";
+          tempBar.style.display = "inline-block";
+          tempBar.style.width = 'calc(' + 100 / x.segmentStats.length + '% - 6px)';
+          tempBar.style.margin = "3px";
+          tempBar.style.height = "8px";
+          tempBar.style.backgroundColor = window[x.segmentStats[i] + "Colour"];
+          let segment = document.createElement("div");
+          segment.className = "progressBarFill";
+          segment.style.width = "0%";
+          segment.style.backgroundColor = "lightgrey";
+          segment.setAttribute("data-progress", 0);
+          segment.setAttribute("data-goal", x.segmentGoal(previousGoals));
+          segment.setAttribute("data-stat", x.segmentStats[i]);
+          previousGoals.push(segment.getAttribute("data-goal"));
+          tempBar.appendChild(segment);
+          let tooltip = document.createElement("tooltip");
+          let tempElement = document.createElement("b");
+          miscText = document.createTextNode("Stat: ");
+          tempElement.appendChild(miscText);
+          tooltip.appendChild(tempElement);
+          miscText = document.createTextNode(capitalize(x.segmentStats[i]));
+          tooltip.appendChild(miscText);
+          let lineBreak = document.createElement("br");
+          tooltip.appendChild(lineBreak);
+          tempElement = document.createElement("b");
+          miscText = document.createTextNode("Progress: ");
+          tempElement.appendChild(miscText);
+          tooltip.appendChild(tempElement);
+          tempElement = document.createElement("span");
+          tempElement.id = x.id + "Segment" + i;
+          miscText = document.createTextNode(0);
+          tempElement.appendChild(miscText);
+          tooltip.appendChild(tempElement);
+          tempElement = document.createTextNode(" / " + segment.getAttribute("data-goal"));
+          tooltip.appendChild(tempElement);
+          tempBar.appendChild(tooltip);
+          segmentBar.appendChild(tempBar);
+        }
+        bar.appendChild(segmentBar);
+        townActionBars.appendChild(bar);
+      }
+    }
+    town.appendChild(townActionBars);
     line = document.createElement("div");
     line.className = "buttonBoxTitle";
     miscText = document.createTextNode("Actions");
@@ -135,19 +198,62 @@ function buildTownBox() {
     townButtons = document.createElement("div");
     townButtons.className = "townButtons";
     for (let x in location[i].buttons) {
-      if (location[0].buttons[x].visible == true) {
+      if (location[i].buttons[x].visible == true) {
+        let action = window[x];
+        let tooltip;
+        let check = action.tooltip;
+        let y = location[i].buttons[x];
         button = document.createElement("div");
         button.className = "button";
-        button.onclick = function() {
-          addAction(window[x]);
-        };
-        miscText = document.createTextNode(capitalize(x));
+        if (y.unlocked == true) {
+          button.onclick = function() {
+            addAction(action);
+          };
+        } else {
+          button.style.backgroundColor = "lightgrey";
+        }
+        miscText = document.createTextNode(location[i].buttons[x].name);
         button.appendChild(miscText);
         miscText = document.createElement("div");
         icon = document.createElement("img");
         icon.src = "images/" + capitalize(x) + ".svg";
         miscText.appendChild(icon);
         button.appendChild(miscText);
+        tooltip = document.createElement("tooltip");
+        miscText = document.createTextNode(action.tooltip);
+        tooltip.appendChild(miscText);
+        for (let k = 0; k < statNames.length; k++) {
+          let x = statNames[k];
+          if (action.stats[x]) {
+            let box = document.createElement("div");
+            box.style.textAlign = "left";
+            let stat = document.createElement("b");
+            miscText = document.createTextNode(capitalize(x) + " ");
+            stat.appendChild(miscText);
+            miscText = document.createTextNode(action.stats[x] * 100 +"%");
+            box.appendChild(stat);
+            box.appendChild(miscText);
+            tooltip.appendChild(box);
+          }
+        }
+        miscText = document.createTextNode("Mana Cost " + action.manaCost);
+        tooltip.appendChild(miscText);
+        if (y.unlocked == false) {
+          let tempElement = document.createElement("div");
+          for (let j = 0; j < y.requirementAction.length; j++) {
+            if (j == 0) {
+              miscText = document.createTextNode("Unlocks at ");
+              tempElement.appendChild(miscText);
+            } else {
+              miscText = document.createTextNode(" and ");
+              tempElement.appendChild(miscText);
+            }
+            miscText = document.createTextNode(y.requirementAmount[j] + " " + y.requirementAction[j]);
+            tempElement.appendChild(miscText);
+            tooltip.appendChild(tempElement);
+          }
+        }
+        button.appendChild(tooltip);
         townButtons.appendChild(button);
       }
     }
@@ -189,6 +295,51 @@ function checkLevel(x) {
     x.totalAmount += x.totalEfficiency;
     x.currentXP = 0;
     getNextLevel(x);
+    buildTownBox();
+  }
+}
+
+function resetActionBars() {
+  for (let i in location) {
+    for (let j in location[i].actionBars) {
+      let x = location[i].actionBars[j];
+      if (x.visible) {
+        let y = document.getElementById(x.id + "Bar");
+        y = y.childNodes[1];
+        let previousGoals = [];
+        for (let k = 0; k < y.childElementCount; k++) {
+          let z = y.childNodes[k];
+          z.firstElementChild.setAttribute("data-progress", 0);
+          z.firstElementChild.setAttribute("data-goal", x.segmentGoal(previousGoals));
+          z.firstElementChild.style.width = "0%";
+          previousGoals.push(x.segmentGoal(previousGoals));
+          document.getElementById(x.id + "Segment" + k).innerHTML = 0;
+          document.getElementById(x.id + "Segment" + k).nextSibling.textContent =
+          " / " + z.firstElementChild.getAttribute("data-goal");
+        }
+      }
+    }
+  }
+}
+
+function rebuildActionBar(barLocation, actionBar) {
+  let x = location[barLocation].actionBars[actionBar];
+  let y = document.getElementById(x.id + "Segment0").parentElement.parentElement.parentElement;
+  let previousGoals = [];
+  for (let i = 0; i < y.childElementCount; i++) {
+    previousGoals.push(y.childNodes[i].firstElementChild.getAttribute("data-goal"));
+  }
+  for (let i = 0; i < y.childElementCount; i++) {
+    let z = y.childNodes[i].firstElementChild;
+    z.setAttribute("data-progress", 0);
+    console.log(x.segmentGoal(previousGoals))
+    console.log(previousGoals)
+    z.setAttribute("data-goal", x.segmentGoal(previousGoals));
+    document.getElementById(x.id + "Segment" + i).innerHTML = 0;
+    document.getElementById(x.id + "Segment" + i).nextSibling.textContent = " / " + z.getAttribute("data-goal");
+    document.getElementById(x.id + "Completed").innerHTML = x.completedAmount;
+    previousGoals.push(z.getAttribute("data-goal"));
+    z.style.width = "0%";
   }
 }
 
@@ -209,11 +360,11 @@ location[0] = {
         visible: true,
         usedAmount: 0,
         reliableAmount: 0,
-        reliableAmountText: "Mana filled pots smashed: ",
+        reliableAmountText: "Mana Filled Pots Smashed: ",
         uncheckedAmount: 0,
-        uncheckedAmountText: "Pots not checked for mana: ",
+        uncheckedAmountText: "Pots Not Checked For Mana: ",
         unreliableAmount: 0,
-        unreliableAmountText: "Pots with no mana: ",
+        unreliableAmountText: "Pots With No Mana: ",
         totalAmount: 0,
         totalEfficiency: 10,
         reliableEfficiency: .10,
@@ -226,43 +377,187 @@ location[0] = {
       currentXP: 0,
       currentLevel: 0,
       toNextLevel: 100,
-      visible: true,
+      get visible() {
+        return location[0].buttons.meetPeople.unlocked;
+      },
       resource: {
         name: "Favours",
         visible: true,
         usedAmount: 0,
         reliableAmount: 0,
-        reliableAmountText: "Favours rewarded: ",
+        reliableAmountText: "Favours Rewarded: ",
         uncheckedAmount: 0,
-        uncheckedAmountText: "Favours never done: ",
+        uncheckedAmountText: "Favours Never Done: ",
         unreliableAmount: 0,
-        unreliableAmountText: "Favours without a reward: ",
+        unreliableAmountText: "Favours Without a Reward: ",
         totalAmount: 0,
-        totalEfficiency: 1,
-        reliableEfficiency: .20,
-      }
-    }
+        totalEfficiency: .5,
+        reliableEfficiency: .1,
+      },
+    },
+    secretsFoundProgressBar: {
+      name: "Secrets Found: ",
+      nameId: "secretsFound",
+      barId: "secretsFoundProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[0].buttons.investigate.unlocked;
+      },
+      resource: {
+        name: "VillagersRobbed",
+        visible: true,
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "People Robbed: ",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "People Never Robbed: ",
+        unreliableAmount: 0,
+        unreliableAmountText: "People Not Worth Robbing: ",
+        totalAmount: 0,
+        totalEfficiency: .5,
+        reliableEfficiency: .4,
+      },
+    },
+  },
+  actionBars: {
+    wolfFightingActionBar: {
+      name: ["Wolves"],
+      id: "wolfFighting",
+      completedName: "Killed: ",
+      completedAmount: 0,
+      segmentStats: ["dexterity", "constitution", "strength"],
+      segmentGoal: function(previousGoals) {
+        if (previousGoals && previousGoals.length >= 2) {
+          let x = previousGoals.length;
+          return fibonacci(Number(previousGoals[x - 2]), Number(previousGoals[x - 1]));
+        } else {
+          return 20000;
+        }
+      },
+      segmentProgress: 0,
+      completeSegment: function() {
+        gold += 30;
+      },
+      completeBar: function() {
+        this.completedAmount++;
+      },
+      get visible() {
+        return location[0].buttons.fightWolves.visible;
+      },
+    },
   },
   buttons: {
     wander: {
       name: "Wander",
       visible: true,
+      unlocked: true,
     },
     smashPots: {
       name: "Smash Pots",
       visible: true,
+      unlocked: true,
     },
     meetPeople: {
       name: "Meet People",
-      visible: true,
+      get visible() {
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 30);
+      },
+      requirementAction: ["Village Explored"],
+      requirementAmount: ["30%"],
     },
     doFavours: {
       name: "Do Favours",
-      visible: true,
+      get visible() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["People Met"],
+      requirementAmount: [10],
+    },
+    investigate: {
+      name: "Investigate",
+      get visible() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 15);
+      },
+      get unlocked() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 30);
+      },
+      requirementAction: ["People Met"],
+      requirementAmount: [30],
+    },
+    steal: {
+      name: "Steal",
+      get visible() {
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Secrets Found"],
+      requirementAmount: [10],
+    },
+    combatTraining: {
+      name: "Combat Training",
+      get visible() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 20)
+      },
+      requirementAction: ["People Met"],
+      requirementAmount: [20],
+    },
+    fightWolves: {
+      name: "Fight Wolves",
+      get visible() {
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20);
+      },
+      get unlocked() {
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20
+        && characters[0].combat.level >= 5);
+      },
+      requirementAction: ["Secrets Found", "Combat"],
+      requirementAmount: [20, 5],
+    },
+    buyGuide: {
+      name: "Buy Guide",
+      get visible() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 25);
+      },
+      get unlocked() {
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 40);
+      },
+      requirementAction: ["People Met"],
+      requirementAmount: [40],
     },
     buyMap: {
       name: "Buy a Map",
-      visible: true,
+      get visible() {
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 35);
+      },
+      get unlocked() {
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 60);
+      },
+      requirementAction: ["Village Explored"],
+      requirementAmount: ["60%"],
+    },
+    travelToForest: {
+      name: "Travel to the Forest",
+      get visible() {
+        return (location[0].progressBars.secretsFoundProgressBar >= 20)
+      },
+      get unlocked() {
+        return (characters[0].combat.level >= 15);
+      },
+      requirementAction: ["Combat"],
+      requirementAmount: [15],
     },
   },
 };
@@ -270,4 +565,5 @@ location[0] = {
 location[1] = {
   name: "Forest",
   toWest: 0,
-}
+  //toNorth: circus training area?
+};

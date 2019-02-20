@@ -1,9 +1,3 @@
-var characters = [];
-var statNames = ["dexterity", "strength", "constitution", "speed", "perception",
-"charisma", "intelligence", "wisdom", "luck", "spirit"];
-var statNamesUpperCase = ["Dexterity", "Strength", "Constitution", "Speed", "Perception",
-"Charisma", "Intelligence", "Wisdom", "Luck", "Spirit"];
-
 function buildStatBox() {
   let characterPage = document.createElement("div");
   characterPage.className = "characterPage";
@@ -13,7 +7,7 @@ function buildStatBox() {
   characterPageTitle.appendChild(characterPageText);
   characterPage.appendChild(characterPageTitle);
   /*
-  code here for character selection
+  code here for characters selection
   */
   for (let i = 0; i < characters.length; i++) {
     let x = characters[i];
@@ -57,6 +51,37 @@ function buildStatBox() {
       statList.appendChild(progressBarEmpty);
     }
     characterPage.appendChild(statList);
+    let skillsTitle = document.createElement("div");
+    skillsTitle.className = "text";
+    skillsTitle.style.marginTop = "10px";
+    skillsTitle.style.marginBottom = "10px";
+    let skillsTitleText = document.createTextNode("Skills");
+    skillsTitle.appendChild(skillsTitleText);
+    characterPage.appendChild(skillsTitle);
+    let skillList = document.createElement("div");
+    skillList.className = "skillList";
+    for (let j = 0; j < skills.length; j++) {
+      j = skills[j];
+      let name = document.createElement("div");
+      let miscText = document.createTextNode(capitalize(j));
+      name.appendChild(miscText);
+      let number = document.createElement("span");
+      miscText = document.createTextNode(characters[i][j].level);
+      number.id = characters[i].name + j;
+      number.style.float = "right";
+      number.appendChild(miscText);
+      name.appendChild(number);
+      skillList.appendChild(name);
+      let progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      let progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill";
+      progressBarFill.id = characters[i].name + j + "Progress";
+      progressBarFill.style.width = (characters[i][j].levelXP / characters[i][j].toNextLevel) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      skillList.appendChild(progressBarEmpty);
+    }
+    characterPage.appendChild(skillList);
   }
   document.getElementById("statBox").appendChild(characterPage);
 }
@@ -72,6 +97,16 @@ function increaseStats(action) {
       levelUp(mainCharacter, x, "talent");
     }
   }
+}
+
+function increaseSkills(skill, amount) {
+  characters[0][skill].levelXP += amount;
+  if (characters[0][skill].levelXP >= characters[0][skill].toNextLevel) {
+    levelUp(characters[0], skill, "level");
+  }
+  document.getElementById(characters[0].name + skill).innerHTML = characters[0][skill].level;
+  document.getElementById(characters[0].name + skill + "Progress").style.width = characters[0][skill].levelXP /
+  characters[0][skill].toNextLevel * 100 + "%";
 }
 
 function updateStats() {
@@ -168,13 +203,6 @@ function Person (name) {
     talentXP: 0,
     toNextTalent: 100,
   }
-  this.luck = {
-    level: 0,
-    levelXP: 0,
-    toNextLevel: 100,
-    talent: 0,
-    talentXP: 0,
-    toNextTalent: 100,  }
   this.spirit = {
     level: 0,
     levelXP: 0,
@@ -182,5 +210,10 @@ function Person (name) {
     talent: 0,
     talentXP: 0,
     toNextTalent: 100,
+  }
+  this.combat = {
+    level: 0,
+    levelXP: 0,
+    toNextLevel: 100,
   }
 };

@@ -12,8 +12,8 @@ function gamePause() {
 }
 
 function gamePlay() {
-  if (gamePaused == true && cyclePlan.length > 0) {
-    if (currentCycleActionList.length == 0) {
+  if (gamePaused == true && document.getElementById("actionBoxActionList").childElementCount > 0) {
+    if (cycleList.length == 0) {
       gameNewCycle();
     }
     gamePaused = false;
@@ -21,14 +21,29 @@ function gamePlay() {
 }
 
 function gameNewCycle() {
-  if (cyclePlan.length > 0) {
+  if (document.getElementById("actionBoxActionList").childElementCount > 0) {
     currentActionPlace = 0;
     mana = 100;
     gold = 0;
     document.getElementById("goldBox").style.display = "none";
     currentAction = undefined;
-    location[0].progressBars.wanderProgressBar.resource.usedAmount = 0;
     hasMap = false;
+    hasGuide = false;
+    for (let i = 0; i < location.length; i++) {
+      for (let j in location[i].progressBars) {
+        if (location[i].progressBars[j].resource) {
+          location[i].progressBars[j].resource.usedAmount = 0;
+        }
+      }
+    }
+    for (let i = 0; i < characters.length; i++) {
+      for (let j = 0; j < statNames.length; j++) {
+        let x = statNames[j];
+        characters[i][x].level = 0;
+        characters[i][x].levelXP = 0;
+      }
+    }
+    resetActionBars();
     initializeProgressList();
     save();
   } else {
@@ -39,7 +54,8 @@ function gameNewCycle() {
 function work() {
   document.getElementById("mana").innerHTML = mana;
   if (gold != 0) {
-    document.getElementById("goldBox").style.display = "block";
+    document.getElementById("goldBox").style.display = "inline";
+    document.getElementById("gold").innerHTML = gold;
   }
   if (gamePaused == false) {
     if (mana == 0) {
@@ -71,6 +87,7 @@ function addAction(action) {
   let options;
   newAction = document.createElement("div");
   newAction.className = "actionBoxActions";
+  newAction.setAttribute("data-action", lowerize(action.name));
   icon = document.createElement("img");
   icon.src = "images/" + action.name + ".svg";
   icon.className = "actionIcon";
@@ -80,7 +97,6 @@ function addAction(action) {
   actionAmount = document.createElement("span");
   actionCount = document.getElementById("actionBoxActionList").childElementCount;
   actionAmount.id = "actionListAmount" + actionCount;
-  cyclePlan[actionCount] = action;
   actionAmount.innerText = 1;
   newAction.appendChild(actionAmount);
   options = document.createElement("span");
@@ -88,28 +104,25 @@ function addAction(action) {
   faIcon = document.createElement("i");
   faIcon.className = "actionButton fas fa-plus";
   faIcon.onclick = function() {
-    document.getElementById("actionListAmount" + actionCount).innerHTML =
-    Number(document.getElementById("actionListAmount" + actionCount).innerHTML) + 1;
+    this.parentElement.previousElementSibling.innerHTML =
+    Number(this.parentElement.previousElementSibling.innerHTML) + 1;
   }
   options.appendChild(faIcon);
   faIcon = document.createElement("i");
   faIcon.className = "actionButton fas fa-minus";
   faIcon.onclick = function() {
-    document.getElementById("actionListAmount" + actionCount).innerHTML =
-    Number(document.getElementById("actionListAmount" + actionCount).innerHTML) - 1;
+    this.parentElement.previousElementSibling.innerHTML =
+    Number(this.parentElement.previousElementSibling.innerHTML) - 1;
   }
   options.appendChild(faIcon);
   faIcon = document.createElement("i");
   faIcon.className = "actionButton fas fa-times";
   faIcon.onclick = function() {
-    let element = document.getElementById("actionListAmount" + actionCount);
-    element = element.parentNode;
-    element.parentNode.removeChild(element);
-    for (let i = actionCount + 1; i < document.getElementById("actionBoxActionList").childElementCount + 1; i++) {
-      let x = document.getElementById("actionListAmount" + i);
-      x.id = "actionListAmount" + (i - 1);
+    this.parentElement.parentElement.parentElement.removeChild(this.parentElement.parentElement);
+    for (let i = 0; i < document.getElementById("actionBoxActionList").childElementCount; i++) {
+      let x = document.getElementById("actionBoxActionList").childNodes[i].childNodes[2];
+      x.id = "actionListAmount" + i;
     }
-    cyclePlan.splice(actionCount, 1);
   }
   options.appendChild(faIcon);
   newAction.appendChild(options);
@@ -126,8 +139,9 @@ function initializeProgressList() {
   while (document.getElementById("actionBoxProgressList").hasChildNodes()) {
     document.getElementById("actionBoxProgressList").removeChild(document.getElementById("actionBoxProgressList").firstElementChild);
   }
-  for (let i = 0; i < cyclePlan.length; i++) {
-    let action = cyclePlan[i];
+  for (let i = 0; i < document.getElementById("actionBoxActionList").childElementCount; i++) {
+    let action = document.getElementById("actionBoxActionList").childNodes[i].getAttribute("data-action");
+    action = window[action];
     let newAction;
     let miscText;
     let actionAmount;
@@ -165,6 +179,9 @@ function progressAction(action) {
   increaseStats(cycleList[currentAction], multiplier);
   document.getElementById("progress" + currentAction).innerHTML =
   Math.floor(((originalCost - currentCostLeft) / originalCost) * 100) + "%";
+  if (action.progress) {
+    action.progress(multiplier);
+  }
   if (currentCostLeft <= 0) {
     cycleList[currentAction].finish();
     document.getElementById("completed" + currentAction).innerHTML =
@@ -175,9 +192,15 @@ function progressAction(action) {
 }
 
 function findNextAction() {
-  for (let i = 0; i < cyclePlan.length; i++) {
+  for (let i = 0; i < cycleList.length; i++) {
     if (Number(document.getElementById("completed" + i).outerText) < cycleGoal[i]) {
-      return i;
+      if (cycleList[i].canStart) {
+        return i;
+      } else {
+        document.getElementById("completed" + i).outerText =
+        Number(document.getElementById("completed" + i).outerText) + 1;
+        i--;
+      }
     }
   }
 }
@@ -189,8 +212,4 @@ function calculateActualMana(action) {
   }
   multiplier = action.manaCost / finalCost;
   return finalCost;
-}
-
-function capitalize(string) {
-  return string.slice(0, 1).toUpperCase() + string.slice(1);
 }
