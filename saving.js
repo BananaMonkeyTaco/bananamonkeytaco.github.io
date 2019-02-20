@@ -17,6 +17,16 @@ function save() {
   localStorage.favourstotalAmount = location[0].progressBars.meetPeopleProgressBar.resource.totalAmount;
   localStorage.favourstotalEfficiency = location[0].progressBars.meetPeopleProgressBar.resource.totalEfficiency;
   localStorage.favoursreliableEfficiency = location[0].progressBars.meetPeopleProgressBar.resource.reliableEfficiency;
+  localStorage.secretsFoundProgressBarcurrentXP = location[0].progressBars.secretsFoundProgressBar.currentXP;
+  localStorage.secretsFoundProgressBarcurrentLevel = location[0].progressBars.secretsFoundProgressBar.currentLevel;
+  localStorage.secretsFoundProgressBartoNextLevel = location[0].progressBars.secretsFoundProgressBar.toNextLevel;
+  localStorage.villagersrobbedreliableAmount = location[0].progressBars.secretsFoundProgressBar.resource.reliableAmount;
+  localStorage.villagersrobbeduncheckedAmount = location[0].progressBars.secretsFoundProgressBar.resource.uncheckedAmount;
+  localStorage.villagersrobbedunreliableAmount = location[0].progressBars.secretsFoundProgressBar.resource.unreliableAmount;
+  localStorage.villagersrobbedtotalAmount = location[0].progressBars.secretsFoundProgressBar.resource.totalAmount;
+  localStorage.villagersrobbedtotalEfficiency = location[0].progressBars.secretsFoundProgressBar.resource.totalEfficiency;
+  localStorage.villagersrobbedreliableEfficiency = location[0].progressBars.secretsFoundProgressBar.resource.reliableEfficiency;
+  localStorage.wolfFightingCompleted = location[0].actionBars.wolfFightingActionBar.completedAmount;
   localStorage.mainCharacter = JSON.stringify(mainCharacter);
 }
 
@@ -57,6 +67,26 @@ function load() {
   Number(localStorage.favourstotalEfficiency) : 1;
   location[0].progressBars.meetPeopleProgressBar.resource.reliableEfficiency = !(isNaN(Number(localStorage.favoursreliableEfficiency))) ?
   Number(localStorage.favoursreliableEfficiency) : .20;
+  location[0].progressBars.secretsFoundProgressBar.currentXP = !(isNaN(Number(localStorage.secretsFoundProgressBarcurrentXP))) ?
+  Number(localStorage.secretsFoundProgressBarcurrentXP) : 0;
+  location[0].progressBars.secretsFoundProgressBar.currentLevel = !(isNaN(Number(localStorage.secretsFoundProgressBarcurrentLevel))) ?
+  Number(localStorage.secretsFoundProgressBarcurrentLevel) : 0;
+  location[0].progressBars.secretsFoundProgressBar.toNextLevel = !(isNaN(Number(localStorage.secretsFoundProgressBartoNextLevel))) ?
+  Number(localStorage.secretsFoundProgressBartoNextLevel) : 100;
+  location[0].progressBars.secretsFoundProgressBar.resource.reliableAmount = !(isNaN(Number(localStorage.peoplerobbedreliableAmount))) ?
+  Number(localStorage.peoplerobbedreliableAmount) : 0;
+  location[0].progressBars.secretsFoundProgressBar.resource.uncheckedAmount = !(isNaN(Number(localStorage.peoplerobbeduncheckedAmount))) ?
+  Number(localStorage.peoplerobbeduncheckedAmount) : 0;
+  location[0].progressBars.secretsFoundProgressBar.resource.unreliableAmount = !(isNaN(Number(localStorage.peoplerobbedunreliableAmount))) ?
+  Number(localStorage.peoplerobbedunreliableAmount) : 0;
+  location[0].progressBars.secretsFoundProgressBar.resource.totalAmount = !(isNaN(Number(localStorage.peoplerobbedtotalAmount))) ?
+  Number(localStorage.peoplerobbedtotalAmount) : 0;
+  location[0].progressBars.secretsFoundProgressBar.resource.totalEfficiency = !(isNaN(Number(localStorage.peoplerobbedtotalEfficiency))) ?
+  Number(localStorage.peoplerobbedtotalEfficiency) : .5;
+  location[0].progressBars.secretsFoundProgressBar.resource.reliableEfficiency = !(isNaN(Number(localStorage.peoplerobbedreliableEfficiency))) ?
+  Number(localStorage.peoplerobbedreliableEfficiency) : .1;
+  location[0].actionBars.wolfFightingActionBar.completedAmount = !(isNaN(Number(localStorage.wolfFightingCompleted))) ?
+  Number(localStorage.wolfFightingCompleted) : 0
   if (localStorage.mainCharacter != undefined) {
     mainCharacter = JSON.parse(localStorage.mainCharacter);
     characters[0] = mainCharacter;
