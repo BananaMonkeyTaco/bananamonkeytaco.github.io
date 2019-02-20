@@ -29,7 +29,7 @@ function gameNewCycle() {
     currentAction = undefined;
     hasMap = false;
     hasGuide = false;
-    for (let i = 0; i < location.length; i++) {
+    for (let i in location) {
       for (let j in location[i].progressBars) {
         if (location[i].progressBars[j].resource) {
           location[i].progressBars[j].resource.usedAmount = 0;
@@ -142,6 +142,7 @@ function initializeProgressList() {
   for (let i = 0; i < document.getElementById("actionBoxActionList").childElementCount; i++) {
     let action = document.getElementById("actionBoxActionList").childNodes[i].getAttribute("data-action");
     action = window[action];
+
     let newAction;
     let miscText;
     let actionAmount;
