@@ -194,12 +194,12 @@ function progressAction(action) {
 
 function findNextAction() {
   for (let i = 0; i < cycleList.length; i++) {
-    if (Number(document.getElementById("completed" + i).outerText) < cycleGoal[i]) {
-      if (cycleList[i].canStart) {
+    if (Number(document.getElementById("completed" + i).innerHTML) < cycleGoal[i]) {
+      if (cycleList[i].canStart == true) {
         return i;
       } else {
-        document.getElementById("completed" + i).outerText =
-        Number(document.getElementById("completed" + i).outerText) + 1;
+        document.getElementById("completed" + i).innerHTML =
+        Number(document.getElementById("completed" + i).innerHTML) + 1;
         i--;
       }
     }

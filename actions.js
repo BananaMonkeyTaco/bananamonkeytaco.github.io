@@ -8,11 +8,13 @@ var wander = {
   },
   canStart: true,
   finish: function() {
-    location[0].progressBars.wanderProgressBar.currentXP += (hasMap) ? 400 : 100;
-    checkLevel(location[0].progressBars.wanderProgressBar);
-    updateProgressBar(location[0].progressBars.wanderProgressBar);
-    updateResources(location[0].progressBars.wanderProgressBar.resource);
-    updateResourceText(location[0].progressBars.wanderProgressBar.resource);
+    if (location[0].progressBars.wanderProgressBar.currentLevel < 100) {
+      location[0].progressBars.wanderProgressBar.currentXP += (hasMap) ? 400 : 100;
+      checkLevel(location[0].progressBars.wanderProgressBar);
+      updateProgressBar(location[0].progressBars.wanderProgressBar);
+      updateResources(location[0].progressBars.wanderProgressBar.resource);
+      updateResourceText(location[0].progressBars.wanderProgressBar.resource);
+    }
   },
   tooltip: "If you look around the village maybe you can find something to make these cycles longer",
 };
@@ -60,11 +62,13 @@ var meetPeople = {
   },
   canStart: true,
   finish: function() {
-    location[0].progressBars.meetPeopleProgressBar.currentXP += 100;
-    checkLevel(location[0].progressBars.meetPeopleProgressBar);
-    updateProgressBar(location[0].progressBars.meetPeopleProgressBar);
-    updateResources(location[0].progressBars.meetPeopleProgressBar.resource);
-    updateResourceText(location[0].progressBars.meetPeopleProgressBar.resource);
+    if (location[0].progressBars.meetPeopleProgressBar.currentLevel < 100) {
+      location[0].progressBars.meetPeopleProgressBar.currentXP += 100;
+      checkLevel(location[0].progressBars.meetPeopleProgressBar);
+      updateProgressBar(location[0].progressBars.meetPeopleProgressBar);
+      updateResources(location[0].progressBars.meetPeopleProgressBar.resource);
+      updateResourceText(location[0].progressBars.meetPeopleProgressBar.resource);
+    }
   },
   tooltip: "Well you're going to be stuck here a while, might as well make some friends",
 };
@@ -111,11 +115,13 @@ var investigate = {
   },
   canStart: true,
   finish: function() {
-    location[0].progressBars.secretsFoundProgressBar.currentXP += 100;
-    checkLevel(location[0].progressBars.secretsFoundProgressBar);
-    updateProgressBar(location[0].progressBars.secretsFoundProgressBar);
-    updateResources(location[0].progressBars.secretsFoundProgressBar.resource);
-    updateResourceText(location[0].progressBars.secretsFoundProgressBar.resource);
+    if (location[0].progressBars.secretsFoundProgressBar.currentLevel < 100) {
+      location[0].progressBars.secretsFoundProgressBar.currentXP += 100;
+      checkLevel(location[0].progressBars.secretsFoundProgressBar);
+      updateProgressBar(location[0].progressBars.secretsFoundProgressBar);
+      updateResources(location[0].progressBars.secretsFoundProgressBar.resource);
+      updateResourceText(location[0].progressBars.secretsFoundProgressBar.resource);
+    }
   },
   tooltip: "Snooping around the village might gain you insight into a few valueable things",
 };
@@ -158,12 +164,13 @@ var steal = {
 var buyMap = {
   name: "BuyMap",
   manaCost: 100,
+  goldCost: 10,
   stats: {
     charisma: .5,
     intelligence: .3,
     perception: .2,
   },
-  startCheck: function() {
+  canStart: function() {
     return (gold >= 10);
   },
   finish: function() {
@@ -235,14 +242,19 @@ var fightWolves = {
 
 var buyGuide = {
   name: "BuyGuide",
-  manaCost: null,
+  manaCost: 500,
+  goldCost: 5,
   stats: {
     charisma: .6,
     intelligence: .3,
     spirit: .1,
   },
+  canStart: function() {
+    if (gold >= 5);
+  },
   finish: function() {
-
+    gold -= 5;
+    hasGuide = true;
   },
   tooltip: "The path to the next town isn't an easy one. Luckily one of the villagers will help you, for a price of course",
 };

@@ -462,10 +462,10 @@ location[0] = {
     meetPeople: {
       name: "Meet People",
       get visible() {
-        return (location[0].progressBars.wanderProgressBar.currentLevel >= 10);
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 5);
       },
       get unlocked() {
-        return (location[0].progressBars.wanderProgressBar.currentLevel >= 30);
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 15);
       },
       requirementAction: ["Village Explored"],
       requirementAmount: ["30%"],

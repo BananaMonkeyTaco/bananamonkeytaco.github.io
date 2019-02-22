@@ -28,6 +28,7 @@ function save() {
   localStorage.villagersrobbedreliableEfficiency = location[0].progressBars.secretsFoundProgressBar.resource.reliableEfficiency;
   localStorage.wolfFightingCompleted = location[0].actionBars.wolfFightingActionBar.completedAmount;
   localStorage.mainCharacter = JSON.stringify(mainCharacter);
+  localStorage.tutorial = tutorial;
 }
 
 function load() {
@@ -87,6 +88,7 @@ function load() {
   Number(localStorage.peoplerobbedreliableEfficiency) : .1;
   location[0].actionBars.wolfFightingActionBar.completedAmount = !(isNaN(Number(localStorage.wolfFightingCompleted))) ?
   Number(localStorage.wolfFightingCompleted) : 0
+  tutorial = !(localStorage.tutorial == undefined) ? localStorage.tutorial : true;
   if (localStorage.mainCharacter != undefined) {
     mainCharacter = JSON.parse(localStorage.mainCharacter);
     characters[0] = mainCharacter;
