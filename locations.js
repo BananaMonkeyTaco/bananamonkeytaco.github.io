@@ -220,8 +220,12 @@ function buildTownBox() {
         miscText.appendChild(icon);
         button.appendChild(miscText);
         tooltip = document.createElement("tooltip");
-        miscText = document.createTextNode(action.tooltip);
-        tooltip.appendChild(miscText);
+        // potential to remove this if statement later
+        if (action.tooltip.join) {
+          tooltip.innerHTML = action.tooltip.join("<br>");
+        } else {
+          tooltip.innerHTML = action.tooltip;
+        }
         for (let k = 0; k < statNames.length; k++) {
           let x = statNames[k];
           if (action.stats[x]) {
@@ -236,8 +240,10 @@ function buildTownBox() {
             tooltip.appendChild(box);
           }
         }
-        miscText = document.createTextNode("Mana Cost " + action.manaCost);
-        tooltip.appendChild(miscText);
+        tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
+        if (action.goldCost) {
+          tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
+        }
         if (y.unlocked == false) {
           let tempElement = document.createElement("div");
           for (let j = 0; j < y.requirementAction.length; j++) {

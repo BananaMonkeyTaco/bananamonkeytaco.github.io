@@ -28,6 +28,21 @@ var intelligenceColour = "#33ccff";
 var wisdomColour = "#0033cc";
 var spiritColour = "grey";
 var tutorial = true;
+var activeLoadout = 0;
+var loadoutActions = {
+  1: [],
+  2: [],
+  3: [],
+  4: [],
+  5: [],
+}
+var loadoutAmount = {
+  1: [],
+  2: [],
+  3: [],
+  4: [],
+  5: [],
+}
 
 function capitalize(string) {
   return string.slice(0, 1).toUpperCase() + string.slice(1);
@@ -44,15 +59,16 @@ function fibonacci(num1, num2) {
   return num1 + num2;
 }
 
-function roundStatGain() {
-
+function changeChanger(num) {
+  document.getElementById("amountChanger").value = num;
 }
 
 function showTutorial() {
   let tutorialBox = document.createElement("div");
   tutorialBox.style.position = "absolute";
   tutorialBox.style.backgroundColor = "lightgreen";
-
+  tutorialBox.style.zIndex = "1";
+  tutorialBox.style.borderRadius = "5px";
 /*  display: none;
   padding: 4px;
   position: absolute;
@@ -91,6 +107,7 @@ function showTutorial() {
   tempElement.innerHTML = "Close";
   tempElement.onclick = function() {
     document.getElementById("introButton").removeChild(this.parentElement);
+    tutorial = false;
     document.getElementById("introButton").onclick = function() {
       //showTutorial();
     }

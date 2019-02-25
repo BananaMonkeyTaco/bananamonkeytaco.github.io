@@ -27,7 +27,15 @@ tooltip {
 }
 
 #introButton:hover tooltip {
-  
+
+}
+
+.loadoutButton {
+  background-color: green;
+}
+
+.activeLoadoutButton {
+  background-color: blue;
 }
 
 .progressBarEmpty {
@@ -97,7 +105,7 @@ tooltip {
   display: grid;
   grid: auto/ 50% 50%;
   width: 300px;
-  height: 800px;
+  height: 600px;
   margin: 5px;
   padding: 5px;
   vertical-align: top;
@@ -117,6 +125,10 @@ tooltip {
 .actionBoxOptions {
   float: right;
   background-color: inherit;
+}
+
+.actionBoxProgressList {
+  padding: 2px;
 }
 
 .actionButton {
@@ -169,3 +181,13 @@ tooltip {
 .text {
   font-weight: bold;
 }
+
+.dexterity:hover {background-color: #996633}
+.strength:hover {background-color: red}
+.constitution:hover {background-color: lime}
+.speed:hover {background-color: orange}
+.perception:hover {background-color: #e335e3}
+.charisma:hover {background-color: #e6e600}
+.intelligence:hover {background-color: #33ccff}
+.wisdom:hover {background-color: #0033cc}
+.spirit:hover {background-color: grey}

@@ -22,6 +22,7 @@ var wander = {
 var smashPots = {
   name:  "SmashPots",
   manaCost: 25,
+  manaGain: 50,
   resource: location[0].progressBars.wanderProgressBar.resource,
   stats: {
     speed: .5,
@@ -32,7 +33,7 @@ var smashPots = {
   finish: function() {
     if (document.getElementById("PotsLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        mana += 50;
+        mana += this.manaGain;
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -49,7 +50,10 @@ var smashPots = {
       return;
     }
   },
-  tooltip: "For whatever reason the villagers here like throwing bits of mana in pots",
+  get tooltip() { return [
+    "For whatever reason the villagers here like throwing bits of mana in pots",
+    "Reliable pots have " + this.manaGain + " mana in them",
+  ]},
 };
 
 var meetPeople = {
@@ -76,6 +80,7 @@ var meetPeople = {
 var doFavours = {
   name: "DoFavours",
   manaCost: 100,
+  goldGain: 1,
   resource: location[0].progressBars.meetPeopleProgressBar.resource,
   stats: {
     speed: .5,
@@ -102,7 +107,9 @@ var doFavours = {
       return;
     }
   },
-  tooltip: "Even though these villagers aren't rich, some might reward you for hard work",
+  get tooltip() { return ["Even though these villagers aren't rich, some might reward you for hard work",
+    "Villagers with gold to spare will reward " + this.goldGain + " gold for a favour"
+  ]},
 };
 
 var investigate = {
@@ -129,6 +136,7 @@ var investigate = {
 var steal = {
   name: "Steal",
   manaCost: 500,
+  goldGain: 10,
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
     speed: .6,
@@ -158,7 +166,10 @@ var steal = {
       return;
     }
   },
-  tooltip: "Gives you more gold than helping the town that's for sure, but you still don't feel good about it",
+  get tooltip() { return [
+    "Gives you more gold than helping the town that's for sure, but you still don't feel good about it",
+    "Houses with loot in them have " + this.goldGain + " gold in them"
+  ] }
 };
 
 var buyMap = {

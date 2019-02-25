@@ -8,6 +8,7 @@
   <script src="actions.js"></script>
   <script src="main.js"></script>
   <script src="stats.js"></script>
+  <script src="actionList.js"></script>
   <script src="saving.js"></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
   integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
@@ -34,6 +35,26 @@
       <span id="actionBoxProgressList"></span>
       <span id="actionBoxActionList"></span>
     </div>
+    <div class="actionBoxButtons" style=text-align:right>
+      <b>Amount</b>
+      <input type="text" id="amountChanger" style=width:50px></input>
+      <div>
+        <button type="button" style=margin:0px onclick=changeChanger(1)>1</button>
+        <button type="button" style=margin:0px onclick=changeChanger(5)>5</button>
+        <button type="button" style=margin:0px onclick=changeChanger(10)>10</button>
+        <button type="button" style=margin:0px onclick=changeChanger(25)>25</button>
+        <button type="button" style=margin:0px onclick=changeChanger(100)>100</button>
+      </div>
+    </div>
+    <div class="loadoutButtons">
+      <button type="button" class=loadoutButton id="loadout1" onclick=changeActiveLoadout(1)>1</button>
+      <button type="button" class=loadoutButton id="loadout2" onclick=changeActiveLoadout(2)>2</button>
+      <button type="button" class=loadoutButton id="loadout3" onclick=changeActiveLoadout(3)>3</button>
+      <button type="button" class=loadoutButton id="loadout4" onclick=changeActiveLoadout(4)>4</button>
+      <button type="button" class=loadoutButton id="loadout5" onclick=changeActiveLoadout(5)>5</button>
+    </div>
+    <button type="button" onclick="saveLoadout()">Save Loadout</button>
+    <button type="button" onclick="loadLoadout()">Load Loadout</button>
   </div>
   <div class="column">
     <div id="townBox" style="width:600px">
