@@ -1,6 +1,13 @@
+body {
+  background-color: rgb(30,40,40);
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: .85em;
+  line-height: 23px;
+}
+
 img {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
 }
 
 .actionIcon {
@@ -8,17 +15,43 @@ img {
   height: 16px;
 }
 
-button:hover tooltip, .button:hover > tooltip {
+button {
+  margin: 5px;
+  border-radius: 45px;
+  box-shadow: 0 0 8px #fff;
+}
+
+button:active {
+  box-shadow: 0 0 8px #fff;
+}
+
+button:focus {
+  outline: 0;
+}
+
+button .buttonPadding {
+  margin: 0;
+  padding: 0 0 0 0;
+}
+
+*:hover + tooltip {
   display: block;
 }
 
-button {
-  margin: 5px;
+#amountChanger, #amountChanger:focus {
+  color: #104870;
+  outline: 0;
+  margin: 4px 0 6px 0;
+  font-weight: bold;
+  border-radius: 5px 0;
+  border: 1px solid lightgrey;
+  height: 16px;
 }
 
 tooltip {
   display: none;
-  padding: 4px;
+  padding: 5px;
+  margin-top: 2px;
   position: absolute;
   background-color: lightgreen;
   border: 1px solid black;
@@ -31,11 +64,13 @@ tooltip {
 }
 
 .loadoutButton {
-  background-color: green;
+  background-color: lightblue;
+  border-radius: 5px;
 }
 
 .activeLoadoutButton {
-  background-color: blue;
+  background-color: salmon;
+  border-radius: 45px;
 }
 
 .progressBarEmpty {
@@ -45,54 +80,71 @@ tooltip {
 }
 
 .progressBarFill {
-  background-color: green;
+  background-color: #990099;
   height: 100%;
   width: 0%;
 }
 
-.progressBarResource:hover tooltip {
-  display: block;
-}
-
-.progressBarEmpty:hover tooltip {
-  display: block;
-}
-
 .manaBar {
   text-align: center;
-  width: 100%;
+  text-shadow: 0 0 5px #fff,
+  0 0 15px #fff,
+  0 0 20px #fff;
+}
+
+/* .resourceContainer {
+  border: 1px solid white;
+} */
+
+.resourceBox {
+  display: inline-block;
+  width: 100px;
 }
 
 .column {
   display: inline-block;
   vertical-align: top;
-  margin: 10px;
+  margin: 0 5px 0 5px;
+}
+
+.characterBox {
+  width: 250px;
+  padding: 5px 5px 8px 5px;
+  margin: 5px 0 0 5px;
+  margin: 5px 0 5px 0;
+  border: 4px groove #808080;
+  border-radius: 15px 0;
+  box-shadow: 0 0 15px #c8c8c8,
+  0 0 25px #fff;
+  background-color: #f0f0f0;
+}
+
+.characterSelectButton {
+  height: 25px;
+  padding: 5px 0 0 0;
+  margin: 2px 0 0 0;
+  border: 1px solid #000;
+  border-radius: 15px 0;
+  /* box-shadow: 0px 0px 10px #ffad33; */
+  background-color: #ffff80;
+  text-align: center;
 }
 
 .statBox {
-  height: 500px;
-  width: 250px;
-}
-
-.statList {
   width: 100%;
   display: grid;
   grid-row-gap: 5px;
 }
 
+.statBox .progressBarEmpty {
+  grid-column: 1/4;
+}
+
 .statListItem {
   width: 100%;
   display: grid;
-  grid: 15px 5px 5px / 52% 16% 16% 16%;
+  grid: 20px 5px 5px / 60% 20% 20%;
   grid-row-gap: 2px;
-}
-
-.statListItem:hover tooltip {
-  display: block;
-}
-
-.statBox .progressBarEmpty {
-  grid-column: 1/5;
 }
 
 .characterPage {
@@ -101,7 +153,6 @@ tooltip {
 }
 
 .actionBox {
-  background-color: lightgreen;
   display: grid;
   grid: auto/ 50% 50%;
   width: 300px;
@@ -109,26 +160,42 @@ tooltip {
   margin: 5px;
   padding: 5px;
   vertical-align: top;
-  border-radius: 5px;
+  border: 4px groove #80ffff;
+  border-radius: 15px 0;
+  box-shadow: -1px -1px 15px #80ffff,
+  1px 1px 15px #80ffff;
+  background-color: #44beff;
 }
 
-#actionBoxProgressList div:nth-child(even), #actionBoxActionList div:nth-child(even) {
-  background-color: lightgrey;
-  border-top: 1px groove;
-  border-bottom: 1px groove;
+.actionBoxProgressList {
+  background-color: #00a6ff;
+  border-radius: 6px 0;
+  padding: 6px 3px 0 3px;
+}
+
+.actionBoxActionList {
+  padding: 6px 3px 0 3px;
+}
+
+.actionBoxProgressList div:nth-child(even) {
+  background-color: #44beff;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+}
+
+.actionBoxActionList div:nth-child(even) {
+  background-color: #00a6ff;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
 }
 
 .actionBoxActions {
-    padding: 2px;
+    padding: 6px 0 0 3px;
 }
 
 .actionBoxOptions {
   float: right;
   background-color: inherit;
-}
-
-.actionBoxProgressList {
-  padding: 2px;
 }
 
 .actionButton {
@@ -137,7 +204,10 @@ tooltip {
 
 .actionButton:hover {
   cursor: pointer;
-  color: blue;
+  color: white;
+  text-shadow: 0 0 10px #fff,
+  0 0 15px #fff, /* maybe not white? */
+  0 0 20px #fff;
 }
 
 .townInfo {
@@ -151,12 +221,18 @@ tooltip {
   height: 50px;
   width: 100%;
   text-align: center;
+  text-shadow: 0 0 5px #fff,
+  0 0 15px #fff,
+  0 0 20px #fff;
 }
 
 .buttonBoxTitle {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
+  text-shadow: 0 0 5px #fff,
+  0 0 10px #fff,
+  0 0 20px #fff;
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -164,30 +240,69 @@ tooltip {
 .townButtons {
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
-  grid-gap: 5px;
+  grid-gap: 2px;
 }
 
 .townButtons .button {
-  height: 100px;
-  border: 1px;
-  border-style: groove;
+  height: 75px;
+  padding: 5px 0 0 0;
+  margin: 1px;
+  border: 4px groove #ffad33;
+  border-radius: 15px 0;
+  box-shadow: 0px 0px 10px #ffad33;
+  background-color: #ffff80;
+  text-align: center;
+}
+
+.townButtons .button > div {
+  padding: 5px;
+}
+
+.townTravelButtons {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-gap: 2px;
+}
+
+.townTravelButtons .button {
+  height: 63px;
+  padding: 5px 0 0 0;
+  border: 4px groove #44f096;
+  border-radius: 15px 0;
+  box-shadow: 0px 0px 15px #44f096;
+  background-color: #64f078;
   text-align: center;
 }
 
 .townProgressBar {
-  margin: 10px 0px;
+  margin: 5px 0px;
+}
+
+.townProgressBarsBox {
+  border: 4px groove #fff;
+  border-radius: 15px 0;
+  box-shadow: 0 0 15px #fff,
+  0 0 15px #fff;
+  background-color: #b4b4b4;
+  padding: 0 5px 0 5px;
 }
 
 .text {
   font-weight: bold;
 }
 
+.textAmount{
+  text-shadow: 0 0 5px #fff,
+  0 0 15px #fff,
+  0 0 20px #fff;
+}
+
 .dexterity:hover {background-color: #996633}
-.strength:hover {background-color: red}
-.constitution:hover {background-color: lime}
+.strength:hover {background-color: #ff3838}
+.constitution:hover {background-color: #3f3}
 .speed:hover {background-color: orange}
 .perception:hover {background-color: #e335e3}
 .charisma:hover {background-color: #e6e600}
 .intelligence:hover {background-color: #33ccff}
-.wisdom:hover {background-color: #0033cc}
+.wisdom:hover {background-color: #8080ff}
 .spirit:hover {background-color: grey}

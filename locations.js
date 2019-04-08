@@ -1,243 +1,246 @@
 function buildTownBox() {
-  let box;
-  let arrow;
-  let miscText;
-  let barName;
-  let x;
-  let y;
-  let progress;
-  let progressEmpty;
-  let progressFill;
-  let resourceBox;
-  let resource;
-  let townProgressBars;
-  let townButtons;
-  let button;
-  let icon;
-  let line;
   for (let i = 0; i < document.getElementById("townBox").childElementCount; i++) {
-    let town = document.getElementById("town" + i);
+    let town;
+    let townName;
+    town = document.getElementById("town" + i);
+    //clear previous box
     while (town.hasChildNodes()) {
       town.removeChild(town.childNodes[0]);
     }
+    //top bar with arrows and town's name
     townName = document.createElement("div");
     townName.className = "townName";
     for (let j = 0; j < directions.length; j++) {
       let x = directions[j];
-      box = document.createElement("div");
+      let box = document.createElement("div");
       if (location[i][x] != undefined) {
         if (x != "name") {
-          arrow = document.createElement("i");
+          //check if next town is unlocked
+          let nextTown = location[i][x];
+          if (location[nextTown].visible == false) {
+            townName.appendChild(box);
+            continue;
+          }
+          //make arrow to next town
+          let arrow = document.createElement("i");
           arrow.className = "actionButton fas fa-arrow-right";
           arrow.style.transform = "rotate(" + point[j] + "deg)";
           arrow.onclick = function() {
+            /*
+            may need to specifically delete these action listeners
+            */
             document.getElementById("town" + i).style.display = "none";
-            document.getElementById("town" + location[i][x]).style.display = "block";
+            document.getElementById("town" + nextTown).style.display = "block";
           }
+          box.appendChild(arrow);
         } else if (x == "name") {
-          arrow = document.createElement("div");
-          miscText = document.createTextNode(location[i][x]);
-          arrow.appendChild(miscText);
+          /*
+          may need to add more height
+          */
+          box.style.fontWeight = "bold";
+          box.innerHTML = location[i][x];
         }
-        box.appendChild(arrow);
       }
       townName.appendChild(box);
     }
     town.appendChild(townName);
-    townProgressBars = document.createElement("div");
-    townProgressBars.className = "townProgressBars";
-    for (x in location[i].progressBars) {
+    //Now for any progress bars the town has
+    let townProgressBarsBox = document.createElement("div");
+    townProgressBarsBox.className = "townProgressBarsBox"
+    for (let x in location[i].progressBars) {
       if (location[i].progressBars[x].visible) {
-        box = document.createElement("div");
-        box.className = "townProgressBar";
-        y = location[i].progressBars[x];
-        barName = document.createElement("div");
-        barName.className = "progressBarName";
-        miscText = document.createTextNode(y.name);
-        barName.appendChild(miscText);
-        progress = document.createElement("span");
-        progress.id = y.nameId;
-        miscText = document.createTextNode(y.currentLevel + "%");
-        progress.appendChild(miscText);
-        barName.appendChild(progress);
-        box.appendChild(barName);
-        progressEmpty = document.createElement("div");
-        progressEmpty.className = "progressBarEmpty";
-        progressFill = document.createElement("div");
-        progressFill.className = "progressBarFill";
-        progressFill.id = x;
-        progressFill.style.width = (y.currentXP / y.toNextLevel) * 100 + "%";
-        progressEmpty.appendChild(progressFill);
-        box.appendChild(progressEmpty);
-        if (y.resource.name != undefined) {
-          y = y.resource;
-          resourceBox = document.createElement("div");
-          resourceBox.className = "progressBarResource";
-          miscText = document.createTextNode(y.reliableAmountText);
-          resourceBox.appendChild(miscText)
-          resource = document.createElement("span");
-          resource.id = y.name + "usedAmount";
-          miscText = document.createTextNode(y.usedAmount);
-          resource.appendChild(miscText);
-          resourceBox.appendChild(resource);
-          miscText = document.createTextNode("/");
-          resourceBox.appendChild(miscText);
-          resource = document.createElement("span");
-          resource.id = y.name + "reliableAmount";
-          miscText = document.createTextNode(y.reliableAmount);
-          resource.appendChild(miscText);
-          resourceBox.appendChild(resource);
-          line = document.createElement("span");
-          line.style.display = "block";
-          resource = document.createElement("input");
-          resource.type = "checkbox";
-          resource.id = y.name + "LootFirst";
-          line.appendChild(resource);
-          miscText = document.createTextNode("Reliable First");
-          line.appendChild(miscText);
-          resource = document.createElement("span");
-          resource.style.float = "right";
-          miscText = document.createTextNode(y.uncheckedAmountText);
-          resource.appendChild(miscText);
-          progress = document.createElement("span");
-          progress.id = y.name + "uncheckedAmount";
-          miscText = document.createTextNode(y.uncheckedAmount);
-          progress.appendChild(miscText);
-          resource.appendChild(progress);
-          line.appendChild(resource);
-          resourceBox.appendChild(line);
-          resource = document.createElement("tooltip");
-          miscText = document.createTextNode(y.unreliableAmountText);
-          resource.appendChild(miscText);
-          progress = document.createElement("span");
-          progress.id = y.name + "unreliableAmount";
-          miscText = document.createTextNode(y.unreliableAmount);
-          progress.appendChild(miscText);
-          resource.appendChild(progress);
-          resourceBox.appendChild(resource);
-          box.appendChild(resourceBox);
+        let y = location[i].progressBars[x]
+        //For progress types of bars
+        if (location[i].progressBars[x].type == "Progress") {
+          let townProgressBar;
+          let barName;
+          let tooltip;
+          let progressEmpty;
+          let progressFill;
+          townProgressBar = document.createElement("div");
+          townProgressBar.className = "townProgressBar";
+          //Name of the bar and the base info
+          barName = document.createElement("div");
+          barName.style.fontWeight = "bold";
+          barName.className = "townProgressBarName";
+          barName.id = y.nameId;
+          barName.innerHTML = y.name + y.currentLevel + "%";
+          townProgressBar.appendChild(barName);
+          //tooltip showing specifics of the bar's stats
+          tooltip = document.createElement("tooltip");
+          tooltip.innerHTML = "<b>Progress</b> " + y.currentXP + "/" + y.toNextLevel +
+          "(" + (y.currentXP / y.toNextLevel * 100).toFixed(2) + "%)";
+          townProgressBar.appendChild(tooltip);
+          //The progress bar itself
+          progressEmpty = document.createElement("div");
+          progressEmpty.className = "progressBarEmpty";
+          progressFill = document.createElement("div");
+          progressFill.className = "progressBarFill";
+          progressFill.id = y.barId;
+          progressFill.style.width = (y.currentXP / y.toNextLevel) * 100 + "%";
+          progressEmpty.appendChild(progressFill);
+          townProgressBar.appendChild(progressEmpty);
+          if (y.resource.name != undefined) {
+            let resourceBox;
+            let amountBar;
+            let tempLine
+            let inputBox;
+            let unchecked;
+            let tooltip;
+            y = y.resource;
+            resourceBox = document.createElement("div");
+            resourceBox.className = "progressBarResource";
+            amountBar = document.createElement("span");
+            amountBar.id = y.name + "Amount";
+            amountBar.innerHTML = y.reliableAmountText + y.usedAmount + "/" + y.reliableAmount;
+            resourceBox.appendChild(amountBar);
+            //line for the lootable checkbox and the potential unchecked resources
+            tempLine = document.createElement("span");
+            tempLine.style.display = "block";
+            inputBox = document.createElement("input");
+            inputBox.type = "checkbox";
+            inputBox.id = y.name + "LootFirst";
+            inputBox.addEventListener("change", reliableLock);
+            inputBox.checked = y.reliableFirstLock;
+            tempLine.appendChild(inputBox);
+            tempLine.insertAdjacentHTML("beforeend", "Reliable First");
+            //span for the unchecked resources
+            unchecked = document.createElement("span");
+            unchecked.style.float = "right";
+            unchecked.style.fontWeight = "bold";
+            unchecked.id = y.name + "uncheckedAmount";
+            unchecked.innerHTML = y.uncheckedAmountText + y.uncheckedAmount;
+            //check for any unchecked resources
+            if (y.uncheckedAmount == 0) {
+              unchecked.style.visibility = "hidden";
+            }
+            tempLine.appendChild(unchecked);
+            resourceBox.appendChild(tempLine);
+            townProgressBar.appendChild(resourceBox);
+            //tooltip for unreliable resources
+            tooltip = document.createElement("tooltip");
+            tooltip.id = y.name + "unreliableAmount";
+            tooltip.innerHTML = y.unreliableAmountText + y.unreliableAmount;
+            townProgressBar.appendChild(tooltip);
+          }
+          townProgressBarsBox.appendChild(townProgressBar)
+          //For action types of bars
+        } else if (location[i].progressBars[x].type == "Action") {
+          let townActionBar;
+          let nameBar;
+          let completedSpan;
+          let completedNumber;
+          let progressEmpty;
+          let progressFill;
+          townActionBar = document.createElement("div");
+          townActionBar.className = "townProgressBar";
+          townActionBar.id = y.id + "Bar";
+          nameBar = document.createElement("div");
+          nameBar.style.fontWeight = "bold";
+          nameBar.innerHTML = y.name;
+          completedSpan = document.createElement("span");
+          completedSpan.style.float = "right";
+          completedSpan.innerHTML = y.completedName;
+          completedNumber = document.createElement("span");
+          completedNumber.style.fontWeight = "normal";
+          completedNumber.id = y.name + "Completed";
+          completedNumber.innerHTML = y.completedAmount;
+          completedSpan.appendChild(completedNumber);
+          nameBar.appendChild(completedSpan);
+          townActionBar.appendChild(nameBar);
+          //The actiony part of the action bar
+          let segmentBar = document.createElement("div");
+          segmentBar.className = "actionBar";
+          let previousGoals = [];
+          for (let j = 0; j < y.segmentStats.length; j++) {
+            let segmentContainer;
+            let segment;
+            let segmentProgress;
+            let tooltip;
+            let currentProgress;
+            let progressGoal;
+            segmentContainer = document.createElement("span");
+            segment = document.createElement("div");
+            segment.className = "progressBarEmpty";
+            segment.style.display = "inline-block"; segment.style.margin = "3px"; segment.style.height = "8px";
+            segment.style.width = 'calc(' + 100 / y.segmentStats.length + '% - 6px)';
+            segment.style.backgroundColor = window[y.segmentStats[j] + "Colour"];
+            segmentProgress = document.createElement("div");
+            segmentProgress.className = "progressBarFill";
+            segmentProgress.style.width = "0%";
+            segmentProgress.style.backgroundColor = "lightgrey";
+            segmentProgress.setAttribute("data-progress", 0);
+            segmentProgress.setAttribute("data-goal", y.segmentGoal(previousGoals));
+            segmentProgress.setAttribute("data-stat", y.segmentStats[j]);
+            previousGoals.push(segmentProgress.getAttribute("data-goal"));
+            segment.appendChild(segmentProgress);
+            tooltip = document.createElement("tooltip");
+            /*
+            put the fluff stuff here
+            */
+            tooltip.innerHTML = "<b>Stat " + y.segmentStats[j];
+            currentProgress = document.createElement("span");
+            currentProgress.id = y.id + "Segment" + j;
+            currentProgress.innerHTML = "0";
+            tooltip.innerHTML += "<br>Progress: "
+            tooltip.appendChild(currentProgress);
+            tooltip.innerHTML += "/" + segmentProgress.getAttribute("data-goal");
+            segmentContainer.appendChild(segment);
+            segmentContainer.appendChild(tooltip);
+            segmentBar.appendChild(segmentContainer);
+          }
+          townActionBar.appendChild(segmentBar);
+          townProgressBarsBox.appendChild(townActionBar);
         }
-        townProgressBars.appendChild(box);
       }
     }
-    town.appendChild(townProgressBars);
-    let townActionBars = document.createElement("div");
-    townActionBars.className = "townActionBars";
-    for (x in location[i].actionBars) {
-      x = location[i].actionBars[x];
-      if (x.visible) {
-        let bar = document.createElement("div");
-        bar.id = x.id + "Bar";
-        let name = document.createElement("div");
-        let miscText = document.createTextNode(x.name);
-        name.appendChild(miscText);
-        let completedText = document.createElement("span");
-        completedText.style.float = "right";
-        miscText = document.createTextNode(x.completedName);
-        completedText.appendChild(miscText);
-        let tempElement = document.createElement("span");
-        tempElement.id = x.id + "Completed";
-        miscText = document.createTextNode(x.completedAmount);
-        tempElement.appendChild(miscText);
-        completedText.appendChild(tempElement);
-        name.appendChild(completedText);
-        bar.appendChild(name);
-        let segmentBar = document.createElement("div");
-        segmentBar.className = "actionBar";
-        let previousGoals = [];
-        for (let i = 0; i < x.segmentStats.length; i++){
-          let tempBar = document.createElement("div");
-          tempBar.className = "progressBarEmpty";
-          tempBar.style.display = "inline-block";
-          tempBar.style.width = 'calc(' + 100 / x.segmentStats.length + '% - 6px)';
-          tempBar.style.margin = "3px";
-          tempBar.style.height = "8px";
-          tempBar.style.backgroundColor = window[x.segmentStats[i] + "Colour"];
-          let segment = document.createElement("div");
-          segment.className = "progressBarFill";
-          segment.style.width = "0%";
-          segment.style.backgroundColor = "lightgrey";
-          segment.setAttribute("data-progress", 0);
-          segment.setAttribute("data-goal", x.segmentGoal(previousGoals));
-          segment.setAttribute("data-stat", x.segmentStats[i]);
-          previousGoals.push(segment.getAttribute("data-goal"));
-          tempBar.appendChild(segment);
-          let tooltip = document.createElement("tooltip");
-          let tempElement = document.createElement("b");
-          miscText = document.createTextNode("Stat: ");
-          tempElement.appendChild(miscText);
-          tooltip.appendChild(tempElement);
-          miscText = document.createTextNode(capitalize(x.segmentStats[i]));
-          tooltip.appendChild(miscText);
-          let lineBreak = document.createElement("br");
-          tooltip.appendChild(lineBreak);
-          tempElement = document.createElement("b");
-          miscText = document.createTextNode("Progress: ");
-          tempElement.appendChild(miscText);
-          tooltip.appendChild(tempElement);
-          tempElement = document.createElement("span");
-          tempElement.id = x.id + "Segment" + i;
-          miscText = document.createTextNode(0);
-          tempElement.appendChild(miscText);
-          tooltip.appendChild(tempElement);
-          tempElement = document.createTextNode(" / " + segment.getAttribute("data-goal"));
-          tooltip.appendChild(tempElement);
-          tempBar.appendChild(tooltip);
-          segmentBar.appendChild(tempBar);
-        }
-        bar.appendChild(segmentBar);
-        townActionBars.appendChild(bar);
-      }
-    }
-    town.appendChild(townActionBars);
-    line = document.createElement("div");
-    line.className = "buttonBoxTitle";
-    miscText = document.createTextNode("Actions");
-    line.appendChild(miscText);
-    town.appendChild(line);
-    townButtons = document.createElement("div");
+    town.appendChild(townProgressBarsBox);
+    //Now for a quick ACTIONS bullet
+    let tempTitle = document.createElement("div");
+    tempTitle.className = "buttonBoxTitle";
+    tempTitle.innerHTML = "Actions";
+    town.appendChild(tempTitle);
+    //And now buttons
+    let townButtons = document.createElement("div");
     townButtons.className = "townButtons";
     for (let x in location[i].buttons) {
       if (location[i].buttons[x].visible == true) {
-        let action = window[x];
-        let tooltip;
-        let check = action.tooltip;
+        let buttonContainer;
         let y = location[i].buttons[x];
+        let button;
+        let action = window[x];
+        let icon;
+        let tooltip;
+        buttonContainer = document.createElement("div");
         button = document.createElement("div");
         button.className = "button";
         if (y.unlocked == true) {
-          button.onclick = function() {
+          /*
+          might have to delete this action listener later
+          */
+          button.addEventListener("click", function() {
             addAction(action);
-          };
+          });
         } else {
           button.style.backgroundColor = "lightgrey";
         }
-        miscText = document.createTextNode(location[i].buttons[x].name);
-        button.appendChild(miscText);
-        miscText = document.createElement("div");
+        button.innerHTML = location[i].buttons[x].name + "<br>";
         icon = document.createElement("img");
         icon.src = "images/" + capitalize(x) + ".svg";
-        miscText.appendChild(icon);
-        button.appendChild(miscText);
+        button.appendChild(icon);
+        buttonContainer.appendChild(button);
+        //all the glory of the tooltip
         tooltip = document.createElement("tooltip");
-        // potential to remove this if statement later
+        //potential to remove this if statement later
         if (action.tooltip.join) {
           tooltip.innerHTML = action.tooltip.join("<br>");
         } else {
           tooltip.innerHTML = action.tooltip;
         }
-        for (let k = 0; k < statNames.length; k++) {
-          let x = statNames[k];
-          if (action.stats[x]) {
-            let box = document.createElement("div");
-            box.style.textAlign = "left";
-            let stat = document.createElement("b");
-            miscText = document.createTextNode(capitalize(x) + " ");
-            stat.appendChild(miscText);
-            miscText = document.createTextNode(action.stats[x] * 100 +"%");
-            box.appendChild(stat);
-            box.appendChild(miscText);
-            tooltip.appendChild(box);
+        for (let j = 0; j < statNames.length; j++) {
+          let z = statNames[j];
+          if (action.stats[z]) {
+            tooltip.innerHTML += "<br><b>" + capitalize(statNames[j]) + "</b> " + action.stats[z] * 100 + "%";
           }
         }
         tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
@@ -245,40 +248,103 @@ function buildTownBox() {
           tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
         }
         if (y.unlocked == false) {
-          let tempElement = document.createElement("div");
-          for (let j = 0; j < y.requirementAction.length; j++) {
-            if (j == 0) {
-              miscText = document.createTextNode("Unlocks at ");
-              tempElement.appendChild(miscText);
-            } else {
-              miscText = document.createTextNode(" and ");
-              tempElement.appendChild(miscText);
+          let requirementLine = document.createElement("div");
+          requirementLine.innerHTML = "Unlocks at ";
+          for (let k = 0; k < y.requirementAction.length; k++) {
+            if (k > 0) {
+              requirementLine.innerHTML += " and ";
             }
-            miscText = document.createTextNode(y.requirementAmount[j] + " " + y.requirementAction[j]);
-            tempElement.appendChild(miscText);
-            tooltip.appendChild(tempElement);
+            requirementLine.innerHTML += y.requirementAmount[k] + " " + y.requirementAction[k];
           }
+          tooltip.appendChild(requirementLine);
         }
-        button.appendChild(tooltip);
-        townButtons.appendChild(button);
+        buttonContainer.appendChild(tooltip);
+        townButtons.appendChild(buttonContainer);
       }
     }
     town.appendChild(townButtons);
+    //And finally travel buttons
+    let townTravelButtons = document.createElement("div");
+    townTravelButtons.className = "townTravelButtons";
+    for (let j = 0; j < directions.length; j++) {
+      let buttonContainer = document.createElement("div");
+      for (x in location[i].travelButtons) {
+        if (location[i].travelButtons[x].direction == directions[j] && location[i].travelButtons[x].visible == true) {
+          let action = window[x];
+          let y = location[i].travelButtons[x];
+          let button;
+          let icon;
+          let tooltip;
+          button = document.createElement("div");
+          button.className = "button";
+          if (y.unlocked == true) {
+            button.onclick = function() {
+              addAction(action);
+            }
+          } else {
+            button.style.backgroundColor = "lightgrey";
+          }
+          button.innerHTML = y.name + "<br>";
+          icon = document.createElement("img");
+          icon.src = "images/" + capitalize(x) + ".svg";
+          button.appendChild(icon);
+          buttonContainer.appendChild(button);
+          tooltip = document.createElement("tooltip");
+          /*
+          potential to remove this if statement later
+          */
+          if (action.tooltip.join) {
+            tooltip.innerHTML = action.tooltip.join("<br>");
+          } else {
+            tooltip.innerHTML = action.tooltip;
+          }
+          for (let k = 0; k < statNames.length; k++) {
+            let z = statNames[k];
+            if (action.stats[z]) {
+              tooltip.innerHTML += "<br><b>" + capitalize(z) + "</b>" + action.stats[z] * 100 + "%";
+            }
+          }
+          tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
+          if (action.goldCost) {
+            tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
+          }
+          if (y.unlocked == false) {
+            let requirementLine = document.createElement("div");
+            for (let k = 0; k < y.requirementAction.length; k++) {
+              if (k > 0) {
+                requirementLine.innerHTML += " and ";
+              }
+              requirementLine.innerHTML += y.requirementAmount[k] + " " + y.requirementAction[k];
+            }
+            tooltip.appendChild(requirementLine);
+          }
+          buttonContainer.appendChild(tooltip);
+        }
+      }
+      townTravelButtons.appendChild(buttonContainer);
+    }
+    town.appendChild(townTravelButtons);
   }
 }
 
 function updateResourceText(resource) {
-  let x = resource.name + "usedAmount";
-  document.getElementById(x).innerHTML = resource.usedAmount;
-  x = resource.name + "reliableAmount";
-  document.getElementById(x).innerHTML = resource.reliableAmount;
-  x = resource.name + "uncheckedAmount";
-  document.getElementById(x).innerHTML = resource.uncheckedAmount;
+  let x = resource.name + "Amount";
+  document.getElementById(x).innerHTML = resource.reliableAmountText + resource.usedAmount + "/" + resource.reliableAmount;
   x = resource.name + "unreliableAmount";
-  document.getElementById(x).innerHTML = resource.unreliableAmount;
+  document.getElementById(x).innerHTML = resource.unreliableAmountText + resource.unreliableAmount;
+  x = resource.name + "uncheckedAmount";
+  document.getElementById(x).innerHTML = resource.uncheckedAmountText + resource.uncheckedAmount;
+  if (resource.uncheckedAmount > 0) {
+    document.getElementById(x).style.visibility = "visible";
+  } else {
+    document.getElementById(x).style.visibility = "hidden";
+  }
 }
 
-function updateResources(resource) {
+function updateResources(progressBars) {
+  resource = progressBars.resource;
+  resource.totalAmount = progressBars.currentLevel * resource.totalEfficiency;
+  resource.uncheckedAmount = resource.totalAmount - resource.checkedAmount;
   resource.reliableAmount = Math.floor((resource.totalAmount - resource.uncheckedAmount) * resource.reliableEfficiency);
   resource.unreliableAmount = resource.totalAmount - resource.reliableAmount;
 }
@@ -286,7 +352,10 @@ function updateResources(resource) {
 function updateProgressBar(progressBars) {
   let x = document.getElementById(progressBars.barId);
   x.style.width = (progressBars.currentXP / progressBars.toNextLevel) * 100 + "%";
-  document.getElementById(progressBars.nameId).innerHTML = progressBars.currentLevel + "%";
+  document.getElementById(progressBars.nameId).innerHTML = progressBars.name + progressBars.currentLevel + "%";
+  x = x.parentElement.parentElement.childNodes[1];
+  x.innerHTML = "<b>Progress</b> " + progressBars.currentXP + "/" + progressBars.toNextLevel +
+  "(" + (progressBars.currentXP / progressBars.toNextLevel * 100).toFixed(2) + "%)";
 }
 
 function getNextLevel(x) {
@@ -298,30 +367,32 @@ function getNextLevel(x) {
 function checkLevel(x) {
   if (x.currentXP >= x.toNextLevel) {
     x.currentLevel++;
-    x.totalAmount += x.totalEfficiency;
     x.currentXP = 0;
     getNextLevel(x);
+    updateResources(x);
     buildTownBox();
   }
 }
 
 function resetActionBars() {
   for (let i in location) {
-    for (let j in location[i].actionBars) {
-      let x = location[i].actionBars[j];
-      if (x.visible) {
-        let y = document.getElementById(x.id + "Bar");
-        y = y.childNodes[1];
-        let previousGoals = [];
-        for (let k = 0; k < y.childElementCount; k++) {
-          let z = y.childNodes[k];
-          z.firstElementChild.setAttribute("data-progress", 0);
-          z.firstElementChild.setAttribute("data-goal", x.segmentGoal(previousGoals));
-          z.firstElementChild.style.width = "0%";
-          previousGoals.push(x.segmentGoal(previousGoals));
-          document.getElementById(x.id + "Segment" + k).innerHTML = 0;
-          document.getElementById(x.id + "Segment" + k).nextSibling.textContent =
-          " / " + z.firstElementChild.getAttribute("data-goal");
+    for (let j in location[i].progressBars) {
+      if (location[i].progressBars[j].type == "Action") {
+        let x = location[i].progressBars[j];
+        if (x.visible) {
+          let y = document.getElementById(x.id + "Bar");
+          y = y.childNodes[1];
+          let previousGoals = [];
+          for (let k = 0; k < y.childElementCount; k++) {
+            let z = y.childNodes[k].firstElementChild;
+            z.firstElementChild.setAttribute("data-progress", 0);
+            z.firstElementChild.setAttribute("data-goal", x.segmentGoal(previousGoals));
+            z.firstElementChild.style.width = "0%";
+            previousGoals.push(x.segmentGoal(previousGoals));
+            document.getElementById(x.id + "Segment" + k).innerHTML = 0;
+            document.getElementById(x.id + "Segment" + k).nextSibling.textContent =
+            " / " + z.firstElementChild.getAttribute("data-goal");
+          }
         }
       }
     }
@@ -349,11 +420,30 @@ function rebuildActionBar(barLocation, actionBar) {
   }
 }
 
+function reliableLock(node) {
+  node = node.target;
+  let resourceName = node.id.split("LootFirst")[0];
+  for (let i in location) {
+    for (let j in location[i].progressBars) {
+      if (location[i].progressBars[j].resource.name == resourceName) {
+        if (node.checked) {
+          location[i].progressBars[j].resource.reliableFirstLock = true;
+        } else {
+          location[i].progressBars[j].resource.reliableFirstLock = false;
+        }
+        return;
+      }
+    }
+  }
+}
+
 location[0] = {
   name: "Noobton",
+  visible: true,
   toEast: 1,
   progressBars: {
     wanderProgressBar: {
+      type: "Progress",
       name: "Village Explored: ",
       nameId: "villageExplored",
       barId: "wanderProgressBar",
@@ -364,6 +454,7 @@ location[0] = {
       resource: {
         name: "Pots",
         visible: true,
+        reliableFirstLock: false,
         usedAmount: 0,
         reliableAmount: 0,
         reliableAmountText: "Mana Filled Pots Smashed: ",
@@ -373,10 +464,12 @@ location[0] = {
         unreliableAmountText: "Pots With No Mana: ",
         totalAmount: 0,
         totalEfficiency: 10,
-        reliableEfficiency: .10,
+        reliableEfficiency: .1,
+        checkedAmount: 0,
       },
     },
     meetPeopleProgressBar: {
+      type: "Progress",
       name: "People Met: ",
       nameId: "peopleMet",
       barId: "meetPeopleProgressBar",
@@ -389,6 +482,7 @@ location[0] = {
       resource: {
         name: "Favours",
         visible: true,
+        reliableFirstLock: false,
         usedAmount: 0,
         reliableAmount: 0,
         reliableAmountText: "Favours Rewarded: ",
@@ -399,12 +493,14 @@ location[0] = {
         totalAmount: 0,
         totalEfficiency: .5,
         reliableEfficiency: .1,
+        checkedAmount: 0,
       },
     },
     secretsFoundProgressBar: {
+      type: "Progress",
       name: "Secrets Found: ",
       nameId: "secretsFound",
-      barId: "secretsFoundProgressBar",
+      barId: "investigateProgressBar",
       currentXP: 0,
       currentLevel: 0,
       toNextLevel: 100,
@@ -414,6 +510,7 @@ location[0] = {
       resource: {
         name: "VillagersRobbed",
         visible: true,
+        reliableFirstLock: false,
         usedAmount: 0,
         reliableAmount: 0,
         reliableAmountText: "People Robbed: ",
@@ -424,11 +521,11 @@ location[0] = {
         totalAmount: 0,
         totalEfficiency: .5,
         reliableEfficiency: .4,
+        checkedAmount: 0,
       },
     },
-  },
-  actionBars: {
     wolfFightingActionBar: {
+      type: "Action",
       name: ["Wolves"],
       id: "wolfFighting",
       completedName: "Killed: ",
@@ -527,21 +624,21 @@ location[0] = {
       },
       get unlocked() {
         return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20
-        && characters[0].combat.level >= 5);
+        && character[0].combat.level >= 5);
       },
       requirementAction: ["Secrets Found", "Combat"],
       requirementAmount: [20, 5],
     },
-    buyGuide: {
-      name: "Buy Guide",
+    buyMana: {
+      name: "Buy Mana",
       get visible() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 25);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 10);
       },
       get unlocked() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 40);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 15);
       },
       requirementAction: ["People Met"],
-      requirementAmount: [40],
+      requirementAmount: [15],
     },
     buyMap: {
       name: "Buy a Map",
@@ -554,13 +651,30 @@ location[0] = {
       requirementAction: ["Village Explored"],
       requirementAmount: ["60%"],
     },
-    travelToForest: {
-      name: "Travel to the Forest",
+    buyAxe: {
+
+    },
+    buyGuide: {
+      name: "Buy Guide",
       get visible() {
-        return (location[0].progressBars.secretsFoundProgressBar >= 20)
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 25);
       },
       get unlocked() {
-        return (characters[0].combat.level >= 15);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 40);
+      },
+      requirementAction: ["People Met"],
+      requirementAmount: [40],
+    },
+  },
+  travelButtons: {
+    travelToForest: {
+      name: "Travel to the Forest",
+      direction: "toEast",
+      get visible() {
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20)
+      },
+      get unlocked() {
+        return (character[0].combat.level >= 15);
       },
       requirementAction: ["Combat"],
       requirementAmount: [15],
@@ -570,6 +684,177 @@ location[0] = {
 
 location[1] = {
   name: "Forest",
+  visible: false,
   toWest: 0,
   //toNorth: circus training area?
+  progressBars: {
+    exploreForestProgressBar: {
+      type: "Progress",
+      name: "Forest Explored: ",
+      nameId: "forestExplored",
+      barId: "exploreForestProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      visible: true,
+      resource: {
+        name: undefined,
+      },
+    },
+    investigateTreesProgressBar: {
+      type: "Progress",
+      name: "Trees Checked: ",
+      nameId: "treesChecked",
+      barId: "investigateTreesProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[1].buttons.investigateTrees.unlocked;
+      },
+      resource: {
+        name: "Trees",//Infused or filled? something cooler maybe?
+        visible: true,
+        reliableFirstLock: false,
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "Trees with mana in them: ",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "Trees that haven't been checked: ",
+        unreliableAmount: 0,
+        unreliableAmountText: "Trees with only trace amounts of mana: ",
+        get totalAmount() {
+          return (location[1].progressBars.investigateTreesProgressBar.currentLevel +
+          location[1].progressBars.talkToDryadProgressBar.currentLevel) * this.totalEfficiency;
+        },
+        totalEfficiency: 10,
+        reliableEfficiency: .2,
+        checkedAmount: 0,
+      },
+    },
+    mapGameTrailsProgressBar: {
+      type: "Progress",
+      name: "Game Trails Explored: ",
+      nameId: "gameTrailsExplored",
+      barId: "mapGameTrailsProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[1].buttons.mapGameTrails.unlocked;
+      },
+      resource: {
+        name: "Animals",
+        visible: true,
+        reliableFirstLock: false,
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "Animals with good pelts: ",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "Animals never hunted: ",
+        unreliableAmount: 0,
+        unreliableAmountText: "Animals with inferior pelts: ",
+        totalAmount: 0,
+        totalEfficiency: 5,
+        reliableEfficiency: .05,
+        checkedAmount: 0,
+      },
+    },
+    talkToDryadProgressBar: {
+      type: "Progress",
+      name: "Dryad Knowledge Learned: ",
+      nameId: "dryadKnowledgeLearned",
+      barId: "talkToDryadProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[1].buttons.talkToDryad.unlocked;
+      },
+      resource: {
+        name: undefined,
+      },
+    },
+  },
+  buttons: {
+    exploreForest: {
+      name: "Explore Forest",
+      visible: true,
+      unlocked: true,
+    },
+    investigateTrees: {
+      name: "Investigate Trees",
+      get visible() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Forest Explored"],
+      requirementAmount: [10],
+    },
+    absorbManaFromTrees: {
+      name: "Absorb Mana From Trees",
+      get visible() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Trees Checked"],
+      requirementAmount: [10],
+    },
+    chopTrees: {
+      name: "Chop Trees",
+      get visible() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 25);
+      },
+      get unlocked() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 40);
+      },
+      requirementAction: ["Trees Checked"],
+      requirementAmount: [40],
+    },
+    mapGameTrails: {
+      name: "Map Game Trails",
+      get visible() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 15);
+      },
+      get unlocked() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 25);
+      },
+      requirementAction: ["Forest Explored"],
+      requirementAmount: [25],
+    },
+    huntAnimals: {
+      name: "Hunt Animals",
+      get visible() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Game Trails Explored"],
+      requirementAmount: [10],
+    },
+    talkToDryad: {
+      name: "Talk to Dryad",
+      get visible() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 40);
+      },
+      get unlocked() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 50);
+      },
+      requirementAction: ["Forest Explored"],
+      requirementAmount: [50],
+    },
+  },
+  travelButtons: {
+    returnToNoobton: {
+      name: "Return to Noobton",
+      visible: true,
+      unlocked: true,
+      direction: "toWest",
+    },
+  },
 };
