@@ -1,0 +1,56 @@
+body {
+  font-size: 25px;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-weight: bolder;
+  font-size: 50px;
+}
+
+.column {
+  width: 30%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  border: 2px solid black;
+}
+
+.estate {
+
+}
+
+.estateNameBox {
+  width: 40%;
+  display: inline-block;
+}
+
+    .estateName {
+      display: block;
+    }
+
+    .estateIncrease {
+      width: 45%;
+      display: inline-block;
+    }
+
+    .estateCooldown {
+      width: 45%;
+      display: inline-block;
+    }
+
+.estateProgress {
+  width: 10%;
+  display: inline-block;
+}
+
+.estateHolding {
+  width: 20%;
+  display: inline-block;
+}
+
+.estateButtons {
+  width: 20%;
+  display: inline-block;
+}
