@@ -1,20 +1,20 @@
-var cycleGoal = [];
-var cycleList = [];
-var mana = 100;
-var gold = 0;
+var currentCharacter = 0;
+var nextReset;
+var actionAmountCh;
+var hasGuide = false;
 var currentAction;
 var currentCostLeft;
 var multiplier;
-var gamePaused = true;
 var currentActionPlace = 0;
-var hasMap = false;
-var hasGuide = false;
+var resources = ["mana", "gold", "reputation", "pelts"];
+var gamePaused = true;
+var tutorial = true;
 var location;
 var currentLocation = 0;
 var directions = ["toNorthWest", "toNorth", "toNorthEast", "toWest", "name",
 "toEast", "toSouthWest", "toSouth", "toSouthEast"];
 var point = [225, 270, 315, 180, 0, 0, 135, 90, 45];
-var characters = [];
+var character = [];
 var statNames = ["dexterity", "strength", "constitution", "speed", "perception",
 "charisma", "intelligence", "wisdom", "spirit"];
 var skills = ["combat"];
@@ -25,9 +25,8 @@ var speedColour = "orange";
 var perceptionColour = "#e335e3";
 var charismaColour = "#e6e600";
 var intelligenceColour = "#33ccff";
-var wisdomColour = "#0033cc";
+var wisdomColour = "#8080ff";
 var spiritColour = "grey";
-var tutorial = true;
 var activeLoadout = 0;
 var loadoutActions = {
   1: [],
@@ -61,6 +60,54 @@ function fibonacci(num1, num2) {
 
 function changeChanger(num) {
   document.getElementById("amountChanger").value = num;
+}
+
+function checkCharacters() {
+  // TODO: resources need to be made better here
+  let tempElement = document.getElementById("actionColumn");
+  for (let i = 0; i < character.length; i++) {
+    if (character[i].visible) {
+      let tempDiv;
+      let tempSubDiv;
+      //Resource boxes
+      document.getElementById("characterList").innerHTML += "<br>" + character[i].name;
+      for (let j = 0; j < resources.length; j++) {
+        let x = resources[j];
+        document.getElementById(x + "Box").innerHTML += "<br>" + character[i][x];
+      }
+      //Stat boxes
+      //Character selection
+      tempDiv = document.createElement("div");
+      tempDiv.className = "characterSelectButton";
+      tempDiv.innerHTML = character[i].name;
+// TODO: change to event listener
+      tempDiv.onclick = function() {
+        characterSwitch(i);
+      }
+      document.getElementById("characterSelection").appendChild(tempDiv);
+      //Stats
+      tempDiv = document.createElement("div");
+      tempDiv.id = "character" + i;
+      tempDiv.style.display = "none";
+      document.getElementById("characterBox").appendChild(tempDiv);
+      //Action boxes
+      tempDiv = document.createElement("div");
+      tempDiv.className = "actionBox";
+      tempDiv.id = "character" + i + "ActionBox";
+      tempDiv.style.display = "none";
+      tempSubDiv = document.createElement("div");
+      tempSubDiv.className = "actionBoxProgressList";
+      tempSubDiv.id = lowerize(character[i].name) + "ProgressList";
+      tempDiv.appendChild(tempSubDiv);
+      tempSubDiv = document.createElement("div");
+      tempSubDiv.className = "actionBoxActionList";
+      tempSubDiv.id = lowerize(character[i].name) + "ActionList";
+      tempDiv.appendChild(tempSubDiv);
+      tempElement.insertBefore(tempDiv, document.getElementById("actionBoxButtons"));
+    }
+  }
+  document.getElementById("character0").style.display = "block";
+  document.getElementById("character0ActionBox").style.display = "grid";
 }
 
 function showTutorial() {
@@ -119,8 +166,25 @@ function showTutorial() {
 
 function cheat() {
   location[0].progressBars.wanderProgressBar.currentLevel = 80;
+  getNextLevel(location[0].progressBars.wanderProgressBar);
+  updateResources(location[0].progressBars.wanderProgressBar);
   location[0].progressBars.meetPeopleProgressBar.currentLevel = 80;
+  getNextLevel(location[0].progressBars.meetPeopleProgressBar);
+  updateResources(location[0].progressBars.meetPeopleProgressBar);
   location[0].progressBars.secretsFoundProgressBar.currentLevel = 80;
+  getNextLevel(location[0].progressBars.secretsFoundProgressBar);
+  updateResources(location[0].progressBars.secretsFoundProgressBar);
+  location[1].progressBars.exploreForestProgressBar.currentLevel = 100;
+  getNextLevel(location[1].progressBars.exploreForestProgressBar);
+  location[1].progressBars.investigateTreesProgressBar.currentLevel = 100;
+  getNextLevel(location[1].progressBars.investigateTreesProgressBar);
+  updateResources(location[1].progressBars.investigateTreesProgressBar);
+  location[1].progressBars.mapGameTrailsProgressBar.currentLevel = 100;
+  getNextLevel(location[1].progressBars.mapGameTrailsProgressBar);
+  updateResources(location[1].progressBars.mapGameTrailsProgressBar);
+  location[1].progressBars.talkToDryadProgressBar.currentLevel = 100;
+  getNextLevel(location[1].progressBars.talkToDryadProgressBar);
+  updateResources(location[1].progressBars.investigateTreesProgressBar);
   buildTownBox();
 }
 /*

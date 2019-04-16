@@ -16,48 +16,50 @@
 </head>
 <body>
   <div class="manaBar">
-    <span id="manaBox"><b>Mana:</b><span id="mana"></span></span>
-    <span id="goldBox" style=display:none><b>Gold:</b><span id="gold"></span></span>
+    <div class="resourceContainer">
+      <span id="characterList" class="resourceBox"></span>
+      <span id="manaBox" class="resourceBox"><b>Mana</b></span>
+      <span id="goldBox" class="resourceBox"><b>Gold</b></span>
+      <span id="reputationBox" class="resourceBox"><b>Reputation</b></span>
+      <span id="peltsBox" class="resourceBox"><b>Pelts</b></span>
+    </div>
       <div>
-        <button type="button" onclick=gamePause()>Pause</button>
-        <button type="button" onclick=gamePlay()>Play</button>
-        <button type="button" onclick=gameNewCycle()>Restart</button>
-        <button type="button" onclick=deleteSave()>Clear Save</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=gamePlay()><i class="fas fa-play"></i></button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=gamePause()><i class="fas fa-pause"></i></button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=gameNewCycle()><i class="fas fa-sync"></i></button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=deleteSave()>Clear Save</button>
         <button id ="introButton" type="button" onclick=showTutorial()>Show Intro</button>
       </div>
   </div>
-  <div class="column">
-    <div class="statBox" id="statBox">
+  <div id= "statColumn" class="column">
+    <div id="characterBox" class="characterBox">
+      <div id="characterSelection" style="font-weight: bold;">Characters</div>
     </div>
   </div>
-  <div class="column">
-    <div class="actionBox">
-      <span id="actionBoxProgressList"></span>
-      <span id="actionBoxActionList"></span>
-    </div>
-    <div class="actionBoxButtons" style=text-align:right>
-      <b>Amount</b>
-      <input type="text" id="amountChanger" style=width:50px></input>
+  <div id="actionColumn" class="column">
+    <div id="actionBoxButtons" class="actionBoxButtons" style=text-align:right>
+      <label for="amountChanger" class="textAmount">Amount</label>
+      <input type="text" id="amountChanger" name="amountChanger" style=width:50px></input>
       <div>
-        <button type="button" style=margin:0px onclick=changeChanger(1)>1</button>
-        <button type="button" style=margin:0px onclick=changeChanger(5)>5</button>
-        <button type="button" style=margin:0px onclick=changeChanger(10)>10</button>
-        <button type="button" style=margin:0px onclick=changeChanger(25)>25</button>
-        <button type="button" style=margin:0px onclick=changeChanger(100)>100</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(1)>1</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(5)>5</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(10)>10</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(25)>25</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(100)>100</button>
       </div>
     </div>
     <div class="loadoutButtons">
-      <button type="button" class=loadoutButton id="loadout1" onclick=changeActiveLoadout(1)>1</button>
-      <button type="button" class=loadoutButton id="loadout2" onclick=changeActiveLoadout(2)>2</button>
-      <button type="button" class=loadoutButton id="loadout3" onclick=changeActiveLoadout(3)>3</button>
-      <button type="button" class=loadoutButton id="loadout4" onclick=changeActiveLoadout(4)>4</button>
-      <button type="button" class=loadoutButton id="loadout5" onclick=changeActiveLoadout(5)>5</button>
+      <button type="button" class="loadoutButton" id="loadout1" onclick=changeActiveLoadout(1)>1</button>
+      <button type="button" class="loadoutButton" id="loadout2" onclick=changeActiveLoadout(2)>2</button>
+      <button type="button" class="loadoutButton" id="loadout3" onclick=changeActiveLoadout(3)>3</button>
+      <button type="button" class="loadoutButton" id="loadout4" onclick=changeActiveLoadout(4)>4</button>
+      <button type="button" class="loadoutButton" id="loadout5" onclick=changeActiveLoadout(5)>5</button>
     </div>
     <button type="button" onclick="saveLoadout()">Save Loadout</button>
     <button type="button" onclick="loadLoadout()">Load Loadout</button>
   </div>
-  <div class="column">
-    <div id="townBox" style="width:600px">
+  <div id="townColumn" class="column">
+    <div id="townBox" style="width:700px">
       <div id="town0" style="display:block"></div>
       <div id="town1" style="display:none"></div>
     </div>
@@ -71,11 +73,3 @@
 </script>
 </body>
 </html>
-<!--
-
-
-
-normal action need >= -5 rep
-
-max bonus seconds per offline session doubled for money
--->
