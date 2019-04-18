@@ -25,7 +25,7 @@ function work() {
 }
 
 function buildPlayer() {
-  document.getElementById("cityTier").innerHTML = "Tier " + city.tier + " City";
+  document.getElementById("cityTier").innerHTML = "Tier " + city.current.tier + " City";
   document.getElementById("playerMoney").innerHTML = "$" + player.money;
   document.getElementById("playerHourglass").innerHTML = player.hourglass + " Hourglass Points";
   document.getElementById("playerDiamond").innerHTML = player.diamonds + " Diamonds";
@@ -164,7 +164,7 @@ function buildEstates() {
     tempElement = document.createElement("span")
     tempElement.className = "upgradeName";
     tempElement.innerHTML = city.tierUpgrades[x].name;
-    upgrades.appendChild(tempElement);
+    upgradeDiv.appendChild(tempElement);
     tempElement = document.createElement("span");
     tempElement.className = "upgradeBonus";
     tempElement.innerHTML = city.tierUpgrades[x].bonus;
@@ -231,4 +231,12 @@ function upgrade(node) {
     estate.upgrades[upgrade].activate();
     cost = estate.upgrades[upgrade].cost
   }
+}
+
+function cityUpgrade() {
+  return;
+}
+
+function tierUpgrade() {
+  return;
 }

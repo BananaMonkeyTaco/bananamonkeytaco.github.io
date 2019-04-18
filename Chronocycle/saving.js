@@ -14,14 +14,14 @@ function save() {
     saveFile["character" + i] = character[i];
   }
   //localStorage.wolfFightingCompleted = location[0].actionBars.wolfFightingActionBar.completedAmount;
-  localStorage.tutorial = JSON.stringify(tutorial);
-  localStorage.saveFile = JSON.stringify(saveFile);
+  saveFile.tutorial = tutorial;
+  localStorage.chronocycleSaveFile = JSON.stringify(saveFile);
 }
 
 function load() {
   let saveFile = {};
-  if (localStorage.saveFile) {
-    saveFile = JSON.parse(localStorage.saveFile);
+  if (localStorage.chronocycleSaveFile) {
+    saveFile = JSON.parse(localStorage.chronocycleSaveFile);
   }
   for (let i = 0; i < 2; i++) {
     for (let x in location[i].progressBars) {
@@ -66,11 +66,11 @@ function load() {
 
   //location[0].actionBars.wolfFightingActionBar.completedAmount = !(isNaN(Number(localStorage.wolfFightingCompleted))) ?
   //Number(localStorage.wolfFightingCompleted) : 0
-  tutorial = (localStorage.tutorial) ? JSON.parse(localStorage.tutorial) : true;
+  tutorial = (saveFile.tutorial) ? saveFile.tutorial : true;
 }
 
 function deleteSave() {
-  localStorage.clear();
+  localStorage.removeItem("chronocycleSaveFile");
   load();
   buildTownBox();
 }

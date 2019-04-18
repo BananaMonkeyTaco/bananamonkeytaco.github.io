@@ -1,21 +1,26 @@
 function save() {
   let saveFile = {}
   saveFile.player = player;
-  saveFile.city = city;
+  saveFile.city = city.current;
   saveFile.mediumMall = mediumMall.current;
-  localStorage.saveFile = JSON.stringify(saveFile);
+  localStorage.bigCityDreamsReimaginingSaveFile = JSON.stringify(saveFile);
 }
 
 function load() {
   let saveFile = {}
-  if (localStorage.saveFile) {
-    saveFile = JSON.parse(localStorage.saveFile);
+  if (localStorage.bigCityDreamsReimaginingSaveFile) {
+    saveFile = JSON.parse(localStorage.bigCityDreamsReimaginingSaveFile);
     player = saveFile.player;
     city = saveFile.city;
     mediumMall.current = saveFile.mediumMall;
+  } else {
+    player = defaults.player;
+    city.current = defaults.city;
+    mediumMall.current = defaults.mediumMall;
   }
 }
 
 function clearSave() {
-  localStorage.clear();
+  localStorage.removeItem("bigCityDreamsReimaginingSaveFile");
+  load();
 }

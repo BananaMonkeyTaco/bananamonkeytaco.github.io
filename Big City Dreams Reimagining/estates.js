@@ -9,7 +9,17 @@ var player = {
 }
 
 var city = {
-  tier: 1,
+  current: {
+    tier: 1,
+    cityUpgrades: {
+      increaseTickSpeed: 0,
+    },
+    tierUpgrades: {
+      xpBoost: 0,
+      autoclickChance: 0,
+      globalIncomeFactor: 0,
+    }
+  },
   cityUpgrades: {
     increaseTickSpeed: {
       name: "Increase Tick Speed",
