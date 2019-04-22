@@ -11,7 +11,7 @@ function load() {
   if (localStorage.bigCityDreamsReimaginingSaveFile) {
     saveFile = JSON.parse(localStorage.bigCityDreamsReimaginingSaveFile);
     player = saveFile.player;
-    city = saveFile.city;
+    city.current = saveFile.city;
     mediumMall.current = saveFile.mediumMall;
   } else {
     player = defaults.player;
