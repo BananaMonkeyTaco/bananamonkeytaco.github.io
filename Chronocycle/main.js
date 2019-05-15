@@ -2,7 +2,36 @@ function start() {
   checkCharacters();
   buildTownBox();
   buildStatBox();
+  gameFirstCycle();
   setInterval(work, 10);
+}
+
+function gameFirstCycle() {
+  for (let i = 0; i < character.length; i++) {
+    if (character[i].visible) {
+      resetCharacter(character[i]);
+    }
+    if (character[i].nextCycleActionList.length <= 0) {
+      character[i].active = false;
+    }
+  }
+  for (let i in location) {
+    for (let j in location[i].progressBars) {
+      if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name != undefined) {
+        location[i].progressBars[j].resource.usedAmount = 0;
+        if (document.getElementById(location[i].progressBars[j].id)) {
+          updateResourceText(location[i].progressBars[j].resource);
+        }
+      }
+    }
+  }
+  for (let i = 1; i < resources.length; i++) {
+    resourcesShown[i] = false;
+    document.getElementById(resources[i] + "Box").style.display = "none";
+  }
+  //Potential previous list
+  initializeActionList();
+  updateResourceBox();
 }
 
 function gamePause() {
@@ -21,7 +50,6 @@ function gamePlay() {
 }
 
 function gameNewCycle() {
-// TODO: maybe put the resource loop here if needed
   for (let i = 0; i < character.length; i++) {
     if (character[i].visible) {
       resetCharacter(character[i]);
@@ -32,11 +60,21 @@ function gameNewCycle() {
   }
   for (let i in location) {
     for (let j in location[i].progressBars) {
-      if (location[i].progressBars[j].resource) {
+      if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name != undefined) {
         location[i].progressBars[j].resource.usedAmount = 0;
+        if (document.getElementById(location[i].progressBars[j].id)) {
+          updateResourceText(location[i].progressBars[j].resource);
+        }
       }
     }
   }
+  for (let i = 1; i < resources.length; i++) {
+    resourcesShown[i] = false;
+    document.getElementById(resources[i] + "Box").style.display = "none";
+    document.getElementById("mapBox").style.display = "none";
+    document.getElementById("guideBox").style.display = "none";
+  }
+  updateResourceBox();
   resetActionBars();
   save();
   initializeProgressList();
@@ -44,7 +82,7 @@ function gameNewCycle() {
 
 function work() {
   //Update all the resources
-  updateResourceBox();
+  updateResourceBox("mana");
   if (gamePaused == false) {
     //Check to make sure there's a character that can still do stuff
     for (let i = 0; i < character.length; i++) {
@@ -92,6 +130,8 @@ function resetCharacter(char) {
   char.gold = (char.startingGold) ? char.startingGold : 0;
   char.reputation = (char.startingReputation) ? char.startingReputation : 0;
   char.pelts = (char.startingPelts) ? char.startingPelts : 0;
+  char.elderberries = (char.startingElderberries) ? char.startingElderberries : 0;
+  char.minorHealthPotions = (char.startingMinorHealthPotions) ? char.startingMinorHealthPotions : 0;
   char.currentLocation = (char.startingLocation) ? char.startingLocation : 0;
   char.hasMap = false;
   char.hasGuide = false;
@@ -131,8 +171,13 @@ function findNextAction(char) {
   //Find the next action the character needs to do
   for (let i = 0; i < char.currentCycleActionList.length; i++) {
     if (char.currentCycleActionCompleted[i] < char.currentCycleActionAmount[i]) {
-      char.currentAction = i;
-      break;
+      if (char.currentCycleActionList[i].canStart(char)) {
+        char.currentAction = i;
+        break;
+      } else {
+        char.currentCycleActionCompleted[i]++;
+        i--;
+      }
     }
   }
   //If there were no more actions for the character set them to inactive
@@ -146,22 +191,60 @@ function findNextAction(char) {
   for (x in action.stats) {
     finalCost += (action.manaCost * action.stats[x]) / (1 + (char[x].level / 100));
   }
+  finalCost = Math.ceil(finalCost);
   char.multiplier = action.manaCost / finalCost;
   char.originalCost = finalCost;
   char.currentCostLeft = finalCost;
 }
 
-function updateResourceBox() {
+function updateResourceBox(resource) {
   document.getElementById("characterList").innerHTML = "";
   for (let i = 0; i < character.length; i++) {
     document.getElementById("characterList").innerHTML += "<br><b>" + character[i].name + "</b>";
   }
-  for (let i = 0; i < resources.length; i++) {
-    let x = resources[i];
-    let y = document.getElementById(x + "Box");
-    y.innerHTML = "<b>" + capitalize(x) + "</b>";
-    for (let j = 0; j < character.length; j++) {
-      y.innerHTML += "<br>" + character[j][x];
+  if (resource) {
+    let x = resources.indexOf(resource);
+    let y = document.getElementById(resource + "Box");
+    if (resourcesShown[x] == false) {
+      y.style.display = "inline-block";
+      resourcesShown[x] = true;
     }
+    y.innerHTML = "<b>" + capitalize(resource) + "</b>";
+    for (let i = 0; i < character.length; i++) {
+      y.innerHTML += "<br>" + character[i][resource];
+    }
+  } else {
+    document.getElementById("characterList").innerHTML = "";
+    for (let i = 0; i < character.length; i++) {
+      document.getElementById("characterList").innerHTML += "<br><b>" + character[i].name + "</b>";
+    }
+    for (let i = 0; i < resources.length; i++) {
+      let x = resources[i];
+      let y = document.getElementById(x + "Box");
+      y.innerHTML = "<b>" + capitalize(x) + "</b>";
+      for (let j = 0; j < character.length; j++) {
+        y.innerHTML += "<br>" + character[j][x];
+      }
+    }
+  }
+}
+
+function updateItemBox(item, action) {
+  if (item) {
+    let x = "has" + capitalize(item);
+    let y = document.getElementById(item + "Box");
+    y.style.display = "inline-block";
+    y.innerHTML = "<br>";
+    for (let i = 0; i < character.length; i++) {
+      if (character[i][x]) {
+        let icon = document.createElement("img");
+        icon.src = "images/" + capitalize(action) + ".svg";
+        icon.className = "actionIcon";
+        y.appendChild(icon);
+      }
+      y.innerHTML += "<br>";
+    }
+  } else {
+    return;
   }
 }

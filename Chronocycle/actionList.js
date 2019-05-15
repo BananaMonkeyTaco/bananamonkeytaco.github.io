@@ -1,5 +1,4 @@
-function addAction(action) {
-  let char = character[currentCharacter];
+function addAction(action, amount, char) {
   let newAction;
   let changeAmount;
   let actionAmount;
@@ -7,6 +6,15 @@ function addAction(action) {
   let actionPlace;
   let faIcon;
   let options;
+  if (char == undefined) {
+    char = character[currentCharacter];
+  }
+  if (amount == undefined) {
+    if (Number(document.getElementById("amountChanger").value) < 1) {document.getElementById("amountChanger").value = 1}
+    changeAmount = Number(document.getElementById("amountChanger").value);
+  } else {
+    changeAmount = amount;
+  }
   newAction = document.createElement("div");
   /*
 change class later
@@ -15,8 +23,6 @@ change class later
   //Saving the actions place in the action list for later reference
   newAction.setAttribute("childNumber", char.nextCycleActionList.length);
   //adding action to the character's list and checking for the changer value
-  if (Number(document.getElementById("amountChanger").value) < 1) {document.getElementById("amountChanger").value = 1}
-  changeAmount = Number(document.getElementById("amountChanger").value);
   char.nextCycleActionList.push(action);
   char.nextCycleActionAmount.push(changeAmount);
   icon = document.createElement("img");
@@ -42,6 +48,16 @@ change class later
   faIcon = document.createElement("i");
   faIcon.className = "actionButton fas fa-minus";
   faIcon.addEventListener("click", actionAmountChange);
+  options.appendChild(faIcon);
+  //Moving the action up the list
+  faIcon = document.createElement("i");
+  faIcon.className = "actionButton fas fa-chevron-up";
+  faIcon.addEventListener("click", actionIncreasePriority);
+  options.appendChild(faIcon);
+  //Moving the action down the list
+  faIcon = document.createElement("i");
+  faIcon.className = "actionButton fas fa-chevron-down";
+  faIcon.addEventListener("click", actionDecreasePriority);
   options.appendChild(faIcon);
   //Removing the action from the list
   faIcon = document.createElement("i");
@@ -95,6 +111,68 @@ function initializeProgressList() {
   }
 }
 
+function initializeActionList() {
+  for (let i = 0; i < character.length; i++) {
+    let char = character[i];
+    for (let j = 0; j < char.nextCycleActionList.length; j++) {
+      char.nextCycleActionList[j] = window[lowerize(char.nextCycleActionList[j].name)];
+      let action = char.nextCycleActionList[j];
+      let changeAmount = char.nextCycleActionAmount[j]
+      let newAction;
+      let icon;
+      let actionAmount;
+      let options;
+      let faIcon;
+      newAction = document.createElement("div");
+      newAction.className = "actionBoxActions";
+      //Saving the actions place in the action list for later reference
+      newAction.setAttribute("childNumber", j);
+      //adding action to the character's list and checking for the changer value
+      icon = document.createElement("img");
+      icon.src = "images/" + action.name + ".svg";
+      icon.className = "actionIcon";
+      newAction.appendChild(icon);
+      //span for amount of times to do the action
+      actionAmount = document.createElement("span");
+      actionAmount.innerHTML = "x" + changeAmount;
+      newAction.appendChild(actionAmount);
+      //option icons for editing the action list
+      options = document.createElement("span");
+      /*
+      maybe change this class name to
+      */
+      options.className = "actionBoxOptions";
+      //Adding
+      faIcon = document.createElement("i");
+      faIcon.className = "actionButton fas fa-plus";
+      faIcon.addEventListener("click", actionAmountChange);
+      options.appendChild(faIcon);
+      //Subtracting
+      faIcon = document.createElement("i");
+      faIcon.className = "actionButton fas fa-minus";
+      faIcon.addEventListener("click", actionAmountChange);
+      options.appendChild(faIcon);
+      //Moving the action up the list
+      faIcon = document.createElement("i");
+      faIcon.className = "actionButton fas fa-chevron-up";
+      faIcon.addEventListener("click", actionIncreasePriority);
+      options.appendChild(faIcon);
+      //Moving the action down the list
+      faIcon = document.createElement("i");
+      faIcon.className = "actionButton fas fa-chevron-down";
+      faIcon.addEventListener("click", actionDecreasePriority);
+      options.appendChild(faIcon);
+      //Removing the action from the list
+      faIcon = document.createElement("i");
+      faIcon.className = "actionButton fas fa-times";
+      faIcon.addEventListener("click", removeNextCycleAction);
+      options.appendChild(faIcon);
+      newAction.appendChild(options);
+      document.getElementById(lowerize(char.name) + "ActionList").appendChild(newAction);
+    }
+  }
+}
+
 // TODO: may have to clean up this function
 function actionAmountChange(node) {
   node = node.target;
@@ -123,11 +201,47 @@ function actionAmountChange(node) {
   }
 }
 
+function actionIncreasePriority(node) {
+  node = node.target.parentElement.parentElement;
+  let list = node.parentElement;
+  let child = node.getAttribute("childNumber");
+  //Setting new child numbers
+  list.childNodes[child - 1].setAttribute("childNumber", child);
+  list.childNodes[child].setAttribute("childNumber", child - 1);
+  //Moving the action in the list
+  list.insertBefore(node, list.childNodes[child - 1]);
+  //Moving the action for the character
+  let char = character[currentCharacter];
+  [char.nextCycleActionList[child - 1], char.nextCycleActionList[child]] =
+  [char.nextCycleActionList[child], char.nextCycleActionList[child - 1]];
+  [char.nextCycleActionAmount[child - 1], char.nextCycleActionAmount[child]] =
+  [char.nextCycleActionAmount[child], char.nextCycleActionAmount[child - 1]];
+}
+
+function actionDecreasePriority(node) {
+  node = node.target.parentElement.parentElement;
+  let list = node.parentElement;
+  let child = Number(node.getAttribute("childNumber"));
+  //Setting new child numbers
+  list.childNodes[child + 1].setAttribute("childNumber", child);
+  list.childNodes[child].setAttribute("childNumber", child + 1);
+  //Moving the action in the list
+  list.insertBefore(list.childNodes[child + 1], node);
+  //Moving the action for the character
+  let char = character[currentCharacter];
+  [char.nextCycleActionList[child + 1], char.nextCycleActionList[child]] =
+  [char.nextCycleActionList[child], char.nextCycleActionList[child + 1]];
+  [char.nextCycleActionAmount[child + 1], char.nextCycleActionAmount[child]] =
+  [char.nextCycleActionAmount[child], char.nextCycleActionAmount[child + 1]];
+}
+
 function removeNextCycleAction(node) {
   node = node.target.parentElement;
   node.childNodes[0].removeEventListener("click", actionAmountChange);
   node.childNodes[1].removeEventListener("click", actionAmountChange);
-  node.childNodes[2].removeEventListener("click", removeNextCycleAction);
+  node.childNodes[2].removeEventListener("click", actionIncreasePriority);
+  node.childNodes[3].removeEventListener("click", actionDecreasePriority);
+  node.childNodes[4].removeEventListener("click", removeNextCycleAction);
   node = node.parentElement;
   character[currentCharacter].nextCycleActionList.splice(node.getAttribute("childNumber"), 1);
   character[currentCharacter].nextCycleActionAmount.splice(node.getAttribute("childNumber"), 1);
@@ -145,30 +259,50 @@ function removeNextCycleAction(node) {
 }
 
 function saveLoadout() {
+  // TODO: maybe make this a NOT statement and remove the whole indent and brackets
   if (0 < activeLoadout && activeLoadout < 6) {
     while (loadoutActions[activeLoadout].length > 0) {
       loadoutActions[activeLoadout].pop();
       loadoutAmount[activeLoadout].pop();
     }
-    for (i = 0; i < document.getElementById("actionBoxActionList").childElementCount; i++) {
-      loadoutActions[activeLoadout].push(window[document.getElementById("actionBoxActionList").childNodes[i].getAttribute("data-action")]);
-      loadoutAmount[activeLoadout].push(document.getElementById("actionListAmount" + i).outerText);
+    for (let i = 0; i < character.length; i++) {
+      char = character[i];
+      loadoutActions[activeLoadout][i] = [];
+      loadoutAmount[activeLoadout][i] = [];
+      console.log("start")
+      for (let j = 0; j < char.nextCycleActionList.length; j++) {
+        console.log("iter")
+        loadoutActions[activeLoadout][i].push(char.nextCycleActionList[j]);
+        loadoutAmount[activeLoadout][i].push(char.nextCycleActionAmount[j]);
+      }
     }
   }
 }
 
 function loadLoadout() {
+  //Checkign for valid loadout
   if (0 < activeLoadout && activeLoadout < 6) {
-    while (document.getElementById("actionBoxActionList").childElementCount > 0) {
-      document.getElementById("actionBoxActionList").removeChild(document.getElementById("actionBoxActionList").firstElementChild);
+    //Removing current action list
+    for (let i = 0; i < character.length; i++) {
+      let box = document.getElementById(lowerize(character[i].name) + "ActionList");
+      while (box.childElementCount > 0) {
+        box.removeChild(box.firstElementChild);
+      }
+      //Emptying the character's arrays
+      character[i].nextCycleActionList = [];
+      character[i].nextCycleActionAmount = [];
+      //Setting the characters new action list
+      if (loadoutActions[activeLoadout][i] != undefined) {
+        for (let j = 0; j < loadoutActions[activeLoadout][i].length; j++) {
+          character[i].nextCycleActionList.push(loadoutActions[activeLoadout][i][j]);
+          character[i].nextCycleActionAmount.push(loadoutAmount[activeLoadout][i][j]);
+        }
+      } else {
+        character[i].nextCycleActionList = [];
+        character[i].nextCycleActionAmount = [];
+      }
     }
-    let x = document.getElementById("amountChanger");
-    let tempNumber = Number(x.value);
-    for (i = 0; i < loadoutActions[activeLoadout].length; i++) {
-      x.value = loadoutAmount[activeLoadout][i];
-      addAction(loadoutActions[activeLoadout][i]);
-    }
-    x.value = tempNumber;
+    initializeActionList();
   }
 }
 

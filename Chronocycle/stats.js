@@ -2,6 +2,9 @@ function buildStatBox() {
   for (let i = 0; i < character.length; i++) {
     let characterNumber = document.getElementById("character" + i);
     let x = character[i];
+    while (characterNumber.hasChildNodes()) {
+      characterNumber.removeChild(characterNumber.childNodes[0]);
+    }
     let statBox = document.createElement("div");
     statBox.className = "statBox";
     statBox.id = x.name + "Stats";
@@ -53,53 +56,70 @@ function buildStatBox() {
       tooltip.id = x.name + y + "Tooltip";
       tooltip.innerHTML = "<b>" + capitalize(y) + "</b>" +
       "<br><b>Level: </b>" + x[y].level +
-      "<br><b>Level XP: </b>" + x[y].levelXP + " / " + x[y].toNextLevel +
+      "<br><b>Level XP: </b>" + Math.floor(x[y].levelXP) + " / " + x[y].toNextLevel +
       "<br><b>Talent: </b>" + x[y].talent +
-      "<br><b>Talent XP: </b>" + x[y].talentXP + " / " + x[y].toNextTalent;
+      "<br><b>Talent XP: </b>" + Math.floor(x[y].talentXP) + " / " + x[y].toNextTalent +
+      "<br><b>Talent Multi: </b>" + (1 + Math.pow(x[y].talent, .3) / 2).toFixed(2);
       statListItemContainer.appendChild(tooltip);
       statBox.appendChild(statListItemContainer);
     }
     characterNumber.appendChild(statBox);
     //Now for skills
+    if (character[0].combat.level == 0 && character[0].combat.levelXP == 0) {
+      continue;
+    }
     let skillsBox = document.createElement("div");
     skillsBox.innerHTML = "<b>Skills</b>";
     for (let j = 0; j < skills.length; j++) {
-      j = skills[j];
-      if (character[i][j].level > 0 || character[i][j].levelXP > 0) {
-        let skillListItem;
-        let skillNumber;
-        let progressBarEmpty;
-        let progressBarFill;
-        let tooltip;
-        let skillListItemContainer = document.createElement("div");
-        skillListItem = document.createElement("div");
-        skillListItem.innerHTML = "<b>" + capitalize(j) + "</b>";
-        skillNumber = document.createElement("span");
-        skillNumber.id = x.name + j;
-        skillNumber.style.textAlign = "right";
-        skillListItem.appendChild(skillNumber);
-        progressBarEmpty = document.createElement("div");
-        progressBarEmpty.className = "progressBarEmpty";
-        progressBarFill = document.createElement("div");
-        progressBarFill.className = "progressBarFill"
-        progressBarFill.id = x.name + j + "Progress";
-        progressBarFill.style.width = (x[j].levelXP / x[j].toNextLevel) * 100 + "%";
-        progressBarEmpty.appendChild(progressBarFill);
-        skillListItem.appendChild(progressBarEmpty);
-        skillListItemContainer.appendChild(skillListItem);
-        tooltip = document.createElement("tooltip");
-        tooltip.id = x.name + j + "Tooltip";
-        tooltip.innerHTML = "<b>" + capitalize(j) + "</b>" +
-        "<br><b>Level: </b>" + x[j].level +
-        "<br><b>Level XP: </b>" + x[j].levelXP + " / " + x[j].toNextLevel;
-        skillListItemContainer.appendChild(tooltip);
-        skillsBox.appendChild(skillListItemContainer);
+      let y = skills[j];
+      let z = skillsNames[j];
+      let skillListItem;
+      let skillNumber;
+      let progressBarEmpty;
+      let progressBarFill;
+      let tooltip;
+      let skillListItemContainer = document.createElement("div");
+      skillListItem = document.createElement("div");
+      skillListItem.innerHTML = "<b>" + z + "</b>";
+      skillNumber = document.createElement("span");
+      skillNumber.id = x.name + y;
+      skillNumber.style.float = "right";
+      skillNumber.innerHTML = x[y].level;
+      skillListItem.appendChild(skillNumber);
+      progressBarEmpty = document.createElement("div");
+      progressBarEmpty.className = "progressBarEmpty";
+      progressBarFill = document.createElement("div");
+      progressBarFill.className = "progressBarFill"
+      progressBarFill.id = x.name + y + "Progress";
+      progressBarFill.style.width = (x[y].levelXP / x[y].toNextLevel) * 100 + "%";
+      progressBarEmpty.appendChild(progressBarFill);
+      skillListItem.appendChild(progressBarEmpty);
+      skillListItemContainer.appendChild(skillListItem);
+      tooltip = document.createElement("tooltip");
+      tooltip.id = x.name + y + "Tooltip";
+      tooltip.innerHTML = "<b>" + z + "</b>" +
+      "<br><b>Level: </b>" + x[y].level +
+      "<br><b>Level XP: </b>" + x[y].levelXP + " / " + x[y].toNextLevel;
+      skillListItemContainer.appendChild(tooltip);
+      if (character[i][y].level == 0 && character[i][y].levelXP == 0) {
+        skillListItemContainer.style.display = "none";
       }
+      skillsBox.appendChild(skillListItemContainer);
     }
     characterNumber.appendChild(skillsBox);
   }
 }
-
+/*
+function rebuildStatBox() {
+  let box = document.getElementById("characterBox");
+  for (let i = 1; i < box.childElementCount; i++) {
+    while (box.children[i].firstElementChild) {
+      box.childNodes[i].removeChild(box.childNodes[i].firstElementChild);
+    }
+  }
+  buildStatBox();
+}
+*/
 function characterSwitch(target) {
   for (let i = 0; i < character.length; i++) {
     document.getElementById("character" + i).style.display = "none";
@@ -112,7 +132,7 @@ function characterSwitch(target) {
 
 function increaseStats(char, action, multiplier) {
   for (x in action.stats) {
-    char[x].levelXP += action.stats[x] * multiplier;
+    char[x].levelXP += action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2);
     if (char[x].levelXP >= char[x].toNextLevel) {
       levelUp(char, x, "level");
     }
@@ -124,9 +144,16 @@ function increaseStats(char, action, multiplier) {
 }
 
 function increaseSkills(char, skill, amount) {
+  let rebuild = false;
+  if (char[skill].level == 0 && char[skill].levelXP == 0) {
+    rebuild = true;
+  }
   char[skill].levelXP += amount;
   if (char[skill].levelXP >= char[skill].toNextLevel) {
     levelUp(char, skill, "level");
+  }
+  if (rebuild == true) {
+    buildStatBox();
   }
   document.getElementById(char.name + skill).innerHTML = char[skill].level;
   document.getElementById(char.name + skill + "Progress").style.width = char[skill].levelXP /
@@ -149,7 +176,8 @@ function updateStats() {
       "<br><b>Level: </b>" + x[y].level +
       "<br><b>Level XP: </b>" + Math.floor(x[y].levelXP) + " / " + x[y].toNextLevel +
       "<br><b>Talent: </b>" + x[y].talent +
-      "<br><b>Talent XP: </b>" + Math.floor(x[y].talentXP) + " / " + x[y].toNextTalent;
+      "<br><b>Talent XP: </b>" + Math.floor(x[y].talentXP) + " / " + x[y].toNextTalent +
+      "<br><b>Talent Multi: </b>" + (1 + Math.pow(x[y].talent, .3) / 2).toFixed(2);
     }
   }
 }
@@ -254,6 +282,16 @@ function Person (name) {
     toNextTalent: 100,
   }
   this.combat = {
+    level: 0,
+    levelXP: 0,
+    toNextLevel: 100,
+  }
+  this.alchemy = {
+    level: 0,
+    levelXP: 0,
+    toNextLevel: 100,
+  }
+  this.manaFlow = {
     level: 0,
     levelXP: 0,
     toNextLevel: 100,

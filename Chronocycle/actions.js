@@ -1,6 +1,7 @@
 var wander = {
   name: "Wander",
   manaCost: 100,
+  exploration: "<b>Village Explored XP: 250(1000 with a Map)",
   stats: {
     speed: .2,
     perception: .5,
@@ -12,11 +13,14 @@ var wander = {
   finish: function(char) {
     if (location[0].progressBars.wanderProgressBar.currentLevel < 100) {
       let x = location[0].progressBars.wanderProgressBar;
-      x.currentXP += (char.hasMap) ? 400 : 100;
+      x.currentXP += (char.hasMap) ? 1000 : 250;
       checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x.resource);
     }
   },
-  tooltip: "If you look around the village maybe you can find something to make these cycles longer",
+  get tooltip() { return [
+    "If you look around the village maybe you can find something to make these cycles longer",
+    "<b>Village Explored XP: </b> 250 (1000 with a Map)",
+  ]},
 };
 
 var smashPots = {
@@ -55,7 +59,7 @@ var smashPots = {
   get tooltip() { return [
     "For whatever reason the villagers here like throwing bits of mana in pots",
     "Reliable pots have " + this.manaGain + " mana in them",
-    "Every " + this.resource.reliableEfficiency * 100 + " pots are reliable",
+    "Every " + 100 / (this.resource.reliableEfficiency * 100) + " pots are reliable",
   ]},
 };
 
@@ -79,13 +83,16 @@ var meetPeople = {
       updateResourceText(location[0].progressBars.meetPeopleProgressBar.resource);
     }
   },
-  tooltip: "Well you're going to be stuck here a while, might as well make some friends",
+  get tooltip() { return [
+    "Well you're going to be stuck here a while, might as well make some friends",
+    "<b>People Met XP: </b> 100"
+  ]},
 };
 
 var doFavours = {
   name: "DoFavours",
-  manaCost: 250,
-  goldGain: 3,
+  manaCost: 400,
+  goldGain: 5,
   resource: location[0].progressBars.meetPeopleProgressBar.resource,
   stats: {
     speed: .5,
@@ -98,7 +105,8 @@ var doFavours = {
   finish: function(char) {
     if (document.getElementById("FavoursLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += 1;
+        char.gold += 5;
+        updateResourceBox("gold");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -109,7 +117,8 @@ var doFavours = {
       updateResources(location[0].progressBars.meetPeopleProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += 1;
+      char.gold += 5;
+      updateResourceBox("gold");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -118,7 +127,7 @@ var doFavours = {
   get tooltip() { return [
     "Even though these villagers aren't rich, some might reward you for hard work",
     "Villagers with gold to spare will reward " + this.goldGain + " gold for a favour",
-    "Every " + this.resource.reliableEfficiency * 100 + " favours will have a reward",
+    "Every " + 100 / (this.resource.reliableEfficiency * 100) + " favours will have a reward",
   ]},
 };
 
@@ -142,18 +151,21 @@ var investigate = {
       updateResourceText(location[0].progressBars.secretsFoundProgressBar.resource);
     }
   },
-  tooltip: "Snooping around the village might gain you insight into a few valueable things",
+  get tooltip() { return [
+    "Snooping around the village might gain you insight into a few valueable things",
+    "<b>Secrets Found XP: </b> 100"
+  ]},
 };
 
 var steal = {
   name: "Steal",
-  manaCost: 600,
-  goldGain: 10,
+  manaCost: 1000,
+  goldGain: 15,
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
     speed: .6,
     dexterity: .3,
-    strength: .3,
+    strength: .1,
     //soul -10%?
   },
   canStart: function(char) {
@@ -162,8 +174,10 @@ var steal = {
   finish: function(char) {
     if (document.getElementById("VillagersRobbedLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += 10;
+        char.gold += 15;
+        updateResourceBox("gold");
         char.reputation -= 1;
+        updateResourceBox("reputation");
         this.resource.usedAmount++
         updateResourceText(this.resource);
         return;
@@ -174,8 +188,10 @@ var steal = {
       updateResources(location[0].progressBars.secretsFoundProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += 10;
+      char.gold += 15;
+      updateResourceBox("gold");
       char.reputation -= 1;
+      updateResourceBox("reputation");
       this.resource.usedAmount;
       updateResourceText(this.resource);
       return;
@@ -184,7 +200,7 @@ var steal = {
   get tooltip() { return [
     "Gives you more gold than helping the town that's for sure, but you still don't feel good about it",
     "Houses with loot in them have " + this.goldGain + " gold in them",
-    "Every " + this.resource.reliableEfficiency * 100 + " houses have loot in them",
+    "Every " + 100 / (this.resource.reliableEfficiency * 100) + " houses have loot in them",
   ]},
 };
 
@@ -202,7 +218,10 @@ var combatTraining = {
   finish: function(char) {
     increaseSkills(char, "combat", 100);
   },
-  tooltip: "There's an old retired soldier who's willing to show you how to fight",
+  get tooltip() { return [
+    "There's an old retired soldier who's willing to show you how to fight",
+    "<b>Combat Skill XP: </b> 100",
+  ]},
 };
 // TODO: chars
 var fightWolves = {
@@ -224,9 +243,9 @@ var fightWolves = {
     let last = false;
     for (let i = 0; i < 3; i++) {
       x = document.getElementById("wolfFightingSegment" + i);
-      if (Number(x.innerHTML) < x.parentElement.previousElementSibling.getAttribute("data-goal")) {
-        stat = x.parentElement.previousElementSibling.getAttribute("data-stat");
-        bar = x.parentElement.previousElementSibling;
+      if (Number(x.innerHTML) < x.parentElement.previousElementSibling.childNodes[0].getAttribute("data-goal")) {
+        stat = x.parentElement.previousElementSibling.childNodes[0].getAttribute("data-stat");
+        bar = x.parentElement.previousElementSibling.childNodes[0];
         if (i == 2) {
           last = true;
         }
@@ -240,7 +259,7 @@ var fightWolves = {
     bar.style.width = bar.getAttribute("data-progress") / bar.getAttribute("data-goal") * 100 + "%";
     if (Number(bar.getAttribute("data-progress")) >= bar.getAttribute("data-goal")) {
       bar.style.width = "100%";
-      location[0].progressBars.wolfFightingActionBar.completeSegment();
+      location[0].progressBars.wolfFightingActionBar.completeSegment(char);
       if (last == true) {
         location[0].progressBars.wolfFightingActionBar.completeBar();
         rebuildActionBar(0, "wolfFightingActionBar");
@@ -266,6 +285,7 @@ var buyMana = {
   finish: function(char) {
     char.mana += char.gold * 100;
     char.gold -= char.gold;
+    updateResourceBox("gold");
   },
   tooltip: "You can spend all your hard earned gold to get some mana. Luckily the shop owner won't ask questions about where you got the gold",
 };
@@ -280,11 +300,13 @@ var buyMap = {
     perception: .2,
   },
   canStart: function(char) {
-    return (char.currentLocation == 0);
+    return (char.currentLocation == 0 && char.gold >= 10);
   },
   finish: function(char) {
     char.gold -= 10;
+    updateResourceBox("gold");
     char.hasMap = true;
+    updateItemBox("map", "BuyMap");
   },
   tooltip: "You're sure that having a map will make it easier exploring the area",
 };
@@ -316,7 +338,9 @@ var buyGuide = {
   },
   finish: function(char) {
     char.gold -= 5;
+    updateResourceBox("gold");
     char.hasGuide = true;
+    updateItemBox("guide", "BuyGuide");
   },
   get tooltip() { return [
     "The path to the next town isn't an easy one. Luckily one of the villagers will help you, for a price of course",
@@ -327,7 +351,7 @@ var buyGuide = {
 var travelToForest = {
   name: "",
   get manaCost() {
-    return (hasGuide) ? 2500 : (25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225));
+    return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
   },
   stats: {
     speed: .8,
@@ -349,14 +373,14 @@ var travelToForest = {
 var returnToNoobton = {
   name: "ReturnToNoobton",
   get manaCost() {
-    return (hasGuide) ? 2500 : (25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225));
+    return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
   },
   stats: {
     speed: .8,
     constitution: .2,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     currentLocation = 0;
@@ -376,8 +400,8 @@ var exploreForest = {
     intelligence: .2,
     speed: .1,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (location[1].progressBars.exploreForestProgressBar.currentLevel < 100) {
@@ -388,7 +412,10 @@ var exploreForest = {
       updateResourceText(location[1].progressBars.exploreForestProgressBar.resource);
     }
   },
-  tooltip: "You've got all the time in the world, so why not spend some of it seeing what the forest has to offer?",
+  get tooltip() { return [
+    "You've got all the time in the world, so why not spend some of it seeing what the forest has to offer?",
+    "<b>Forest Explored XP: </b> 100 (400 with a Map)",
+  ]},
 };
 
 var investigateTrees = {
@@ -399,8 +426,8 @@ var investigateTrees = {
     perception: .6,
     wisdom: .1,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (location[1].progressBars.investigateTreesProgressBar.currentLevel < 100) {
@@ -411,21 +438,26 @@ var investigateTrees = {
       updateResourceText(location[1].progressBars.investigateTreesProgressBar.resource);
     }
   },
-  tooltip: "Some of the trees seem to have magical properties. Maybe you can find some that are ripe to take",
+  get tooltip() { return [
+    "Some of the trees seem to have magical properties. Maybe you can find some that are ripe to take",
+    "<b>Trees Checked XP: </b> 100"
+  ]},
 };
 
 var absorbManaFromTrees = {
   name: "AbsorbManaFromTrees",
   manaCost: 100,
-  manaGain: 175,
+  get manaGain() {
+    return (175 * (1 + Math.pow(character[0].manaFlow.level, 0.3))).toFixed(0);
+  },
   resource: location[1].progressBars.investigateTreesProgressBar.resource,
   stats: {
     constitution: .8,
     wisdom: .1,
     spirit: .1,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (document.getElementById("TreesLootFirst").checked) {
@@ -447,11 +479,13 @@ var absorbManaFromTrees = {
       return;
     }
   },
-  tooltip: "You can siphon the mana out of these trees. Normally you'd worry about saving the forest, but they'll be back in the next cycle",
+  get tooltip() { return [
+    "You can siphon the mana out of these trees. Normally you'd worry about saving the forest, but they'll be back in the next cycle",
+    "Mana trees have " + this.manaGain + " in them",
+    "Every 5 trees have mana in them",
+  ]},
 };
-//explore forest 100 = circus traval
-//game trails reduce travel costs
-//game hunt for gold give pelts
+
 var chopTrees = {
   name: "ChopTrees",
   manaCost: 250,
@@ -461,8 +495,8 @@ var chopTrees = {
     strength: .6,
     constitution: .2,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (document.getElementById("TreesLootFirst").checked) {
@@ -484,38 +518,49 @@ var chopTrees = {
       return;
     }
   },
-  tooltip: "",
+  get tooltip() { return [
+    "Maybe you can make something useful out of these trees",
+    "Mana trees can be cut down for 1 mana infused log",
+    "Every 5 trees have mana in them",
+  ]},
 };
 
 var mapGameTrails = {
   name: "MapGameTrails",
-  manaCost: 0,
+  manaCost: 1000,
   stats: {
-
+    dexterity: .3,
+    perception: .7,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
 
   },
-  tooltip: "",
+  get tooltip() { return [
+    "The animals always know the fastest way around the forest. Finding the paths they take should make it easier to travel through the forest",
+    "<b>Game Trails Explored XP: </b> 100 (400 with a Map)",
+  ]},
 };
 
 var huntAnimals = {
   name: "HuntAnimals",
-  manaCost: 0,
+  manaCost: 1500,
   resource: location[1].progressBars.mapGameTrailsProgressBar,
   stats: {
-
+    dexterity: .3,
+    intelligence: .2,
+    speed: .5,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (document.getElementById("AnimalsLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
         pelts += 1;
+        updateResourceBox("pelts");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -527,22 +572,28 @@ var huntAnimals = {
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
       pelts += 1;
+      updateResourceBox("pelts");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
     }
   },
-  tooltip: "",
+  get tooltip() { return [
+    "You might be able to sell some of the better pelts, or use them yourself if you think you can",
+    "Every 20 animals have useable pelts",
+  ]},
 };
 
 var talkToDryad = {
   name: "TalkToDryad",
-  manaCost: 0,
+  manaCost: 750,
   stats: {
-
+    constitution: .3,
+    wisdom: .5,
+    spirit: .2,
   },
-  get canStart() {
-    return (currentLocation == 1);
+  canStart: function(char) {
+    return (char.currentLocation == 1);
   },
   finish: function() {
     if (location[1].progressBars.talkToDryadProgressBar.currentLevel < 100) {
@@ -551,8 +602,115 @@ var talkToDryad = {
       checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
     }
   },
-  tooltip: "",
+  get tooltip() { return [
+    "The ancient tree spirits might be able to show you some more magical trees that you missed",
+    "<b>Dryad Knowledge Learned XP: </b> 100"
+  ]},
 };
+
+var wizardTraining = {
+  name: "WizardTraining",
+  manaCost: 1000,
+  stats: {
+    wisdom: .8,
+    spirit: .2,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1);
+  },
+  finish: function() {
+    if (location[1].progressBars.wizardTrainingProgressBar.currentLevel < 100) {
+      let x = location[1].progressBars.wizardTrainingProgressBar;
+      x.currentXP += 100;
+      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
+    }
+  },
+  get tooltip() { return [
+    "There's an old wizard you've stumbled upon that's agreed to teach you magic",
+    "<b>Wizard Training Received XP: </b> 100"
+  ]},
+};
+
+var searchForElderberries = {
+  name: "SearchForElderberries",
+  manaCost: 750,
+  stats: {
+    dexterity: .2,
+    perception: .5,
+    intelligence: .3,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1);
+  },
+  finish: function(char) {
+    if (location[1].progressBars.searchForElderberriesProgressBar.currentLevel < 100) {
+      let x = location[1].progressBars.searchForElderberriesProgressBar;
+      x.currentXP += (char.hasMap) ? 400 : 100;
+      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
+    }
+  },
+  get tooltip() { return [
+    "<b>Elderberries Found XP: </b> 100 (400)"
+  ]},
+};
+
+var pickElderberries = {
+  name: "PickElderberries",
+  manaCost: 200,
+  stats: {
+    dexterity: .2,
+    speed: .4,
+    intelligence: .4,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1);
+  },
+  finish: function() {
+
+  },
+  get tooltip() { return [
+    ""
+  ]},
+};
+
+var makeMinorHealthPotion = {
+  name: "makeMinorHealthPotion",
+  manaCost: 5000,
+  stats: {
+    dexterity: .1,
+    perception: .1,
+    intelligence: .4,
+    wisdom: .4,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1 && char.elderberries >= 5);
+  },
+  finish: function(char) {
+    increaseSkills(char, "alchemy", 100);
+  },
+  get tooltip() { return [
+    "<b>Alchemy XP: </b> 100",
+  ]},
+}
+
+var trainManaFlow = {
+  name: "Train Mana Flow",
+  manaCost: 1500,
+  stats: {
+    wisdom: .9,
+    spirit: .1,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1 && char.elderberries >= 5);
+  },
+  finish: function(char) {
+    increaseSkills(char, "manaFlow", 100);
+  },
+  get tooltip() { return [
+    "",
+    "<b>Mana Flow Skill XP: </b> 100",
+  ]},
+}
 
 //highwayman blocking route?
 /*

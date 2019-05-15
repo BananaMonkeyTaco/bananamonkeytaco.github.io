@@ -1,12 +1,6 @@
 var currentCharacter = 0;
-var nextReset;
-var actionAmountCh;
-var hasGuide = false;
-var currentAction;
-var currentCostLeft;
-var multiplier;
-var currentActionPlace = 0;
-var resources = ["mana", "gold", "reputation", "pelts"];
+var resources = ["mana", "gold", "reputation", "pelts", "elderberries", "minorHealthPotions"];
+var resourcesShown = [true, false, false, false, false, false];
 var gamePaused = true;
 var tutorial = true;
 var location;
@@ -17,7 +11,8 @@ var point = [225, 270, 315, 180, 0, 0, 135, 90, 45];
 var character = [];
 var statNames = ["dexterity", "strength", "constitution", "speed", "perception",
 "charisma", "intelligence", "wisdom", "spirit"];
-var skills = ["combat"];
+var skills = ["combat", "alchemy", "manaFlow"];
+var skillsNames = ["Combat", "Alchemy", "Mana Flow"];
 var dexterityColour = "#996633";
 var strengthColour = "red";
 var constitutionColour = "lime";
@@ -28,20 +23,6 @@ var intelligenceColour = "#33ccff";
 var wisdomColour = "#8080ff";
 var spiritColour = "grey";
 var activeLoadout = 0;
-var loadoutActions = {
-  1: [],
-  2: [],
-  3: [],
-  4: [],
-  5: [],
-}
-var loadoutAmount = {
-  1: [],
-  2: [],
-  3: [],
-  4: [],
-  5: [],
-}
 
 function capitalize(string) {
   return string.slice(0, 1).toUpperCase() + string.slice(1);
@@ -63,18 +44,11 @@ function changeChanger(num) {
 }
 
 function checkCharacters() {
-  // TODO: resources need to be made better here
   let tempElement = document.getElementById("actionColumn");
   for (let i = 0; i < character.length; i++) {
     if (character[i].visible) {
       let tempDiv;
       let tempSubDiv;
-      //Resource boxes
-      document.getElementById("characterList").innerHTML += "<br>" + character[i].name;
-      for (let j = 0; j < resources.length; j++) {
-        let x = resources[j];
-        document.getElementById(x + "Box").innerHTML += "<br>" + character[i][x];
-      }
       //Stat boxes
       //Character selection
       tempDiv = document.createElement("div");
@@ -112,24 +86,14 @@ function checkCharacters() {
 
 function showTutorial() {
   let tutorialBox = document.createElement("div");
-  tutorialBox.style.position = "absolute";
-  tutorialBox.style.backgroundColor = "lightgreen";
-  tutorialBox.style.zIndex = "1";
-  tutorialBox.style.borderRadius = "5px";
-/*  display: none;
-  padding: 4px;
-  position: absolute;
-  background-color: lightgreen;
-  border: 1px solid black;
-  border-radius: 5px;
-  text-align: left;*/
+  tutorialBox.className = "tutorialBox";
   let tempElement = document.createElement("div");
   tempElement.style.fontWeight = "bold";
-  let miscText = document.createTextNode("Tutorial");
-  tempElement.appendChild(miscText);
   tutorialBox.appendChild(tempElement);
   tempElement = document.createElement("div");
   tempElement.innerHTML =
+  "<b>What happened?</b>" +
+  "<br>" +
   "You don't quite remember who you are or how you got here..." +
   "<br>" +
   "You don't quite remember who you are or how you got here..." +
@@ -142,8 +106,8 @@ function showTutorial() {
   "<br>" +
   "You remember being brought back. Wait, you're mana's draining rapidly..." +
   "<br>" +
-  "You're mana's draining. Maybe if you focus on containing it you can make it last longer. It's still draining too fast..." +
-  "<br>" +
+  "Your mana's draining. Maybe if you focus on containing it you can make it last longer." +
+  "<br><br>" +
   "You remember to focus on your mana. It's still draining slowly, but at least you have some time to think. " +
   "You try to remember how you got into this situation but can't remember more than some foggy memories of being abducted " +
   "by somebody. Well you can't just stay here reliving the same few seconds over and over again. Maybe if you explored " +
@@ -155,16 +119,20 @@ function showTutorial() {
   tempElement.onclick = function() {
     document.getElementById("introButton").removeChild(this.parentElement);
     tutorial = false;
-    document.getElementById("introButton").onclick = function() {
-      //showTutorial();
+    document.getElementById("introButton").onclick = function(){
+      showTutorial()
     }
+    event.stopPropagation();
   }
   tutorialBox.appendChild(tempElement);
   document.getElementById("introButton").appendChild(tutorialBox);
-  document.getElementById("introButton").onclick = function() {}
+  document.getElementById("introButton").onclick = function(){}
 }
 
 function cheat() {
+  character[0].combat.level = 50;
+  buildStatBox();
+  location[1].visible = true;
   location[0].progressBars.wanderProgressBar.currentLevel = 80;
   getNextLevel(location[0].progressBars.wanderProgressBar);
   updateResources(location[0].progressBars.wanderProgressBar);
@@ -185,6 +153,12 @@ function cheat() {
   location[1].progressBars.talkToDryadProgressBar.currentLevel = 100;
   getNextLevel(location[1].progressBars.talkToDryadProgressBar);
   updateResources(location[1].progressBars.investigateTreesProgressBar);
+  location[1].progressBars.wizardTrainingProgressBar.currentLevel = 30;
+  getNextLevel(location[1].progressBars.wizardTrainingProgressBar);
+  updateResources(location[1].progressBars.wizardTrainingProgressBar);
+  location[1].progressBars.searchForElderberriesProgressBar.currentLevel = 100;
+  getNextLevel(location[1].progressBars.searchForElderberriesProgressBar);
+  updateResources(location[1].progressBars.searchForElderberriesProgressBar);
   buildTownBox();
 }
 /*

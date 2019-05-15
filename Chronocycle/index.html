@@ -10,6 +10,7 @@
   <script src="stats.js"></script>
   <script src="actionList.js"></script>
   <script src="saving.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
   integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css">
@@ -22,6 +23,10 @@
       <span id="goldBox" class="resourceBox"><b>Gold</b></span>
       <span id="reputationBox" class="resourceBox"><b>Reputation</b></span>
       <span id="peltsBox" class="resourceBox"><b>Pelts</b></span>
+      <span id="elderberriesBox" class="resourceBox"><b>Elderberries</b></span>
+      <span id="minorHealthPotionsBox" class="resourceBox"><b>Potions</b></span>
+      <span id="mapBox" class="itemBox"></span>
+      <span id="guideBox" class="itemBox"></span>
     </div>
       <div>
         <button type="button" style="margin: 0px; padding: 2px 6px" onclick=gamePlay()><i class="fas fa-play"></i></button>
@@ -37,10 +42,10 @@
     </div>
   </div>
   <div id="actionColumn" class="column">
-    <div id="actionBoxButtons" class="actionBoxButtons" style=text-align:right>
-      <label for="amountChanger" class="textAmount">Amount</label>
-      <input type="text" id="amountChanger" name="amountChanger" style=width:50px></input>
+    <div id="actionBoxButtons" class="actionBoxButtons" style=text-align:center>
       <div>
+        <label for="amountChanger" class="textAmount">Amount</label>
+        <input type="text" id="amountChanger" name="amountChanger" style=width:90px></input>
         <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(1)>1</button>
         <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(5)>5</button>
         <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(10)>10</button>

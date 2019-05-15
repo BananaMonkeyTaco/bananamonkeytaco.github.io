@@ -143,12 +143,12 @@ function buildTownBox() {
           completedSpan.innerHTML = y.completedName;
           completedNumber = document.createElement("span");
           completedNumber.style.fontWeight = "normal";
-          completedNumber.id = y.name + "Completed";
+          completedNumber.id = y.id + "Completed";
           completedNumber.innerHTML = y.completedAmount;
           completedSpan.appendChild(completedNumber);
           nameBar.appendChild(completedSpan);
           townActionBar.appendChild(nameBar);
-          //The actiony part of the action bar
+          //The action part of the action bar
           let segmentBar = document.createElement("div");
           segmentBar.className = "actionBar";
           let previousGoals = [];
@@ -178,7 +178,7 @@ function buildTownBox() {
             /*
             put the fluff stuff here
             */
-            tooltip.innerHTML = "<b>Stat " + y.segmentStats[j];
+            tooltip.innerHTML = "<b>Stat: " + capitalize(y.segmentStats[j]);
             currentProgress = document.createElement("span");
             currentProgress.id = y.id + "Segment" + j;
             currentProgress.innerHTML = "0";
@@ -231,11 +231,12 @@ function buildTownBox() {
         buttonContainer.appendChild(button);
         //all the glory of the tooltip
         tooltip = document.createElement("tooltip");
+        tooltip.innerHTML = "<b>" + location[i].buttons[x].name + "</b><br>";
         //potential to remove this if statement later
         if (action.tooltip.join) {
-          tooltip.innerHTML = action.tooltip.join("<br>");
+          tooltip.innerHTML += action.tooltip.join("<br>");
         } else {
-          tooltip.innerHTML = action.tooltip;
+          tooltip.innerHTML += action.tooltip;
         }
         for (let j = 0; j < statNames.length; j++) {
           let z = statNames[j];
@@ -343,10 +344,10 @@ function updateResourceText(resource) {
 
 function updateResources(progressBars) {
   resource = progressBars.resource;
-  resource.totalAmount = progressBars.currentLevel * resource.totalEfficiency;
+  resource.totalAmount = Math.floor(progressBars.currentLevel * resource.totalEfficiency);
   resource.uncheckedAmount = resource.totalAmount - resource.checkedAmount;
   resource.reliableAmount = Math.floor((resource.totalAmount - resource.uncheckedAmount) * resource.reliableEfficiency);
-  resource.unreliableAmount = resource.totalAmount - resource.reliableAmount;
+  resource.unreliableAmount = resource.totalAmount - resource.uncheckedAmount - resource.reliableAmount;
 }
 
 function updateProgressBar(progressBars) {
@@ -359,9 +360,13 @@ function updateProgressBar(progressBars) {
 }
 
 function getNextLevel(x) {
-  x.toNextLevel = (x.currentLevel + 1) * 100;
-  x.resource.totalAmount += x.resource.totalEfficiency;
-  x.resource.uncheckedAmount += x.resource.totalEfficiency;
+  if (x == location[1].progressBars.wizardTrainingProgressBar) {
+    x.toNextLevel = Math.max(1, (x.currentLevel + 1) % 10) * (100 * Math.pow(10, Math.floor((x.currentLevel + 1) / 10)));
+  } else {
+    x.toNextLevel = (x.currentLevel + 1) * 100;
+    x.resource.totalAmount += x.resource.totalEfficiency;
+    x.resource.uncheckedAmount += x.resource.totalEfficiency;
+  }
 }
 
 function checkLevel(x) {
@@ -400,17 +405,15 @@ function resetActionBars() {
 }
 
 function rebuildActionBar(barLocation, actionBar) {
-  let x = location[barLocation].actionBars[actionBar];
+  let x = location[barLocation].progressBars[actionBar];
   let y = document.getElementById(x.id + "Segment0").parentElement.parentElement.parentElement;
   let previousGoals = [];
   for (let i = 0; i < y.childElementCount; i++) {
-    previousGoals.push(y.childNodes[i].firstElementChild.getAttribute("data-goal"));
+    previousGoals.push(y.childNodes[i].firstElementChild.firstElementChild.getAttribute("data-goal"));
   }
   for (let i = 0; i < y.childElementCount; i++) {
-    let z = y.childNodes[i].firstElementChild;
+    let z = y.childNodes[i].firstElementChild.firstElementChild;
     z.setAttribute("data-progress", 0);
-    console.log(x.segmentGoal(previousGoals))
-    console.log(previousGoals)
     z.setAttribute("data-goal", x.segmentGoal(previousGoals));
     document.getElementById(x.id + "Segment" + i).innerHTML = 0;
     document.getElementById(x.id + "Segment" + i).nextSibling.textContent = " / " + z.getAttribute("data-goal");
@@ -491,7 +494,7 @@ location[0] = {
         unreliableAmount: 0,
         unreliableAmountText: "Favours Without a Reward: ",
         totalAmount: 0,
-        totalEfficiency: .5,
+        totalEfficiency: 1,
         reliableEfficiency: .1,
         checkedAmount: 0,
       },
@@ -520,7 +523,7 @@ location[0] = {
         unreliableAmountText: "People Not Worth Robbing: ",
         totalAmount: 0,
         totalEfficiency: .5,
-        reliableEfficiency: .4,
+        reliableEfficiency: .5,
         checkedAmount: 0,
       },
     },
@@ -532,6 +535,7 @@ location[0] = {
       completedAmount: 0,
       segmentStats: ["dexterity", "constitution", "strength"],
       segmentGoal: function(previousGoals) {
+        console.log(previousGoals)
         if (previousGoals && previousGoals.length >= 2) {
           let x = previousGoals.length;
           return fibonacci(Number(previousGoals[x - 2]), Number(previousGoals[x - 1]));
@@ -540,11 +544,13 @@ location[0] = {
         }
       },
       segmentProgress: 0,
-      completeSegment: function() {
-        gold += 30;
+      completeSegment: function(char) {
+        char.gold += 30;
+        updateResourceBox("gold");
       },
       completeBar: function() {
         this.completedAmount++;
+        document.getElementById("wolfFightingCompleted").innerHTML = this.completedAmount;
       },
       get visible() {
         return location[0].buttons.fightWolves.visible;
@@ -571,7 +577,7 @@ location[0] = {
         return (location[0].progressBars.wanderProgressBar.currentLevel >= 15);
       },
       requirementAction: ["Village Explored"],
-      requirementAmount: ["30%"],
+      requirementAmount: ["15%"],
     },
     doFavours: {
       name: "Do Favours",
@@ -590,7 +596,7 @@ location[0] = {
         return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 15);
       },
       get unlocked() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 30);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 20);
       },
       requirementAction: ["People Met"],
       requirementAmount: [30],
@@ -604,15 +610,15 @@ location[0] = {
         return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 10);
       },
       requirementAction: ["Secrets Found"],
-      requirementAmount: [10],
+      requirementAmount: ["10%"],
     },
     combatTraining: {
       name: "Combat Training",
       get visible() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 10);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 20);
       },
       get unlocked() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 20)
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 30)
       },
       requirementAction: ["People Met"],
       requirementAmount: [20],
@@ -620,14 +626,14 @@ location[0] = {
     fightWolves: {
       name: "Fight Wolves",
       get visible() {
-        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20);
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 10);
       },
       get unlocked() {
-        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 25
         && character[0].combat.level >= 5);
       },
       requirementAction: ["Secrets Found", "Combat"],
-      requirementAmount: [20, 5],
+      requirementAmount: ["20%", 5],
     },
     buyMana: {
       name: "Buy Mana",
@@ -643,13 +649,13 @@ location[0] = {
     buyMap: {
       name: "Buy a Map",
       get visible() {
-        return (location[0].progressBars.wanderProgressBar.currentLevel >= 35);
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 15);
       },
       get unlocked() {
-        return (location[0].progressBars.wanderProgressBar.currentLevel >= 60);
+        return (location[0].progressBars.wanderProgressBar.currentLevel >= 30);
       },
       requirementAction: ["Village Explored"],
-      requirementAmount: ["60%"],
+      requirementAmount: ["30%"],
     },
     buyAxe: {
 
@@ -657,7 +663,7 @@ location[0] = {
     buyGuide: {
       name: "Buy Guide",
       get visible() {
-        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 25);
+        return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 30);
       },
       get unlocked() {
         return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 40);
@@ -671,7 +677,7 @@ location[0] = {
       name: "Travel to the Forest",
       direction: "toEast",
       get visible() {
-        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20)
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 25)
       },
       get unlocked() {
         return (character[0].combat.level >= 15);
@@ -775,6 +781,49 @@ location[1] = {
         name: undefined,
       },
     },
+    wizardTrainingProgressBar: {
+      type: "Progress",
+      name: "Wizard Training Received: ",
+      nameId: "wizardTrainingReceived",
+      barId: "wizardTrainingProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[1].buttons.wizardTraining.unlocked;
+      },
+      resource: {
+        name: undefined,
+      },
+    },
+    searchForElderberriesProgressBar: {
+      type: "Progress",
+      name: "Elderberries Found: ",
+      nameId: "elderberriesFound",
+      barId: "searchForElderberriesProgressBar",
+      currentXP: 0,
+      currentLevel: 0,
+      toNextLevel: 100,
+      get visible() {
+        return location[1].buttons.searchForElderberries.unlocked;
+      },
+      resource: {
+        name: "Elderberries",
+        visible: true,
+        reliableFirstLock: false,
+        usedAmount: 0,
+        reliableAmount: 0,
+        reliableAmountText: "Ripe Elderberries: ",
+        uncheckedAmount: 0,
+        uncheckedAmountText: "Elderberries Not Checked: ",
+        unreliableAmount: 0,
+        unreliableAmountText: "Unripe Elderberries: ",
+        totalAmount: 0,
+        totalEfficiency: 5,
+        reliableEfficiency: 0.05,
+        checkedAmount: 0,
+      }
+    }
   },
   buttons: {
     exploreForest: {
@@ -818,7 +867,7 @@ location[1] = {
     mapGameTrails: {
       name: "Map Game Trails",
       get visible() {
-        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 15);
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 10);
       },
       get unlocked() {
         return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 25);
@@ -840,13 +889,68 @@ location[1] = {
     talkToDryad: {
       name: "Talk to Dryad",
       get visible() {
-        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 40);
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 25);
       },
       get unlocked() {
         return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 50);
       },
       requirementAction: ["Forest Explored"],
       requirementAmount: [50],
+    },
+    wizardTraining: {
+      name: "Wizard Training",
+      get visible() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 50);
+      },
+      get unlocked() {
+        return (location[1].progressBars.exploreForestProgressBar.currentLevel >= 75);
+      },
+      requirementAction: ["Forest Explored"],
+      requirementAmount: [75],
+    },
+    searchForElderberries: {
+      name: "Search For Elderberries",
+      get visible() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Wizard Training"],
+      requirementAmount: [10],
+    },
+    pickElderberries: {
+      name: "Pick Elderberries",
+      get visible() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[1].progressBars.searchForElderberriesProgressBar.currentLevel >= 5);
+      },
+      requirementAction: ["Elderberries Found"],
+      requirementAmount: [5],
+    },
+    makeMinorHealthPotion: {
+      name: "Make Minor Health Potion",
+      get visible() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 5);
+      },
+      get unlocked() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 10);
+      },
+      requirementAction: ["Wizard Training"],
+      requirementAmount: [10],
+    },
+    trainManaFlow: {
+      name: "Train Mana Flow",
+      get visible() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 20);
+      },
+      requirementAction: ["Wizard Training"],
+      requirementAmount: [10],
     },
   },
   travelButtons: {
