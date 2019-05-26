@@ -65,7 +65,7 @@ var smashPots = {
 
 var meetPeople = {
   name: "MeetPeople",
-  manaCost: 250,
+  manaCost: 200,
   stats: {
     charisma: .5,
     intelligence:.2,
@@ -76,7 +76,7 @@ var meetPeople = {
   },
   finish: function() {
     if (location[0].progressBars.meetPeopleProgressBar.currentLevel < 100) {
-      location[0].progressBars.meetPeopleProgressBar.currentXP += 100;
+      location[0].progressBars.meetPeopleProgressBar.currentXP += 150;
       checkLevel(location[0].progressBars.meetPeopleProgressBar);
       updateProgressBar(location[0].progressBars.meetPeopleProgressBar);
       updateResources(location[0].progressBars.meetPeopleProgressBar);
@@ -85,7 +85,7 @@ var meetPeople = {
   },
   get tooltip() { return [
     "Well you're going to be stuck here a while, might as well make some friends",
-    "<b>People Met XP: </b> 100"
+    "<b>People Met XP: </b> 150"
   ]},
 };
 
@@ -253,12 +253,13 @@ var fightWolves = {
       }
     }
     let progress = 1 * multiplier * (1 + char[stat].level / 100) * (char.combat.level) *
-    (1 + location[0].progressBars.wolfFightingActionBar.completedAmount);
-    x.innerHTML = progress + Number(x.innerHTML);
+    Math.sqrt(1 + location[0].progressBars.wolfFightingActionBar.completedAmount / 100);
+    x.innerHTML = Math.floor(progress + Number(x.innerHTML));
     bar.setAttribute("data-progress", String(Number(bar.getAttribute("data-progress")) + progress));
     bar.style.width = bar.getAttribute("data-progress") / bar.getAttribute("data-goal") * 100 + "%";
     if (Number(bar.getAttribute("data-progress")) >= bar.getAttribute("data-goal")) {
       bar.style.width = "100%";
+      x.innerHTML = Number(bar.getAttribute("data-goal"));
       location[0].progressBars.wolfFightingActionBar.completeSegment(char);
       if (last == true) {
         location[0].progressBars.wolfFightingActionBar.completeBar();
@@ -268,7 +269,10 @@ var fightWolves = {
   },
   finish: function() {
   },
-  tooltip: "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims",
+  get tooltip() { return [
+    "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims",
+    "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) per "
+  ]},
 };
 
 var buyMana = {
@@ -350,8 +354,12 @@ var buyGuide = {
 
 var travelToForest = {
   name: "",
-  get manaCost() {
-    return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
+  manaCost: function(char) {
+    if (char.hasGuide) {
+      return 2500;
+    } else {
+      return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
+    }
   },
   stats: {
     speed: .8,
@@ -361,7 +369,10 @@ var travelToForest = {
     return (char.currentLocation == 0);
   },
   finish: function() {
-    location[1].visible = true;
+    if (location[1].visible == false) {
+      location[1].visible = true;
+      buildTownBox();
+    }
     currentLocation = 1;
   },
   get tooltip() { return [

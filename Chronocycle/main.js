@@ -62,7 +62,8 @@ function gameNewCycle() {
     for (let j in location[i].progressBars) {
       if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name != undefined) {
         location[i].progressBars[j].resource.usedAmount = 0;
-        if (document.getElementById(location[i].progressBars[j].id)) {
+        console.log(document.getElementById(location[i].progressBars[j].id))
+        if (document.getElementById(location[i].progressBars[j].barId)) {
           updateResourceText(location[i].progressBars[j].resource);
         }
       }

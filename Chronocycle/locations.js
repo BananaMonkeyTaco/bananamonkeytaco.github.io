@@ -159,11 +159,12 @@ function buildTownBox() {
             let tooltip;
             let currentProgress;
             let progressGoal;
-            segmentContainer = document.createElement("span");
+            segmentContainer = document.createElement("div");
+            segmentContainer.style.width = 'calc(' + 100 / y.segmentStats.length + '% - 6px)';
+            segmentContainer.style.display = "inline-block";
             segment = document.createElement("div");
             segment.className = "progressBarEmpty";
             segment.style.display = "inline-block"; segment.style.margin = "3px"; segment.style.height = "8px";
-            segment.style.width = 'calc(' + 100 / y.segmentStats.length + '% - 6px)';
             segment.style.backgroundColor = window[y.segmentStats[j] + "Colour"];
             segmentProgress = document.createElement("div");
             segmentProgress.className = "progressBarFill";
@@ -372,10 +373,11 @@ function getNextLevel(x) {
 function checkLevel(x) {
   if (x.currentXP >= x.toNextLevel) {
     x.currentLevel++;
-    x.currentXP = 0;
+    x.currentXP = x.currentXP - x.toNextLevel;
     getNextLevel(x);
     updateResources(x);
     buildTownBox();
+    checkLevel(x);
   }
 }
 
@@ -535,7 +537,6 @@ location[0] = {
       completedAmount: 0,
       segmentStats: ["dexterity", "constitution", "strength"],
       segmentGoal: function(previousGoals) {
-        console.log(previousGoals)
         if (previousGoals && previousGoals.length >= 2) {
           let x = previousGoals.length;
           return fibonacci(Number(previousGoals[x - 2]), Number(previousGoals[x - 1]));
