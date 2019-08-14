@@ -161,10 +161,11 @@ function buildTownBox() {
             let progressGoal;
             segmentContainer = document.createElement("div");
             segmentContainer.style.width = 'calc(' + 100 / y.segmentStats.length + '% - 6px)';
+            segmentContainer.style.margin = "3px";
             segmentContainer.style.display = "inline-block";
             segment = document.createElement("div");
             segment.className = "progressBarEmpty";
-            segment.style.display = "inline-block"; segment.style.margin = "3px"; segment.style.height = "8px";
+            segment.style.display = "inline-block"; segment.style.height = "8px";
             segment.style.backgroundColor = window[y.segmentStats[j] + "Colour"];
             segmentProgress = document.createElement("div");
             segmentProgress.className = "progressBarFill";
@@ -634,7 +635,7 @@ location[0] = {
         return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 10);
       },
       get unlocked() {
-        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 25
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20
         && character[0].combat.level >= 5);
       },
       requirementAction: ["Secrets Found", "Combat"],

@@ -188,9 +188,7 @@ function findNextAction(char) {
   //Finding the cost of the next action
   let action = char.currentCycleActionList[char.currentAction];
   let finalCost = 0;
-  console.log(action);
   if (action.hasSetter) {
-    console.log("hi")
     action.manaSet = char;
   }
   for (x in action.stats) {

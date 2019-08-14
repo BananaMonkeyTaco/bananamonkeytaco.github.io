@@ -416,13 +416,11 @@ var exploreForest = {
   canStart: function(char) {
     return (char.currentLocation == 1);
   },
-  finish: function() {
+  finish: function(char) {
     if (location[1].progressBars.exploreForestProgressBar.currentLevel < 100) {
-      location[1].progressBars.exploreForestProgressBar.currentXP += (hasMap) ? 400 : 100;
+      location[1].progressBars.exploreForestProgressBar.currentXP += (char.hasMap) ? 400 : 100;
       checkLevel(location[1].progressBars.exploreForestProgressBar);
       updateProgressBar(location[1].progressBars.exploreForestProgressBar);
-      updateResources(location[1].progressBars.exploreForestProgressBar);
-      updateResourceText(location[1].progressBars.exploreForestProgressBar.resource);
     }
   },
   get tooltip() { return [

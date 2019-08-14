@@ -153,6 +153,9 @@ function increaseSkills(char, skill, amount) {
   char[skill].levelXP += amount;
   if (char[skill].levelXP >= char[skill].toNextLevel) {
     levelUp(char, skill, "level");
+    if (skill == "combat" && char[skill].level == 5) {
+      buildTownBox();
+    }
   }
   if (rebuild == true) {
     buildStatBox();
@@ -160,6 +163,10 @@ function increaseSkills(char, skill, amount) {
   document.getElementById(char.name + skill).innerHTML = char[skill].level;
   document.getElementById(char.name + skill + "Progress").style.width = char[skill].levelXP /
   char[skill].toNextLevel * 100 + "%";
+  document.getElementById(char.name + skill + "Tooltip").innerHTML =
+  "<b>" + capitalize(skill) + "</b>" +
+  "<br><b>Level: </b>" + char[skill].level +
+  "<br><b>Level XP: </b>" + char[skill].levelXP + " / " + char[skill].toNextLevel;
 }
 
 function updateStats() {
