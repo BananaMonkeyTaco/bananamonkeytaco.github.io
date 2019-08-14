@@ -353,7 +353,7 @@ var buyGuide = {
 };
 
 var travelToForest = {
-  name: "",
+  name: "TravelToForest",
   manaCost: function(char) {
     if (char.hasGuide) {
       return 2500;
