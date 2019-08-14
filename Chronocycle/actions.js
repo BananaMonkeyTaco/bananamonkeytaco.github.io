@@ -705,14 +705,14 @@ var makeMinorHealthPotion = {
 }
 
 var trainManaFlow = {
-  name: "Train Mana Flow",
+  name: "TrainManaFlow",
   manaCost: 1500,
   stats: {
     wisdom: .9,
     spirit: .1,
   },
   canStart: function(char) {
-    return (char.currentLocation == 1 && char.elderberries >= 5);
+    return (char.currentLocation == 1);
   },
   finish: function(char) {
     increaseSkills(char, "manaFlow", 100);

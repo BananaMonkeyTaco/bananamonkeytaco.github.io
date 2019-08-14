@@ -140,6 +140,7 @@ function resetCharacter(char) {
   for (let i = 0; i < statNames.length; i++) {
     char[statNames[i]].level = 0;
     char[statNames[i]].levelXP = 0;
+    char[statNames[i]].toNextLevel = 100;
   }
 }
 
@@ -192,7 +193,6 @@ function findNextAction(char) {
     action.manaSet = char;
   }
   for (x in action.stats) {
-    console.log(action.manaCost);
     finalCost += (action.manaCost * action.stats[x]) / (1 + (char[x].level / 100));
   }
   finalCost = Math.ceil(finalCost);

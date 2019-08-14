@@ -133,6 +133,7 @@ function showTutorial() {
 
 function cheat() {
   character[0].combat.level = 50;
+  character[0].manaFlow.level = 50;
   buildStatBox();
   location[1].visible = true;
   location[0].progressBars.wanderProgressBar.currentLevel = 80;

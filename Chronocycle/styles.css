@@ -2,7 +2,7 @@ body {
   background-color: rgb(33, 37, 43);
   font-family: 'Open Sans', 'Verdana', 'Geneva', sans-serif;
   font-size: .85em;
-  line-height: 23px;
+  line-height: 20px;
 }
 
 img {
@@ -253,6 +253,7 @@ tooltip {
 .townName {
   display: grid;
   grid: 33% 33% 33% / 30% 40% 30%;
+  margin-bottom: 5px;
   height: 50px;
   width: 100%;
   text-align: center;
@@ -279,13 +280,14 @@ tooltip {
 }
 
 .townButtons .button {
-  height: 75px;
-  padding: 5px 0 0 0;
+  height: 55px;
+
   margin: 1px;
   border: 4px solid #ffad33;
   border-radius: 15px 0;
   box-shadow: 0px 0px 10px #ffad33;
   background-color: #ffff80;
+  line-height: normal;
   text-align: center;
 }
 
@@ -300,8 +302,8 @@ tooltip {
 }
 
 .townTravelButtons .button {
-  height: 63px;
-  padding: 5px 0 0 0;
+  height: 60px;
+
   border: 4px solid #44f096;
   border-radius: 15px 0;
   box-shadow: 0px 0px 15px #44f096;
@@ -310,7 +312,7 @@ tooltip {
 }
 
 .townProgressBar {
-  margin: 5px 0px;
+  margin: 2px 0px;
 }
 
 .townProgressBarsBox {
