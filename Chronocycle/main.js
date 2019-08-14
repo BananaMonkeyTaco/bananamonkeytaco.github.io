@@ -188,7 +188,13 @@ function findNextAction(char) {
   //Finding the cost of the next action
   let action = char.currentCycleActionList[char.currentAction];
   let finalCost = 0;
+  console.log(action);
+  if (action.hasSetter) {
+    console.log("hi")
+    action.manaSet = char;
+  }
   for (x in action.stats) {
+    console.log(action.manaCost);
     finalCost += (action.manaCost * action.stats[x]) / (1 + (char[x].level / 100));
   }
   finalCost = Math.ceil(finalCost);

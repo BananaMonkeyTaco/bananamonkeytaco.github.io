@@ -280,9 +280,9 @@ function buildTownBox() {
           button = document.createElement("div");
           button.className = "button";
           if (y.unlocked == true) {
-            button.onclick = function() {
+            button.addEventListener("click", function() {
               addAction(action);
-            }
+            });
           } else {
             button.style.backgroundColor = "lightgrey";
           }
@@ -373,7 +373,11 @@ function getNextLevel(x) {
 function checkLevel(x) {
   if (x.currentXP >= x.toNextLevel) {
     x.currentLevel++;
-    x.currentXP = x.currentXP - x.toNextLevel;
+    if (x.currentLevel >= 100) {
+      x.currentXP = 0;
+    } else {
+      x.currentXP = x.currentXP - x.toNextLevel;
+    }
     getNextLevel(x);
     updateResources(x);
     buildTownBox();
@@ -675,7 +679,7 @@ location[0] = {
   },
   travelButtons: {
     travelToForest: {
-      name: "Travel to the Forest",
+      name: "Travel to Forest",
       direction: "toEast",
       get visible() {
         return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 25)

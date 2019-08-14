@@ -53,6 +53,7 @@ function checkCharacters() {
       //Character selection
       tempDiv = document.createElement("div");
       tempDiv.className = "characterSelectButton";
+      tempDiv.id = "character" + i + "Select";
       tempDiv.innerHTML = character[i].name;
 // TODO: change to event listener
       tempDiv.onclick = function() {
@@ -81,6 +82,7 @@ function checkCharacters() {
     }
   }
   document.getElementById("character0").style.display = "block";
+  document.getElementById("character0Select").className = "characterSelectButtonSelected";
   document.getElementById("character0ActionBox").style.display = "grid";
 }
 

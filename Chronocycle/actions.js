@@ -354,13 +354,15 @@ var buyGuide = {
 
 var travelToForest = {
   name: "TravelToForest",
-  manaCost: function(char) {
+  hasSetter: true,
+  set manaSet(char) {
     if (char.hasGuide) {
-      return 2500;
+      this.manaCost = 2500;
     } else {
-      return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
+      this.manaCost = 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
     }
   },
+  manaCost: null,
   stats: {
     speed: .8,
     constitution: .2,
@@ -368,12 +370,12 @@ var travelToForest = {
   canStart: function(char) {
     return (char.currentLocation == 0);
   },
-  finish: function() {
+  finish: function(char) {
     if (location[1].visible == false) {
       location[1].visible = true;
       buildTownBox();
     }
-    currentLocation = 1;
+    char.currentLocation = 1;
   },
   get tooltip() { return [
     "Start your adventure out of this one horse town. If you have a guide it only costs 10% of the mana",
@@ -727,6 +729,8 @@ var trainManaFlow = {
 /*
 var action = {
   name:,
+  hasSetter:,
+  set ManaSet:,
   manaCost:,
   stats: {
 

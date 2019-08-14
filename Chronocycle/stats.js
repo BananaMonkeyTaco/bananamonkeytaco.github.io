@@ -124,9 +124,11 @@ function characterSwitch(target) {
   for (let i = 0; i < character.length; i++) {
     document.getElementById("character" + i).style.display = "none";
     document.getElementById("character" + i + "ActionBox").style.display = "none";
+    document.getElementById("character" + i + "Select").className = "characterSelectButton";
   }
   document.getElementById("character" + target).style.display = "block";
   document.getElementById("character" + target + "ActionBox").style.display = "grid";
+  document.getElementById("character" + target + "Select").className = "characterSelectButtonSelected";
   currentCharacter = target;
 }
 

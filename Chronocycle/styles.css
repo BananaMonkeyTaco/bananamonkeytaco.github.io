@@ -150,9 +150,19 @@ tooltip {
   margin: 2px 0 0 0;
   border: 1px solid #000;
   border-radius: 15px 0;
-  /* box-shadow: 0px 0px 10px #ffad33; */
   background-color: #ffff80;
   text-align: center;
+}
+
+.characterSelectButtonSelected {
+  height: 25px;
+  padding: 5px 0 0 0;
+  margin: 2px 0 0 0;
+  border: 1px solid #000;
+  border-radius: 15px 0;
+  background-color: #ffff80;
+  text-align: center;
+  box-shadow: 0 0 10px #ffad33;
 }
 
 .statBox {
