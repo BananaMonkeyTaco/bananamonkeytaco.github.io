@@ -192,7 +192,7 @@ var steal = {
       updateResourceBox("gold");
       char.reputation -= 1;
       updateResourceBox("reputation");
-      this.resource.usedAmount;
+      this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
     }
@@ -459,7 +459,7 @@ var absorbManaFromTrees = {
   name: "AbsorbManaFromTrees",
   manaCost: 100,
   get manaGain() {
-    return (175 * (1 + Math.pow(character[0].manaFlow.level, 0.3))).toFixed(0);
+    return Number((175 * (1 + Math.pow(character[0].manaFlow.level, 0.3))).toFixed(0));
   },
   resource: location[1].progressBars.investigateTreesProgressBar.resource,
   stats: {
@@ -470,10 +470,10 @@ var absorbManaFromTrees = {
   canStart: function(char) {
     return (char.currentLocation == 1);
   },
-  finish: function() {
+  finish: function(char) {
     if (document.getElementById("TreesLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        mana += this.manaGain;
+        char.mana += this.manaGain;
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -484,7 +484,7 @@ var absorbManaFromTrees = {
       updateResources(location[1].progressBars.investigateTreesProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      mana += this.manaGain;
+      char.mana += this.manaGain;
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -512,7 +512,6 @@ var chopTrees = {
   finish: function() {
     if (document.getElementById("TreesLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        mana += this.manaGain;
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -523,7 +522,6 @@ var chopTrees = {
       updateResources(location[1].progressBars.investigateTreesProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      mana += this.manaGain;
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -533,6 +531,7 @@ var chopTrees = {
     "Maybe you can make something useful out of these trees",
     "Mana trees can be cut down for 1 mana infused log",
     "Every 5 trees have mana in them",
+    "Not actually implemented at the moment",
   ]},
 };
 
@@ -633,7 +632,7 @@ var wizardTraining = {
     if (location[1].progressBars.wizardTrainingProgressBar.currentLevel < 100) {
       let x = location[1].progressBars.wizardTrainingProgressBar;
       x.currentXP += 100;
-      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
+      checkLevel(x);updateProgressBar(x);
     }
   },
   get tooltip() { return [

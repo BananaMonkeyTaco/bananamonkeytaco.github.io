@@ -435,7 +435,8 @@ function reliableLock(node) {
   let resourceName = node.id.split("LootFirst")[0];
   for (let i in location) {
     for (let j in location[i].progressBars) {
-      if (location[i].progressBars[j].resource.name == resourceName) {
+      console.log(i + j);
+      if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name == resourceName) {
         if (node.checked) {
           location[i].progressBars[j].resource.reliableFirstLock = true;
         } else {
