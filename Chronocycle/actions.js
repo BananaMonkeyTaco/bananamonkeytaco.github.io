@@ -50,7 +50,7 @@ var smashPots = {
       updateResources(location[0].progressBars.wanderProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.mana += 50;
+      char.mana += this.manaGain;
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -105,7 +105,7 @@ var doFavours = {
   finish: function(char) {
     if (document.getElementById("FavoursLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += 5;
+        char.gold += this.goldGain;
         updateResourceBox("gold");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
@@ -117,7 +117,7 @@ var doFavours = {
       updateResources(location[0].progressBars.meetPeopleProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += 5;
+      char.gold += this.goldGain;
       updateResourceBox("gold");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
@@ -174,11 +174,11 @@ var steal = {
   finish: function(char) {
     if (document.getElementById("VillagersRobbedLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += 15;
+        char.gold += this.goldGain;
         updateResourceBox("gold");
         char.reputation -= 1;
         updateResourceBox("reputation");
-        this.resource.usedAmount++
+        this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
       }
@@ -188,7 +188,7 @@ var steal = {
       updateResources(location[0].progressBars.secretsFoundProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += 15;
+      char.gold += this.goldGain;
       updateResourceBox("gold");
       char.reputation -= 1;
       updateResourceBox("reputation");
@@ -288,7 +288,7 @@ var buyMana = {
   },
   finish: function(char) {
     char.mana += char.gold * 100;
-    char.gold -= char.gold;
+    char.gold -= 0;
     updateResourceBox("gold");
   },
   tooltip: "You can spend all your hard earned gold to get some mana. Luckily the shop owner won't ask questions about where you got the gold",
@@ -307,7 +307,7 @@ var buyMap = {
     return (char.currentLocation == 0 && char.gold >= 10);
   },
   finish: function(char) {
-    char.gold -= 10;
+    char.gold -= this.goldCost;
     updateResourceBox("gold");
     char.hasMap = true;
     updateItemBox("map", "BuyMap");
@@ -341,7 +341,7 @@ var buyGuide = {
     return (char.currentLocation == 0);
   },
   finish: function(char) {
-    char.gold -= 5;
+    char.gold -= this.goldCost;
     updateResourceBox("gold");
     char.hasGuide = true;
     updateItemBox("guide", "BuyGuide");
@@ -400,7 +400,7 @@ var returnToNoobton = {
   },
   get tooltip() { return [
     "For whatever reason you can backtrack all the way back to the small village you started this adventure in",
-    "Only costs 2500 if you have the guide with you"
+    "Since the guide only leads one way trips (jerk), you'll have to find your own way back using the trails"
   ]},
 };
 
@@ -608,8 +608,9 @@ var talkToDryad = {
   finish: function() {
     if (location[1].progressBars.talkToDryadProgressBar.currentLevel < 100) {
       let x = location[1].progressBars.talkToDryadProgressBar;
+      let y = location[1].progressBars.investigateTreesProgressBar;
       x.currentXP += 100;
-      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
+      checkLevel(x);updateProgressBar(x);updateResources(y);updateResourceText(y.resource);
     }
   },
   get tooltip() { return [
@@ -656,7 +657,7 @@ var searchForElderberries = {
     if (location[1].progressBars.searchForElderberriesProgressBar.currentLevel < 100) {
       let x = location[1].progressBars.searchForElderberriesProgressBar;
       x.currentXP += (char.hasMap) ? 400 : 100;
-      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x);
+      checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x.resource);
     }
   },
   get tooltip() { return [
@@ -667,6 +668,7 @@ var searchForElderberries = {
 var pickElderberries = {
   name: "PickElderberries",
   manaCost: 200,
+  resource: location[1].progressBars.searchForElderberriesProgressBar.resource,
   stats: {
     dexterity: .2,
     speed: .4,
@@ -675,8 +677,27 @@ var pickElderberries = {
   canStart: function(char) {
     return (char.currentLocation == 1);
   },
-  finish: function() {
-
+  finish: function(char) {
+    if (document.getElementById("ElderberriesLootFirst").checked) {
+      if (this.resource.usedAmount < this.resource.reliableAmount) {
+        char.elderberries++;
+        updateResourceBox("elderberries");
+        this.resource.usedAmount++;
+        updateResourceText(this.resource);
+        return;
+      }
+    }
+    if (this.resource.uncheckedAmount > 0) {
+      this.resource.checkedAmount++;
+      updateResources(location[1].progressBars.searchForElderberriesProgressBar);
+      updateResourceText(this.resource);
+    } else if (this.resource.usedAmount < this.resource.reliableAmount) {
+      char.elderberries++;
+      updateResourceBox("elderberries");
+      this.resource.usedAmount++;
+      updateResourceText(this.resource);
+      return;
+    }
   },
   get tooltip() { return [
     ""
@@ -693,12 +714,16 @@ var makeMinorHealthPotion = {
     wisdom: .4,
   },
   canStart: function(char) {
-    return (char.currentLocation == 1 && char.elderberries >= 5);
+    return (char.currentLocation == 1 && char.elderberries >= 1);
   },
   finish: function(char) {
+    char.elderberries--;
+    char.minorHealthPotions++;
+    updateResourceBox("minorHealthPotions");
     increaseSkills(char, "alchemy", 100);
   },
   get tooltip() { return [
+    "Takes one elderberry and a lot of mana",
     "<b>Alchemy XP: </b> 100",
   ]},
 }
