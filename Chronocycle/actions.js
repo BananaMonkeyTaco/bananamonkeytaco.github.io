@@ -288,7 +288,7 @@ var buyMana = {
   },
   finish: function(char) {
     char.mana += char.gold * 100;
-    char.gold -= 0;
+    char.gold = 0;
     updateResourceBox("gold");
   },
   tooltip: "You can spend all your hard earned gold to get some mana. Luckily the shop owner won't ask questions about where you got the gold",
