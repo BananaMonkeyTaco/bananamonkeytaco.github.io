@@ -304,7 +304,7 @@ function buildTownBox() {
           for (let k = 0; k < statNames.length; k++) {
             let z = statNames[k];
             if (action.stats[z]) {
-              tooltip.innerHTML += "<br><b>" + capitalize(z) + "</b>" + action.stats[z] * 100 + "%";
+              tooltip.innerHTML += "<br><b>" + capitalize(z) + "</b> " + action.stats[z] * 100 + "%";
             }
           }
           tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
@@ -665,7 +665,15 @@ location[0] = {
       requirementAmount: ["30%"],
     },
     buyAxe: {
-
+      name: "Buy Axe",
+      get visible() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 25);
+      },
+      get unlocked() {
+        return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 40);
+      },
+      requirementAction: [],
+      requirementAmount: [],
     },
     buyGuide: {
       name: "Buy Guide",
@@ -957,7 +965,7 @@ location[1] = {
         return (location[1].progressBars.wizardTrainingProgressBar.currentLevel >= 20);
       },
       requirementAction: ["Wizard Training"],
-      requirementAmount: [10],
+      requirementAmount: [20],
     },
   },
   travelButtons: {

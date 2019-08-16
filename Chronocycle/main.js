@@ -73,6 +73,7 @@ function gameNewCycle() {
     document.getElementById(resources[i] + "Box").style.display = "none";
     document.getElementById("mapBox").style.display = "none";
     document.getElementById("guideBox").style.display = "none";
+    document.getElementById("axeBox").style.display = "none";
   }
   updateResourceBox();
   resetActionBars();
@@ -129,12 +130,14 @@ function resetCharacter(char) {
   char.mana = (char.startingMana) ? char.startingMana : 0;
   char.gold = (char.startingGold) ? char.startingGold : 0;
   char.reputation = (char.startingReputation) ? char.startingReputation : 0;
+  char.wood = (char.startingWood) ? char.startingWood : 0;
   char.pelts = (char.startingPelts) ? char.startingPelts : 0;
   char.elderberries = (char.startingElderberries) ? char.startingElderberries : 0;
   char.minorHealthPotions = (char.startingMinorHealthPotions) ? char.startingMinorHealthPotions : 0;
   char.currentLocation = (char.startingLocation) ? char.startingLocation : 0;
   char.hasMap = false;
   char.hasGuide = false;
+  char.hasAxe = false;
   char.currentAction = null;
   char.active = true;
   for (let i = 0; i < statNames.length; i++) {

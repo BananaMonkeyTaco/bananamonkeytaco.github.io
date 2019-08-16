@@ -323,9 +323,15 @@ var buyAxe = {
     charisma: 1,
   },
   canStart: function(char) {
-    return (char.currentLocation == 0);
+    return (char.currentLocation == 0 && char.gold >= 20);
   },
-  // TODO: finish
+  finish: function(char) {
+    char.gold -= 20;
+    updateResourceBox("gold");
+    char.hasAxe = true;
+    updateItemBox("axe", "BuyAxe");
+  },
+  tooltip: "A nice shiny axe to chop down whatever you can",
 };
 
 var buyGuide = {
@@ -348,7 +354,7 @@ var buyGuide = {
   },
   get tooltip() { return [
     "The path to the next town isn't an easy one. Luckily one of the villagers will help you, for a price of course",
-    "Reduces the mana it takes to travel by 90%"
+    "Reduces the mana it takes to travel to the forest by 90%"
   ]},
 };
 
@@ -400,7 +406,7 @@ var returnToNoobton = {
   },
   get tooltip() { return [
     "For whatever reason you can backtrack all the way back to the small village you started this adventure in",
-    "Since the guide only leads one way trips (jerk), you'll have to find your own way back using the trails"
+    "Since the guide only leads one way trips (jerk), you will have to find your own way back using the trails"
   ]},
 };
 
@@ -500,18 +506,20 @@ var absorbManaFromTrees = {
 var chopTrees = {
   name: "ChopTrees",
   manaCost: 250,
-  resource: location[1].progressBars.investigateTreesProgressBar,
+  resource: location[1].progressBars.investigateTreesProgressBar.resource,
   stats: {
     dexterity: .2,
     strength: .6,
     constitution: .2,
   },
   canStart: function(char) {
-    return (char.currentLocation == 1);
+    return (char.currentLocation == 1 && char.hasAxe);
   },
-  finish: function() {
+  finish: function(char) {
     if (document.getElementById("TreesLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
+        char.wood++;
+        updateResourceBox("wood");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -522,16 +530,17 @@ var chopTrees = {
       updateResources(location[1].progressBars.investigateTreesProgressBar);
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
+      char.wood++;
+      updateResourceBox("wood");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
     }
   },
   get tooltip() { return [
-    "Maybe you can make something useful out of these trees",
+    "These trees are probably reserved, but with how you keep being pulled back in time it's safe to say it probably won't matter... Probably",
     "Mana trees can be cut down for 1 mana infused log",
     "Every 5 trees have mana in them",
-    "Not actually implemented at the moment",
   ]},
 };
 
@@ -546,7 +555,13 @@ var mapGameTrails = {
     return (char.currentLocation == 1);
   },
   finish: function() {
-
+    if (location[1].progressBars.mapGameTrailsProgressBar.currentLevel < 100) {
+      location[1].progressBars.mapGameTrailsProgressBar.currentXP += 100;
+      checkLevel(location[1].progressBars.mapGameTrailsProgressBar);
+      updateProgressBar(location[1].progressBars.mapGameTrailsProgressBar);
+      updateResources(location[1].progressBars.mapGameTrailsProgressBar);
+      updateResourceText(location[1].progressBars.mapGameTrailsProgressBar.resource);
+    }
   },
   get tooltip() { return [
     "The animals always know the fastest way around the forest. Finding the paths they take should make it easier to travel through the forest",
@@ -700,7 +715,8 @@ var pickElderberries = {
     }
   },
   get tooltip() { return [
-    ""
+    "A basic alchemical ingrediant",
+    "Every 20 are ripe"
   ]},
 };
 

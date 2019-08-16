@@ -288,10 +288,18 @@ tooltip {
   background-color: #ffff80;
   line-height: normal;
   text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .townButtons .button > div {
   padding: 5px;
+}
+
+.townButtons .button:hover {
+  overflow: visible;
+  white-space: normal;
 }
 
 .townTravelButtons {
