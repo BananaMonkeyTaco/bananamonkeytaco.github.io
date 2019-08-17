@@ -18,8 +18,9 @@ function gameFirstCycle() {
   for (let i in location) {
     for (let j in location[i].progressBars) {
       if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name != undefined) {
+        updateResources(location[i].progressBars[j])
         location[i].progressBars[j].resource.usedAmount = 0;
-        if (document.getElementById(location[i].progressBars[j].id)) {
+        if (document.getElementById(location[i].progressBars[j].barId)) {
           updateResourceText(location[i].progressBars[j].resource);
         }
       }
@@ -192,14 +193,11 @@ function findNextAction(char) {
   //Finding the cost of the next action
   let action = char.currentCycleActionList[char.currentAction];
   let finalCost = 0;
-  if (action.hasSetter) {
-    action.manaSet = char;
-  }
   for (x in action.stats) {
-    finalCost += (action.manaCost * action.stats[x]) / (1 + (char[x].level / 100));
+    finalCost += (action.manaCost(char) * action.stats[x]) / (1 + (char[x].level / 100));
   }
   finalCost = Math.ceil(finalCost);
-  char.multiplier = action.manaCost / finalCost;
+  char.multiplier = action.manaCost(char) / finalCost;
   char.originalCost = finalCost;
   char.currentCostLeft = finalCost;
 }

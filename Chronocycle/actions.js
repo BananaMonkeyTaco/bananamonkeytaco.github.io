@@ -1,6 +1,8 @@
 var wander = {
   name: "Wander",
-  manaCost: 100,
+  manaCost: function(char) {
+    return 100;
+  },
   exploration: "<b>Village Explored XP: 250(1000 with a Map)",
   stats: {
     speed: .2,
@@ -25,7 +27,9 @@ var wander = {
 
 var smashPots = {
   name:  "SmashPots",
-  manaCost: 25,
+  manaCost: function(char) {
+    return 25;
+  },
   manaGain: 50,
   resource: location[0].progressBars.wanderProgressBar.resource,
   stats: {
@@ -65,7 +69,9 @@ var smashPots = {
 
 var meetPeople = {
   name: "MeetPeople",
-  manaCost: 200,
+  manaCost: function(char) {
+    return 200;
+  },
   stats: {
     charisma: .5,
     intelligence:.2,
@@ -91,7 +97,9 @@ var meetPeople = {
 
 var doFavours = {
   name: "DoFavours",
-  manaCost: 400,
+  manaCost: function(char) {
+    return 400;
+  },
   goldGain: 5,
   resource: location[0].progressBars.meetPeopleProgressBar.resource,
   stats: {
@@ -133,7 +141,9 @@ var doFavours = {
 
 var investigate = {
   name: "Investigate",
-  manaCost: 400,
+  manaCost: function(char) {
+    return 400;
+  },
   stats: {
     intelligence: .5,
     perception: .3,
@@ -159,7 +169,9 @@ var investigate = {
 
 var steal = {
   name: "Steal",
-  manaCost: 1000,
+  manaCost: function(char) {
+    return 1000;
+  },
   goldGain: 15,
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
@@ -206,7 +218,9 @@ var steal = {
 
 var combatTraining = {
   name: "CombatTraining",
-  manaCost: 1500,
+  manaCost: function(char) {
+    return 1500;
+  },
   stats: {
     strength: .5,
     constitution: .3,
@@ -226,7 +240,9 @@ var combatTraining = {
 // TODO: chars
 var fightWolves = {
   name: "FightWolves",
-  manaCost: 3000,
+  manaCost: function(char) {
+    return 3000;
+  },
   stats: {
     strength: .4,
     constitution: .2,
@@ -277,7 +293,9 @@ var fightWolves = {
 
 var buyMana = {
   name: "BuyMana",
-  manaCost: 100,
+  manaCost: function(char) {
+    return 100;
+  },
   stats: {
     charisma: .5,
     perception: .3,
@@ -296,7 +314,9 @@ var buyMana = {
 
 var buyMap = {
   name: "BuyMap",
-  manaCost: 100,
+  manaCost: function(char) {
+    return 100;
+  },
   goldCost: 10,
   stats: {
     charisma: .5,
@@ -317,7 +337,9 @@ var buyMap = {
 
 var buyAxe = {
   name: "BuyAxe",
-  manaCost: 100,
+  manaCost: function(char) {
+    return 100;
+  },
   goldCost: 20,
   stats: {
     charisma: 1,
@@ -336,7 +358,9 @@ var buyAxe = {
 
 var buyGuide = {
   name: "BuyGuide",
-  manaCost: 500,
+  manaCost: function(char) {
+    return 500;
+  },
   goldCost: 5,
   stats: {
     charisma: .6,
@@ -360,15 +384,14 @@ var buyGuide = {
 
 var travelToForest = {
   name: "TravelToForest",
-  hasSetter: true,
-  set manaSet(char) {
+  manaCost: function(char) {
     if (char.hasGuide) {
-      this.manaCost = 2500;
-    } else {
-      this.manaCost = 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
+      return 2500;
+    }
+    else {
+      return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
     }
   },
-  manaCost: null,
   stats: {
     speed: .8,
     constitution: .2,
@@ -391,7 +414,7 @@ var travelToForest = {
 
 var returnToNoobton = {
   name: "ReturnToNoobton",
-  get manaCost() {
+  manaCost: function(char) {
     return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
   },
   stats: {
@@ -412,7 +435,9 @@ var returnToNoobton = {
 
 var exploreForest = {
   name: "ExploreForest",
-  manaCost: 300,
+  manaCost: function(char) {
+    return 300;
+  },
   stats: {
     constitution: .1,
     perception: .6,
@@ -437,7 +462,9 @@ var exploreForest = {
 
 var investigateTrees = {
   name: "InvestigateTrees",
-  manaCost: 500,
+  manaCost: function(char) {
+    return 500;
+  },
   stats: {
     constitution: .3,
     perception: .6,
@@ -463,7 +490,9 @@ var investigateTrees = {
 
 var absorbManaFromTrees = {
   name: "AbsorbManaFromTrees",
-  manaCost: 100,
+  manaCost: function(char) {
+    return 100;
+  },
   get manaGain() {
     return Number((175 * (1 + Math.pow(character[0].manaFlow.level, 0.3))).toFixed(0));
   },
@@ -505,7 +534,9 @@ var absorbManaFromTrees = {
 
 var chopTrees = {
   name: "ChopTrees",
-  manaCost: 250,
+  manaCost: function(char) {
+    return 250;
+  },
   resource: location[1].progressBars.investigateTreesProgressBar.resource,
   stats: {
     dexterity: .2,
@@ -546,7 +577,9 @@ var chopTrees = {
 
 var mapGameTrails = {
   name: "MapGameTrails",
-  manaCost: 1000,
+  manaCost: function(char) {
+    return 1000;
+  },
   stats: {
     dexterity: .3,
     perception: .7,
@@ -571,7 +604,9 @@ var mapGameTrails = {
 
 var huntAnimals = {
   name: "HuntAnimals",
-  manaCost: 1500,
+  manaCost: function(char) {
+    return 1500;
+  },
   resource: location[1].progressBars.mapGameTrailsProgressBar,
   stats: {
     dexterity: .3,
@@ -611,7 +646,9 @@ var huntAnimals = {
 
 var talkToDryad = {
   name: "TalkToDryad",
-  manaCost: 750,
+  manaCost: function(char) {
+    return 750;
+  },
   stats: {
     constitution: .3,
     wisdom: .5,
@@ -636,7 +673,9 @@ var talkToDryad = {
 
 var wizardTraining = {
   name: "WizardTraining",
-  manaCost: 1000,
+  manaCost: function(char) {
+    return 1000;
+  },
   stats: {
     wisdom: .8,
     spirit: .2,
@@ -659,7 +698,9 @@ var wizardTraining = {
 
 var searchForElderberries = {
   name: "SearchForElderberries",
-  manaCost: 750,
+  manaCost: function(char) {
+    return 750;
+  },
   stats: {
     dexterity: .2,
     perception: .5,
@@ -682,7 +723,9 @@ var searchForElderberries = {
 
 var pickElderberries = {
   name: "PickElderberries",
-  manaCost: 200,
+  manaCost: function(char) {
+    return 200;
+  },
   resource: location[1].progressBars.searchForElderberriesProgressBar.resource,
   stats: {
     dexterity: .2,
@@ -722,7 +765,9 @@ var pickElderberries = {
 
 var makeMinorHealthPotion = {
   name: "makeMinorHealthPotion",
-  manaCost: 5000,
+  manaCost: function(char) {
+    return 5000;
+  },
   stats: {
     dexterity: .1,
     perception: .1,
@@ -746,7 +791,9 @@ var makeMinorHealthPotion = {
 
 var trainManaFlow = {
   name: "TrainManaFlow",
-  manaCost: 1500,
+  manaCost: function(char) {
+    return 1500;
+  },
   stats: {
     wisdom: .9,
     spirit: .1,

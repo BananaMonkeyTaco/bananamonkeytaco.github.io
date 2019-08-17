@@ -246,7 +246,7 @@ function buildTownBox() {
             tooltip.innerHTML += "<br><b>" + capitalize(statNames[j]) + "</b> " + action.stats[z] * 100 + "%";
           }
         }
-        tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
+        tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[0]);
         if (action.goldCost) {
           tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
         }
@@ -307,7 +307,7 @@ function buildTownBox() {
               tooltip.innerHTML += "<br><b>" + capitalize(z) + "</b> " + action.stats[z] * 100 + "%";
             }
           }
-          tooltip.innerHTML += "<br>Mana Cost " + action.manaCost;
+          tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[0]);
           if (action.goldCost) {
             tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
           }
