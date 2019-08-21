@@ -30,7 +30,9 @@ var smashPots = {
   manaCost: function(char) {
     return 25;
   },
-  manaGain: 50,
+  manaGain: function(char) {
+    return 50;
+  },
   resource: location[0].progressBars.wanderProgressBar.resource,
   stats: {
     speed: .5,
@@ -43,7 +45,7 @@ var smashPots = {
   finish: function(char) {
     if (document.getElementById("PotsLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.mana += this.manaGain;
+        char.mana += this.manaGain(char);
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -51,10 +53,15 @@ var smashPots = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[0].progressBars.wanderProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.mana += this.manaGain(char);
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.mana += this.manaGain;
+      char.mana += this.manaGain(char);
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -62,7 +69,7 @@ var smashPots = {
   },
   get tooltip() { return [
     "For whatever reason the villagers here like throwing bits of mana in pots",
-    "Reliable pots have " + this.manaGain + " mana in them",
+    "Reliable pots have " + this.manaGain(character[currentCharacter]) + " mana in them",
     "Every " + 100 / (this.resource.reliableEfficiency * 100) + " pots are reliable",
   ]},
 };
@@ -100,7 +107,9 @@ var doFavours = {
   manaCost: function(char) {
     return 400;
   },
-  goldGain: 5,
+  goldGain: function(char) {
+    return 5;
+  },
   resource: location[0].progressBars.meetPeopleProgressBar.resource,
   stats: {
     speed: .5,
@@ -113,7 +122,7 @@ var doFavours = {
   finish: function(char) {
     if (document.getElementById("FavoursLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += this.goldGain;
+        char.gold += this.goldGain(char);
         updateResourceBox("gold");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
@@ -122,10 +131,16 @@ var doFavours = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[0].progressBars.meetPeopleProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.gold += this.goldGain(char);
+        updateResourceBox("gold");
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += this.goldGain;
+      char.gold += this.goldGain(char);
       updateResourceBox("gold");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
@@ -134,7 +149,7 @@ var doFavours = {
   },
   get tooltip() { return [
     "Even though these villagers aren't rich, some might reward you for hard work",
-    "Villagers with gold to spare will reward " + this.goldGain + " gold for a favour",
+    "Villagers with gold to spare will reward " + this.goldGain(character[currentCharacter]) + " gold for a favour",
     "Every " + 100 / (this.resource.reliableEfficiency * 100) + " favours will have a reward",
   ]},
 };
@@ -172,7 +187,9 @@ var steal = {
   manaCost: function(char) {
     return 1000;
   },
-  goldGain: 15,
+  goldGain: function(char) {
+    return 15;
+  },
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
     speed: .6,
@@ -186,7 +203,7 @@ var steal = {
   finish: function(char) {
     if (document.getElementById("VillagersRobbedLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.gold += this.goldGain;
+        char.gold += this.goldGain(char);
         updateResourceBox("gold");
         char.reputation -= 1;
         updateResourceBox("reputation");
@@ -197,10 +214,15 @@ var steal = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[0].progressBars.secretsFoundProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.mana += this.manaGain(char);
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.gold += this.goldGain;
+      char.gold += this.goldGain(char);
       updateResourceBox("gold");
       char.reputation -= 1;
       updateResourceBox("reputation");
@@ -211,7 +233,7 @@ var steal = {
   },
   get tooltip() { return [
     "Gives you more gold than helping the town that's for sure, but you still don't feel good about it",
-    "Houses with loot in them have " + this.goldGain + " gold in them",
+    "Houses with loot in them have " + this.goldGain(character[currentCharacter]) + " gold in them",
     "Every " + 100 / (this.resource.reliableEfficiency * 100) + " houses have loot in them",
   ]},
 };
@@ -237,7 +259,7 @@ var combatTraining = {
     "<b>Combat Skill XP: </b> 100",
   ]},
 };
-// TODO: chars
+
 var fightWolves = {
   name: "FightWolves",
   manaCost: function(char) {
@@ -317,7 +339,9 @@ var buyMap = {
   manaCost: function(char) {
     return 100;
   },
-  goldCost: 10,
+  goldCost: function(char) {
+    return 10;
+  },
   stats: {
     charisma: .5,
     intelligence: .3,
@@ -327,7 +351,7 @@ var buyMap = {
     return (char.currentLocation == 0 && char.gold >= 10);
   },
   finish: function(char) {
-    char.gold -= this.goldCost;
+    char.gold -= this.goldCost(char);
     updateResourceBox("gold");
     char.hasMap = true;
     updateItemBox("map", "BuyMap");
@@ -340,7 +364,9 @@ var buyAxe = {
   manaCost: function(char) {
     return 100;
   },
-  goldCost: 20,
+  goldCost: function(char) {
+    return 20;
+  },
   stats: {
     charisma: 1,
   },
@@ -348,7 +374,7 @@ var buyAxe = {
     return (char.currentLocation == 0 && char.gold >= 20);
   },
   finish: function(char) {
-    char.gold -= 20;
+    char.gold -= this.goldCost(char);
     updateResourceBox("gold");
     char.hasAxe = true;
     updateItemBox("axe", "BuyAxe");
@@ -361,7 +387,9 @@ var buyGuide = {
   manaCost: function(char) {
     return 500;
   },
-  goldCost: 5,
+  goldCost: function(char) {
+    return 5;
+  },
   stats: {
     charisma: .6,
     intelligence: .3,
@@ -371,7 +399,7 @@ var buyGuide = {
     return (char.currentLocation == 0);
   },
   finish: function(char) {
-    char.gold -= this.goldCost;
+    char.gold -= this.goldCost(char);
     updateResourceBox("gold");
     char.hasGuide = true;
     updateItemBox("guide", "BuyGuide");
@@ -493,8 +521,12 @@ var absorbManaFromTrees = {
   manaCost: function(char) {
     return 100;
   },
-  get manaGain() {
-    return Number((175 * (1 + Math.pow(character[0].manaFlow.level, 0.3))).toFixed(0));
+  manaGain: function(char) {
+    if (char.manaFlow.level == 0) {
+      return 175;
+    } else {
+      return Number((175 * (Math.pow(1 + char.manaFlow.level, 0.3))).toFixed(0));
+    }
   },
   resource: location[1].progressBars.investigateTreesProgressBar.resource,
   stats: {
@@ -508,7 +540,7 @@ var absorbManaFromTrees = {
   finish: function(char) {
     if (document.getElementById("TreesLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        char.mana += this.manaGain;
+        char.mana += this.manaGain(char);
         this.resource.usedAmount++;
         updateResourceText(this.resource);
         return;
@@ -516,10 +548,15 @@ var absorbManaFromTrees = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[1].progressBars.investigateTreesProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.mana += this.manaGain(char);
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      char.mana += this.manaGain;
+      char.mana += this.manaGain(char);
       this.resource.usedAmount++;
       updateResourceText(this.resource);
       return;
@@ -527,7 +564,7 @@ var absorbManaFromTrees = {
   },
   get tooltip() { return [
     "You can siphon the mana out of these trees. Normally you'd worry about saving the forest, but they'll be back in the next cycle",
-    "Mana trees have " + this.manaGain + " in them",
+    "Mana trees have " + this.manaGain(character[currentCharacter]) + " in them",
     "Every 5 trees have mana in them",
   ]},
 };
@@ -558,7 +595,13 @@ var chopTrees = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[1].progressBars.investigateTreesProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.wood++;
+        updateResourceBox("wood");
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
       char.wood++;
@@ -598,7 +641,7 @@ var mapGameTrails = {
   },
   get tooltip() { return [
     "The animals always know the fastest way around the forest. Finding the paths they take should make it easier to travel through the forest",
-    "<b>Game Trails Explored XP: </b> 100 (400 with a Map)",
+    "<b>Game Trails Explored XP: </b> 100",
   ]},
 };
 
@@ -607,7 +650,7 @@ var huntAnimals = {
   manaCost: function(char) {
     return 1500;
   },
-  resource: location[1].progressBars.mapGameTrailsProgressBar,
+  resource: location[1].progressBars.mapGameTrailsProgressBar.resource,
   stats: {
     dexterity: .3,
     intelligence: .2,
@@ -616,10 +659,10 @@ var huntAnimals = {
   canStart: function(char) {
     return (char.currentLocation == 1);
   },
-  finish: function() {
+  finish: function(char) {
     if (document.getElementById("AnimalsLootFirst").checked) {
       if (this.resource.usedAmount < this.resource.reliableAmount) {
-        pelts += 1;
+        char.pelts += 1;
         updateResourceBox("pelts");
         this.resource.usedAmount++;
         updateResourceText(this.resource);
@@ -628,10 +671,16 @@ var huntAnimals = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[1].progressBars.mapGameTrailsProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.pelts++;
+        updateResourceBox("pelts");
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
-      pelts += 1;
+      char.pelts += 1;
       updateResourceBox("pelts");
       this.resource.usedAmount++;
       updateResourceText(this.resource);
@@ -747,7 +796,13 @@ var pickElderberries = {
     }
     if (this.resource.uncheckedAmount > 0) {
       this.resource.checkedAmount++;
+      let tempReliable = this.resource.reliableAmount;
       updateResources(location[1].progressBars.searchForElderberriesProgressBar);
+      if (tempReliable < this.resource.reliableAmount) {
+        char.elderberries++;
+        updateResourceBox("elderberries");
+        this.resource.usedAmount++;
+      }
       updateResourceText(this.resource);
     } else if (this.resource.usedAmount < this.resource.reliableAmount) {
       char.elderberries++;

@@ -23,6 +23,9 @@ var intelligenceColour = "#33ccff";
 var wisdomColour = "#8080ff";
 var spiritColour = "grey";
 var activeLoadout = 0;
+var combatTooltip = "Stick them with the pointy end";
+var alchemyTooltip = "I'd probably avoid bringing back your dead mother";
+var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by (1 + level)^0.3";
 
 function capitalize(string) {
   return string.slice(0, 1).toUpperCase() + string.slice(1);

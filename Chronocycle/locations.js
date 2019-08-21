@@ -248,7 +248,7 @@ function buildTownBox() {
         }
         tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[0]);
         if (action.goldCost) {
-          tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
+          tooltip.innerHTML += "<br>Gold Cost " + action.goldCost(character[currentCharacter]);
         }
         if (y.unlocked == false) {
           let requirementLine = document.createElement("div");
@@ -307,9 +307,9 @@ function buildTownBox() {
               tooltip.innerHTML += "<br><b>" + capitalize(z) + "</b> " + action.stats[z] * 100 + "%";
             }
           }
-          tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[0]);
+          tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[currentCharacter]);
           if (action.goldCost) {
-            tooltip.innerHTML += "<br>Gold Cost " + action.goldCost;
+            tooltip.innerHTML += "<br>Gold Cost " + action.goldCost(character[currentCharacter]);
           }
           if (y.unlocked == false) {
             let requirementLine = document.createElement("div");
@@ -435,7 +435,6 @@ function reliableLock(node) {
   let resourceName = node.id.split("LootFirst")[0];
   for (let i in location) {
     for (let j in location[i].progressBars) {
-      console.log(i + j);
       if (location[i].progressBars[j].type == "Progress" && location[i].progressBars[j].resource.name == resourceName) {
         if (node.checked) {
           location[i].progressBars[j].resource.reliableFirstLock = true;

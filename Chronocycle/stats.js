@@ -99,7 +99,8 @@ function buildStatBox() {
       tooltip.id = x.name + y + "Tooltip";
       tooltip.innerHTML = "<b>" + z + "</b>" +
       "<br><b>Level: </b>" + x[y].level +
-      "<br><b>Level XP: </b>" + x[y].levelXP + " / " + x[y].toNextLevel;
+      "<br><b>Level XP: </b>" + x[y].levelXP + " / " + x[y].toNextLevel +
+      "<br>" + window[y + "Tooltip"];
       skillListItemContainer.appendChild(tooltip);
       if (character[i][y].level == 0 && character[i][y].levelXP == 0) {
         skillListItemContainer.style.display = "none";
@@ -130,6 +131,7 @@ function characterSwitch(target) {
   document.getElementById("character" + target + "ActionBox").style.display = "grid";
   document.getElementById("character" + target + "Select").className = "characterSelectButtonSelected";
   currentCharacter = target;
+  buildTownBox();
 }
 
 function increaseStats(char, action, multiplier) {
