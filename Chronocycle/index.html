@@ -57,11 +57,20 @@
       </div>
     </div>
     <div class="loadoutButtons">
-      <button type="button" class="loadoutButton" id="loadout1" onclick=changeActiveLoadout(1)>1</button>
-      <button type="button" class="loadoutButton" id="loadout2" onclick=changeActiveLoadout(2)>2</button>
-      <button type="button" class="loadoutButton" id="loadout3" onclick=changeActiveLoadout(3)>3</button>
-      <button type="button" class="loadoutButton" id="loadout4" onclick=changeActiveLoadout(4)>4</button>
-      <button type="button" class="loadoutButton" id="loadout5" onclick=changeActiveLoadout(5)>5</button>
+      <span class="textAmount">Individual</span>
+      <button type="button" class="loadoutButton" id="individualLoadout1" onclick="changeActiveLoadout('individual', 1)">1</button>
+      <button type="button" class="loadoutButton" id="individualLoadout2" onclick="changeActiveLoadout('individual', 2)">2</button>
+      <button type="button" class="loadoutButton" id="individualLoadout3" onclick="changeActiveLoadout('individual', 3)">3</button>
+      <button type="button" class="loadoutButton" id="individualLoadout4" onclick="changeActiveLoadout('individual', 4)">4</button>
+      <button type="button" class="loadoutButton" id="individualLoadout5" onclick="changeActiveLoadout('individual', 5)">5</button>
+    </div>
+    <div class="loadoutButtons">
+      <span class="textAmount">Party</span>
+      <button type="button" class="loadoutButton" id="partyLoadout1" onclick="changeActiveLoadout('party', 1)">1</button>
+      <button type="button" class="loadoutButton" id="partyLoadout2" onclick="changeActiveLoadout('party', 2)">2</button>
+      <button type="button" class="loadoutButton" id="partyLoadout3" onclick="changeActiveLoadout('party', 3)">3</button>
+      <button type="button" class="loadoutButton" id="partyLoadout4" onclick="changeActiveLoadout('party', 4)">4</button>
+      <button type="button" class="loadoutButton" id="partyLoadout5" onclick="changeActiveLoadout('party', 5)">5</button>
     </div>
     <button type="button" onclick="saveLoadout()">Save Loadout</button>
     <button type="button" onclick="loadLoadout()">Load Loadout</button>

@@ -8,7 +8,24 @@ function buildStatBox() {
     let statBox = document.createElement("div");
     statBox.className = "statBox";
     statBox.id = x.name + "Stats";
-    statBox.innerHTML = "<b>Stats</b>";
+    //Stats info
+    let titleContainer = document.createElement("div");
+    let title = document.createElement("div");
+    title.innerHTML = "<b>Stats</b>";
+    let statTooltip = document.createElement("tooltip");
+    statTooltip.innerHTML = "Stats lower the amount of mana you use on each mana" +
+    "<br>The mana is reduced according to this formula:" +
+    "<br><b>Cost / ( 1 + (stat / 100))</b>" +
+    "<br>This forumla is applied to each stat an action has according to its share" +
+    "<br>For example Wander costs 100 mana and 50% of that is based on Perception" +
+    "<br>50 mana would go through the formula. If you had 100 levels in Perception it would go like this:" +
+    "<br>50 / ( 1 + (100 / 100)) = 50 / (1 + 1) = 50 / 2 = 25" +
+    "<br>So because what should have been 50 mana is now 25, the cost of Wander would then be 75" +
+    "<br>Now remember the only stats that matter for an action is what is listed" +
+    "<br>So if you had a bajillionity and 7 levels in Spirit, that's not really going to help you with Wander, maybe something else though :)";
+    titleContainer.appendChild(title);
+    titleContainer.appendChild(statTooltip);
+    statBox.appendChild(titleContainer);
     for (let j = 0; j < statNames.length; j++) {
       let y;
       let statListItem;

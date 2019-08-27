@@ -261,55 +261,82 @@ function removeNextCycleAction(node) {
 function saveLoadout() {
   // TODO: maybe make this a NOT statement and remove the whole indent and brackets
   if (0 < activeLoadout && activeLoadout < 6) {
-    while (loadoutActions[activeLoadout].length > 0) {
-      loadoutActions[activeLoadout].pop();
-      loadoutAmount[activeLoadout].pop();
-    }
-    for (let i = 0; i < character.length; i++) {
-      char = character[i];
-      loadoutActions[activeLoadout][i] = [];
-      loadoutAmount[activeLoadout][i] = [];
-      console.log("start")
-      for (let j = 0; j < char.nextCycleActionList.length; j++) {
-        console.log("iter")
-        loadoutActions[activeLoadout][i].push(char.nextCycleActionList[j]);
-        loadoutAmount[activeLoadout][i].push(char.nextCycleActionAmount[j]);
+    if (activeLoadoutType == "individual") {
+      while (individualLoadoutActions[activeLoadout].length > 0) {
+        individualLoadoutActions[activeLoadout].pop();
+        individualLoadoutAmount[activeLoadout].pop();
+      }
+      char = character[currentCharacter];
+      for (let i = 0; i < char.nextCycleActionList.length; i++) {
+        individualLoadoutActions[activeLoadout].push(char.nextCycleActionList[i]);
+        individualLoadoutAmount[activeLoadout].push(char.nextCycleActionAmount[i]);
+      }
+    } else if (activeLoadoutType == "party") {
+      for (let i = 0; i < character.length; i++) {
+        char = character[i];
+        partyLoadoutActions[activeLoadout][i] = [];
+        partyLoadoutAmount[activeLoadout][i] = [];
+        for (let j = 0; j < char.nextCycleActionList.length; j++) {
+          partyLoadoutActions[activeLoadout][i].push(char.nextCycleActionList[j]);
+          partyLoadoutAmount[activeLoadout][i].push(char.nextCycleActionAmount[j]);
+        }
       }
     }
   }
 }
 
 function loadLoadout() {
-  //Checkign for valid loadout
+  //Checking for valid loadout
   if (0 < activeLoadout && activeLoadout < 6) {
-    //Removing current action list
-    for (let i = 0; i < character.length; i++) {
-      let box = document.getElementById(lowerize(character[i].name) + "ActionList");
+    if (activeLoadoutType == "individual") {
+      char = character[currentCharacter];
+      let box = document.getElementById(lowerize(char.name) + "ActionList");
+      //Empty the character's visual action list
       while (box.childElementCount > 0) {
         box.removeChild(box.firstElementChild);
       }
-      //Emptying the character's arrays
-      character[i].nextCycleActionList = [];
-      character[i].nextCycleActionAmount = [];
-      //Setting the characters new action list
-      if (loadoutActions[activeLoadout][i] != undefined) {
-        for (let j = 0; j < loadoutActions[activeLoadout][i].length; j++) {
-          character[i].nextCycleActionList.push(loadoutActions[activeLoadout][i][j]);
-          character[i].nextCycleActionAmount.push(loadoutAmount[activeLoadout][i][j]);
+      //Emptying the character's actual action list
+      char.nextCycleActionList = [];
+      char.nextCycleActionAmount = [];
+      //Setting character's new action list
+      if (individualLoadoutActions[activeLoadout][0] != undefined) {
+        for (let i = 0; i < individualLoadoutActions[activeLoadout].length; i++) {
+          char.nextCycleActionList.push(individualLoadoutActions[activeLoadout][i]);
+          char.nextCycleActionAmount.push(individualLoadoutAmount[activeLoadout][i]);
         }
-      } else {
-        character[i].nextCycleActionList = [];
-        character[i].nextCycleActionAmount = [];
+      }
+    } else if (activeLoadoutType == "party") {
+      for (let i = 0; i < partyLoadoutActions[activeLoadout].length; i++) {
+        char = character[i];
+        let box = document.getElementById(lowerize(character[i].name) + "ActionList");
+        //Empty the character's visual action list
+        while (box.childElementCount > 0) {
+          box.removeChild(box.firstElementChild);
+        }
+        //Emptying each character's actual action list
+        char.nextCycleActionList = [];
+        char.nextCycleActionAmount = [];
+        //Setting character's new action list
+        if (partyLoadoutActions[activeLoadout][i][0] != undefined) {
+          for (let j = 0; j < partyLoadoutActions[activeLoadout][i].length; j++) {
+            char.nextCycleActionList.push(partyLoadoutActions[activeLoadout][i][j]);
+            char.nextCycleActionAmount.push(partyLoadoutAmount[activeLoadout][i][j]);
+          }
+        }
       }
     }
     initializeActionList();
   }
 }
 
-function changeActiveLoadout(num) {
-  for (i = 1; i < 6; i++) {
-    document.getElementById("loadout" + i).className = "loadoutButton";
+function changeActiveLoadout(type, num) {
+  for (let i = 1; i < 6; i++) {
+    document.getElementById("individualLoadout" + i).className = "loadoutButton";
   }
-  document.getElementById("loadout" + num).className = "activeLoadoutButton";
+  for (let i = 1; i < 6; i++) {
+    document.getElementById("partyLoadout" + i).className = "loadoutButton";
+  }
+  document.getElementById(type + "Loadout" + num).className = "activeLoadoutButton";
+  activeLoadoutType = type;
   activeLoadout = num;
 }

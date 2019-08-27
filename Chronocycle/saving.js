@@ -47,26 +47,34 @@ function load() {
     }
   }
   //Making loadouts
-  loadoutActions = [];
-  loadoutAmount = [];
-  for (let i = 1; i < 6; i++) {
-    loadoutActions[i] = [];
-    loadoutAmount[i] = [];
+  individualLoadoutActions = [];
+  individualLoadoutAmount = [];
+  partyLoadoutActions = [];
+  partyLoadoutAmount = [];
+  for (let i = 1; i < 6; i ++) {
+    individualLoadoutActions[i] = [];
+    individualLoadoutAmount[i] = [];
+    partyLoadoutActions[i] = [];
+    partyLoadoutAmount[i] = [];
     for (let j = 0; j < character.length; j++) {
-      loadoutActions[i][j] = [];
-      loadoutAmount[i][j] = [];
+      partyLoadoutActions[i][j] = [];
+      partyLoadoutAmount[i][j] = [];
     }
   }
   //Checking saved loadouts
-  if (saveFile.loadoutActions) {
-    for (let i = 1; i < 6; i++) {
-      if (saveFile.loadoutActions[i]) {
-        for (let j = 0; j < character.length; j++) {
-          if (saveFile.loadoutActions[i][j]) {
-            for (let k = 0; k < saveFile.loadoutActions[i][j].length; k++) {
-              loadoutActions[i][j].push(window[lowerize(saveFile.loadoutActions[i][j][k].name)]);
-              loadoutAmount[i][j].push(saveFile.loadoutAmount[i][j][k]);
-            }
+  if (saveFile.individualLoadoutActions) {
+    for (let i = 0; i < 6; i++) {
+      if (saveFile.individualLoadoutActions[i]) {
+        for (let j = 0; j < saveFile.individualLoadoutActions[i].length; j++) {
+          individualLoadoutActions[i].push(window[lowerize(saveFile.individualLoadoutActions[i][j].name)]);
+          individualLoadoutAmount[i].push(saveFile.individualLoadoutAmount[i][j]);
+        }
+      }
+      if (saveFile.partyLoadoutActions[i]) {
+        for (let j = 0; j < saveFile.partyLoadoutActions[i].length; j++) {
+          for (let k = 0; k < saveFile.partyLoadoutActions[i][j].length; k++) {
+            partyLoadoutActions[i][j].push(window[lowerize(saveFile.partyLoadoutActions[i][j][k].name)]);
+            partyLoadoutAmount[i][j].push(saveFile.partyLoadoutAmount[i][j][k]);
           }
         }
       }
@@ -94,8 +102,12 @@ function save() {
   for (let i = 0; i < 2; i++) {
     saveFile["character" + i] = character[i];
   }
-  saveFile.loadoutActions = loadoutActions;
-  saveFile.loadoutAmount = loadoutAmount;
+  saveFile.individualLoadoutActions = individualLoadoutActions;
+  console.log(saveFile.individualLoadoutActions)
+  saveFile.individualLoadoutAmount = individualLoadoutAmount;
+  console.log(saveFile.individualLoadoutAmount)
+  saveFile.partyLoadoutActions = partyLoadoutActions;
+  saveFile.partyLoadoutAmount = partyLoadoutAmount;
   saveFile.tutorial = tutorial;
   localStorage.chronocycleSaveFile = JSON.stringify(saveFile);
 }
