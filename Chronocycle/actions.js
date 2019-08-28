@@ -834,6 +834,7 @@ var makeMinorHealthPotion = {
   },
   finish: function(char) {
     char.elderberries--;
+    updateResourceBox("elderberries");
     char.minorHealthPotions++;
     updateResourceBox("minorHealthPotions");
     increaseSkills(char, "alchemy", 100);
