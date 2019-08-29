@@ -77,7 +77,7 @@ function load() {
       }
     }
   }
-  if (saveFile.version == undefined && character[1] != undefined) {
+  if (saveFile.version == undefined && character.length == 2) {
     character.pop();
   }
   tutorial = (saveFile.tutorial != undefined) ? saveFile.tutorial : true;
