@@ -36,10 +36,7 @@ function load() {
     character[0].currentCycleActionCompleted = [];
   }
   for (let i = 1; i < 2; i++) {
-    if (saveFile["character" + i] == undefined) {
-      character[i] = new Person("Extra");
-      character[i].visible = true;
-    } else {
+    if (saveFile["character" + i] != undefined) {
       character[i] = saveFile["character" + i];
       character[i].currentCycleActionList = [];
       character[i].currentCycleActionAmount = [];
@@ -80,6 +77,9 @@ function load() {
       }
     }
   }
+  if (saveFile.version == undefined) {
+    character[1] = undefined;
+  }
   tutorial = (saveFile.tutorial != undefined) ? saveFile.tutorial : true;
 }
 
@@ -103,12 +103,11 @@ function save() {
     saveFile["character" + i] = character[i];
   }
   saveFile.individualLoadoutActions = individualLoadoutActions;
-  console.log(saveFile.individualLoadoutActions)
   saveFile.individualLoadoutAmount = individualLoadoutAmount;
-  console.log(saveFile.individualLoadoutAmount)
   saveFile.partyLoadoutActions = partyLoadoutActions;
   saveFile.partyLoadoutAmount = partyLoadoutAmount;
   saveFile.tutorial = tutorial;
+  saveFile.version = "0.6.11";
   localStorage.chronocycleSaveFile = JSON.stringify(saveFile);
 }
 

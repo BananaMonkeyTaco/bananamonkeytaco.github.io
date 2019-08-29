@@ -737,6 +737,12 @@ var wizardTraining = {
       let x = location[1].progressBars.wizardTrainingProgressBar;
       x.currentXP += 100;
       checkLevel(x);updateProgressBar(x);
+      if (x.currentLevel >= 30 && character[1] == undefined) {
+        character[1] = new Person("Terragon");
+        character[1].visible = true;
+        newPersonPrep(1);
+        buildStatBox();
+      }
     }
   },
   get tooltip() { return [
