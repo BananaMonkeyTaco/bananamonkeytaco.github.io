@@ -25,7 +25,7 @@ var spiritColour = "grey";
 var activeLoadout = 0;
 var combatTooltip = "Stick them with the pointy end";
 var alchemyTooltip = "I'd probably avoid bringing back your dead mother";
-var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by (1 + level)^0.3";
+var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by <b>(1 + level)^0.3</b>";
 
 function capitalize(string) {
   return string.slice(0, 1).toUpperCase() + string.slice(1);
@@ -109,7 +109,7 @@ function showTutorial() {
   "<br>" +
   "You remember this. But why do you keep being brought back in time?..." +
   "<br>" +
-  "You remember being brought back. Wait, you're mana's draining rapidly..." +
+  "You remember being brought back. Wait, your mana's draining rapidly..." +
   "<br>" +
   "Your mana's draining. Maybe if you focus on containing it you can make it last longer." +
   "<br><br>" +
@@ -137,6 +137,7 @@ function showTutorial() {
 function cheat() {
   character[0].combat.level = 50;
   character[0].manaFlow.level = 50;
+  character[0].alchemy.level = 50;
   buildStatBox();
   location[1].visible = true;
   location[0].progressBars.wanderProgressBar.currentLevel = 80;
@@ -167,6 +168,7 @@ function cheat() {
   updateResources(location[1].progressBars.searchForElderberriesProgressBar);
   buildTownBox();
 }
+
 /*
 for (let i = 0; i < statNames.length; i++) {
   let skill = document.createElement("div");

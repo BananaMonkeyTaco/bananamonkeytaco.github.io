@@ -3,6 +3,7 @@ body {
   font-family: 'Open Sans', 'Verdana', 'Geneva', sans-serif;
   font-size: .85em;
   line-height: 20px;
+  min-width: 1340px;
 }
 
 img {

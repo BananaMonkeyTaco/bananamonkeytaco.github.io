@@ -13,7 +13,7 @@ function buildStatBox() {
     let title = document.createElement("div");
     title.innerHTML = "<b>Stats</b>";
     let statTooltip = document.createElement("tooltip");
-    statTooltip.innerHTML = "Stats lower the amount of mana you use on each mana" +
+    statTooltip.innerHTML = "Stats lower the amount of mana you use on each action" +
     "<br>The mana is reduced according to this formula:" +
     "<br><b>Cost / ( 1 + (stat / 100))</b>" +
     "<br>This forumla is applied to each stat an action has according to its share" +
@@ -208,6 +208,37 @@ function updateStats() {
       "<br><b>Talent Multi: </b>" + (1 + Math.pow(x[y].talent, .3) / 2).toFixed(2);
     }
   }
+}
+
+function newPersonPrep(num) {
+  let tempElement = document.getElementById("actionColumn");
+  let tempDiv;
+  let tempSubDiv;
+  tempDiv = document.createElement("div");
+  tempDiv.className = "characterSelectButton";
+  tempDiv.id = "character" + num + "Select";
+  tempDiv.innerHTML = character[num].name;
+  tempDiv.onclick = function() {
+    characterSwitch(num);
+  }
+  document.getElementById("characterSelection").appendChild(tempDiv);
+  tempDiv = document.createElement("div");
+  tempDiv.id = "character" + num;
+  tempDiv.style.display = "none";
+  document.getElementById("characterBox").appendChild(tempDiv);
+  tempDiv = document.createElement("div");
+  tempDiv.className = "actionBox";
+  tempDiv.id = "character" + num + "ActionBox";
+  tempDiv.style.display = "none";
+  tempSubDiv = document.createElement("div");
+  tempSubDiv.className = "actionBoxProgressList";
+  tempSubDiv.id = lowerize(character[num].name) + "ProgressList";
+  tempDiv.appendChild(tempSubDiv);
+  tempSubDiv = document.createElement("div");
+  tempSubDiv.className = "actionBoxActionList";
+  tempSubDiv.id = lowerize(character[num].name) + "ActionList";
+  tempDiv.appendChild(tempSubDiv);
+  tempElement.insertBefore(tempDiv, document.getElementById("actionBoxButtons"));
 }
 
 function levelUp(object, stat, select) {
