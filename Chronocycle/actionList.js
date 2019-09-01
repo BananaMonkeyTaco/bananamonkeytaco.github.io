@@ -288,13 +288,16 @@ function saveLoadout() {
 function loadLoadout() {
   //Checking for valid loadout
   if (0 < activeLoadout && activeLoadout < 6) {
-    if (activeLoadoutType == "individual") {
-      char = character[currentCharacter];
+    //Empty all characters action lists
+    for (let i = 0; i < character.length; i++) {
+      let char = character[i];
       let box = document.getElementById(lowerize(char.name) + "ActionList");
-      //Empty the character's visual action list
       while (box.childElementCount > 0) {
         box.removeChild(box.firstElementChild);
       }
+    }
+    if (activeLoadoutType == "individual") {
+      let char = character[currentCharacter];
       //Emptying the character's actual action list
       char.nextCycleActionList = [];
       char.nextCycleActionAmount = [];
@@ -307,12 +310,7 @@ function loadLoadout() {
       }
     } else if (activeLoadoutType == "party") {
       for (let i = 0; i < partyLoadoutActions[activeLoadout].length; i++) {
-        char = character[i];
-        let box = document.getElementById(lowerize(character[i].name) + "ActionList");
-        //Empty the character's visual action list
-        while (box.childElementCount > 0) {
-          box.removeChild(box.firstElementChild);
-        }
+        let char = character[i];
         //Emptying each character's actual action list
         char.nextCycleActionList = [];
         char.nextCycleActionAmount = [];

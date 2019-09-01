@@ -767,12 +767,12 @@ var searchForElderberries = {
   finish: function(char) {
     if (location[1].progressBars.searchForElderberriesProgressBar.currentLevel < 100) {
       let x = location[1].progressBars.searchForElderberriesProgressBar;
-      x.currentXP += (char.hasMap) ? 400 : 100;
+      x.currentXP += 100;
       checkLevel(x);updateProgressBar(x);updateResources(x);updateResourceText(x.resource);
     }
   },
   get tooltip() { return [
-    "<b>Elderberries Found XP: </b> 100 (400)"
+    "<b>Elderberries Found XP: </b> 100"
   ]},
 };
 
