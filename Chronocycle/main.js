@@ -93,11 +93,6 @@ function work() {
           character[i].active = false;
         }
       }
-      /*
-      if (character[i].currentCycleActionCompleted[character[i].currentCycleActionCompleted.length] >=
-        character[i].currentCycleActionAmount[character[i].currentCycleActionAmount.length]) {
-        character[i].active = false;
-      }*/
     }
     //If no characters can progress, start a new cycle
     for (let i = 0; i < character.length; i++) {
@@ -152,20 +147,27 @@ function progressAction(char) {
   //Use the characters mana
   char.mana--;
   char.currentCostLeft--;
-  increaseStats(char, char.currentCycleActionList[char.currentAction], char.multiplier);
+  let action = char.currentCycleActionList[char.currentAction];
+  let node = document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction];
+  //Increase Mana Spent
+  node.childNodes[1].childNodes[2].innerHTML = "<br><b>Mana Spent: </b>" +
+  (Number((node.childNodes[1].childNodes[2].innerHTML).slice(23)) + 1);
+  node.childNodes[1].childNodes[3].innerHTML = "<br><b>Time Spent: </b>" +
+  (Number(node.childNodes[1].childNodes[3].innerHTML.slice(23).split("s")[0]) + 0.01).toFixed(2) + "s";
+  increaseStats(char, action, char.multiplier);
   //Show the percentage of progress for the current action
-  document.getElementById(lowerize(char.name) + "ProgressList").childNodes[char.currentAction].childNodes[2].innerHTML =
+  node.childNodes[0].childNodes[2].innerHTML =
   Math.floor(((char.originalCost - char.currentCostLeft) / char.originalCost) * 100) + "%";
   //For when an action has a progress
-  if (char.currentCycleActionList[char.currentAction].progress) {
-    char.currentCycleActionList[char.currentAction].progress(char, char.multiplier);
+  if (action.progress) {
+    action.progress(char, char.multiplier);
   }
   //Check if the current action is finished
   if (char.currentCostLeft <= 0) {
-    char.currentCycleActionList[char.currentAction].finish(char);
+    action.finish(char);
     //Show the new amount of completed actions
     char.currentCycleActionCompleted[char.currentAction]++;
-    document.getElementById(lowerize(char.name) + "ProgressList").childNodes[char.currentAction].childNodes[1].innerHTML =
+    node.childNodes[0].childNodes[1].innerHTML =
     "(" + char.currentCycleActionCompleted[char.currentAction] + "/" + char.currentCycleActionAmount[char.currentAction] + ")";
     //Check if the requested amount has been reached
     char.currentAction = null;
@@ -185,7 +187,13 @@ function findNextAction(char) {
       }
     }
   }
-  //If there were no more actions for the character set them to inactive
+  //Check for repeating last action
+  if (char.currentAction == null && document.getElementById("repeatLastActionBox").checked) {
+    if (char.currentCycleActionList[char.currentCycleActionList.length - 1].canStart(char)) {
+      char.currentAction = char.currentCycleActionList.length - 1;
+    }
+  }
+  //If no action available
   if (char.currentAction == null) {
     char.active = false;
     return;

@@ -35,9 +35,9 @@ var smashPots = {
   },
   resource: location[0].progressBars.wanderProgressBar.resource,
   stats: {
-    speed: .5,
     strength: .4,
     constitution: .1,
+    speed: .5,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -112,9 +112,9 @@ var doFavours = {
   },
   resource: location[0].progressBars.meetPeopleProgressBar.resource,
   stats: {
-    speed: .5,
     strength: .3,
     constitution: .2,
+    speed: .5,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -160,9 +160,9 @@ var investigate = {
     return 400;
   },
   stats: {
-    intelligence: .5,
-    perception: .3,
     dexterity: .2,
+    perception: .3,
+    intelligence: .5,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -192,9 +192,9 @@ var steal = {
   },
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
-    speed: .6,
     dexterity: .3,
     strength: .1,
+    speed: .6,
     //soul -10%?
   },
   canStart: function(char) {
@@ -217,7 +217,7 @@ var steal = {
       let tempReliable = this.resource.reliableAmount;
       updateResources(location[0].progressBars.secretsFoundProgressBar);
       if (tempReliable < this.resource.reliableAmount) {
-        char.mana += this.manaGain(char);
+        char.gold += this.goldGain(char);
         this.resource.usedAmount++;
       }
       updateResourceText(this.resource);
@@ -244,9 +244,9 @@ var combatTraining = {
     return 1500;
   },
   stats: {
+    dexterity: .2,
     strength: .5,
     constitution: .3,
-    dexterity: .2,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -266,9 +266,9 @@ var fightWolves = {
     return 3000;
   },
   stats: {
+    dexterity: .2,
     strength: .4,
     constitution: .2,
-    dexterity: .2,
     speed: .2,
   },
   canStart: function(char) {
@@ -319,9 +319,9 @@ var buyMana = {
     return 100;
   },
   stats: {
-    charisma: .5,
-    perception: .3,
     dexterity: .2,
+    perception: .3,
+    charisma: .5,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -343,9 +343,9 @@ var buyMap = {
     return 10;
   },
   stats: {
+    perception: .2,
     charisma: .5,
     intelligence: .3,
-    perception: .2,
   },
   canStart: function(char) {
     return (char.currentLocation == 0 && char.gold >= 10);
@@ -421,8 +421,8 @@ var travelToForest = {
     }
   },
   stats: {
-    speed: .8,
     constitution: .2,
+    speed: .8,
   },
   canStart: function(char) {
     return (char.currentLocation == 0);
@@ -446,8 +446,8 @@ var returnToNoobton = {
     return 25000 - (location[1].progressBars.mapGameTrailsProgressBar.currentLevel * 225);
   },
   stats: {
-    speed: .8,
     constitution: .2,
+    speed: .8,
   },
   canStart: function(char) {
     return (char.currentLocation == 1);
@@ -468,9 +468,9 @@ var exploreForest = {
   },
   stats: {
     constitution: .1,
+    speed: .1,
     perception: .6,
     intelligence: .2,
-    speed: .1,
   },
   canStart: function(char) {
     return (char.currentLocation == 1);
@@ -653,8 +653,8 @@ var huntAnimals = {
   resource: location[1].progressBars.mapGameTrailsProgressBar.resource,
   stats: {
     dexterity: .3,
-    intelligence: .2,
     speed: .5,
+    intelligence: .2,
   },
   canStart: function(char) {
     return (char.currentLocation == 1);

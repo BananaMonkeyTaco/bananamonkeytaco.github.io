@@ -70,43 +70,91 @@ change class later
 // TODO: Check if same list
 function initializeProgressList() {
   for (let i = 0; i < character.length; i++) {
-    let x = character[i];
-    let cycleList = document.getElementById(lowerize(x.name) + "ProgressList")
+    let char = character[i];
+    let cycleList = document.getElementById(lowerize(char.name) + "ProgressList")
     //Clearing the previous progress list
-    x.currentCycleActionList = [];
-    x.currentCycleActionAmount = [];
-    x.currentCycleActionCompleted = [];
+    char.currentCycleActionList = [];
+    char.currentCycleActionAmount = [];
+    char.currentCycleActionCompleted = [];
     while (cycleList.firstChild) {
       cycleList.removeChild(cycleList.firstChild);
     }
     //Making the new list from the start
-    for (let j = 0; j < x.nextCycleActionList.length; j++) {
+    for (let j = 0; j < char.nextCycleActionList.length; j++) {
+      let progressContainer;
+      let tooltip;
       let newProgress;
       let icon;
       let completedSpan;
       let progressSpan;
       //Add data to the character
-      x.currentCycleActionList.push(x.nextCycleActionList[j]);
-      x.currentCycleActionAmount.push(x.nextCycleActionAmount[j]);
-      x.currentCycleActionCompleted.push(0);
+      char.currentCycleActionList.push(char.nextCycleActionList[j]);
+      char.currentCycleActionAmount.push(char.nextCycleActionAmount[j]);
+      char.currentCycleActionCompleted.push(0);
+      //Making the container
+      progressContainer = document.createElement("div");
+      progressContainer.className = "actionBoxActions";
+      //Making the normal part
       newProgress = document.createElement("div");
-      // TODO: change class name
-      newProgress.className = "actionBoxProgressList";
       //Making the icon
       icon = document.createElement("img");
-      icon.src = "images/" + capitalize(x.nextCycleActionList[j].name) + ".svg";
+      icon.src = "images/" + capitalize(char.nextCycleActionList[j].name) + ".svg";
       icon.className = "actionIcon";
       newProgress.appendChild(icon);
       //Span for amount completed / amount to complete during cycle
       completedSpan = document.createElement("span");
-      completedSpan.innerHTML = "(" + x.currentCycleActionCompleted[j] + "/" + x.currentCycleActionAmount[j] + ")";
+      completedSpan.innerHTML = "(" + char.currentCycleActionCompleted[j] + "/" + char.currentCycleActionAmount[j] + ")";
       newProgress.appendChild(completedSpan);
       //Span for the percentage of the current action that has been completed
       progressSpan = document.createElement("span");
       progressSpan.style.float = "right";
       progressSpan.innerHTML = "0%";
       newProgress.appendChild(progressSpan);
-      cycleList.appendChild(newProgress);
+      progressContainer.appendChild(newProgress);
+      //Making the tooltip
+      tooltip = document.createElement("tooltip");
+      tooltip.style.width = "150px";
+      tooltip.style.left = "100%";
+      tooltip.style.top = "-5px";
+      tooltip.style.zIndex = "1";
+      let tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<b>Mana Cost</b>";
+      tooltip.appendChild(tempSpan);
+      tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<br><b>Original Cost: </b>" +
+      (char.currentCycleActionList[j].manaCost(char) * char.currentCycleActionAmount[j]);
+      tooltip.appendChild(tempSpan);
+      tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<br><b>Mana Spent: </b>" + 0;
+      tooltip.appendChild(tempSpan);
+      tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<br><b>Time Spent: </b>" + "0.00s";
+      tooltip.appendChild(tempSpan);
+      tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<br><b>Stats</b>";
+      tooltip.appendChild(tempSpan);
+      for (let k = 0; k < statNames.length; k++) {
+        if (char.currentCycleActionList[j].stats[statNames[k]]) {
+          tempSpan = document.createElement("span");
+          tempSpan.innerHTML = "<br><b>" + capitalize(statNames[k]) + ": </b>0";
+          tooltip.appendChild(tempSpan);
+        }
+      }
+      /*
+      tooltip.innerHTML = "<b>Mana cost</b>" +
+      "<br><b>Original Cost: </b>" + (char.currentCycleActionList[j].manaCost(char) * char.currentCycleActionAmount[j]) +
+      "<br><b>Spent: </b>" + 0 +
+      "<br><b>Time: </b>" + 0 +
+      "<br><b>Stats</b>";
+      for (let k = 0; k < statNames.length; k++) {
+        let z = statNames[k];
+        if (char.currentCycleActionList[j].stats[z]) {
+          tooltip.innerHTML += "<br>" + capitalize(statNames[k]) + ": ";
+        }
+      }
+      */
+      progressContainer.appendChild(tooltip);
+      cycleList.appendChild(progressContainer);
     }
   }
 }

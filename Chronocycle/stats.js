@@ -152,8 +152,14 @@ function characterSwitch(target) {
 }
 
 function increaseStats(char, action, multiplier) {
+  let i = 5;
   for (x in action.stats) {
     char[x].levelXP += action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2);
+    document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction].childNodes[1].childNodes[i].innerHTML =
+    "<br><b>" + capitalize(x) + ": </b>" +
+    (Number(document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction].childNodes[1].childNodes[i].innerHTML.split("</b>")[1]) +
+    (action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2))).toFixed(1);
+    i++;
     if (char[x].levelXP >= char[x].toNextLevel) {
       levelUp(char, x, "level");
     }
@@ -210,6 +216,24 @@ function updateStats() {
   }
 }
 
+function levelUp(object, stat, select) {
+  if (select == "level") {
+    object[stat].level++;
+    object[stat].levelXP -= object[stat].toNextLevel;
+    object[stat].toNextLevel = (object[stat].level + 1) * 100;
+    if (object[stat].levelXP >= object[stat].toNextLevel) {
+      levelUp(object, stat, "level");
+    }
+  } else if (select == "talent") {
+    object[stat].talent++;
+    object[stat].talentXP -= object[stat].toNextTalent;
+    object[stat].toNextTalent = (object[stat].talent + 1) * 100;
+    if (object[stat].talentXP >= object[stat].toNextTalent) {
+      levelUp(object, stat, "talent");
+    }
+  }
+}
+
 function newPersonPrep(num) {
   let tempElement = document.getElementById("actionColumn");
   let tempDiv;
@@ -239,18 +263,6 @@ function newPersonPrep(num) {
   tempSubDiv.id = lowerize(character[num].name) + "ActionList";
   tempDiv.appendChild(tempSubDiv);
   tempElement.insertBefore(tempDiv, document.getElementById("actionBoxButtons"));
-}
-
-function levelUp(object, stat, select) {
-  if (select == "level") {
-    object[stat].level++;
-    object[stat].levelXP = 0;
-    object[stat].toNextLevel = (object[stat].level + 1) * 100;
-  } else if (select == "talent") {
-    object[stat].talent++;
-    object[stat].talentXP = 0;
-    object[stat].toNextTalent = (object[stat].talent + 1) * 100;
-  }
 }
 
 function Person (name) {

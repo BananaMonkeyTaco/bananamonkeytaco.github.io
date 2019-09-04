@@ -168,19 +168,3 @@ function cheat() {
   updateResources(location[1].progressBars.searchForElderberriesProgressBar);
   buildTownBox();
 }
-
-/*
-for (let i = 0; i < statNames.length; i++) {
-  let skill = document.createElement("div");
-  skill.className = "progressBarEmpty";
-  skill.style.margin = "25px";
-  let thing = document.createElement("div");
-  thing.className = "progressBarFill";
-  thing.width = "100%";
-  thing.style.backgroundColor = window[statNames[i] + "Colour"];
-  skill.appendChild(thing);
-  let miscText = document.createTextNode(statNames[i]);
-  skill.appendChild(miscText);
-  town.appendChild(skill);
-}
-*/
