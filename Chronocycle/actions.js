@@ -452,8 +452,8 @@ var returnToNoobton = {
   canStart: function(char) {
     return (char.currentLocation == 1);
   },
-  finish: function() {
-    currentLocation = 0;
+  finish: function(char) {
+    char.currentLocation = 0;
   },
   get tooltip() { return [
     "For whatever reason you can backtrack all the way back to the small village you started this adventure in",
