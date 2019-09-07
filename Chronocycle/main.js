@@ -143,18 +143,25 @@ function resetCharacter(char) {
   }
 }
 
+lastUpdate = Date.now();
+
 function progressAction(char) {
+  // Find how much mana should be used.
+  currentTime = Date.now();
+  manaUsed = Math.floor((currentTime - lastUpdate)/10);
+  lastUpdate = currentTime;
+  if (manaUsed > char.currentCostLeft) manaUsed = char.currentCostLeft;
   //Use the characters mana
-  char.mana--;
-  char.currentCostLeft--;
+  char.mana -= manaUsed;
+  char.currentCostLeft -= manaUsed;
   let action = char.currentCycleActionList[char.currentAction];
   let node = document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction];
   //Increase Mana Spent
   node.childNodes[1].childNodes[2].innerHTML = "<br><b>Mana Spent: </b>" +
-  (Number((node.childNodes[1].childNodes[2].innerHTML).slice(23)) + 1);
+  (Number((node.childNodes[1].childNodes[2].innerHTML).slice(23)) + manaUsed);
   node.childNodes[1].childNodes[3].innerHTML = "<br><b>Time Spent: </b>" +
   (Number(node.childNodes[1].childNodes[3].innerHTML.slice(23).split("s")[0]) + 0.01).toFixed(2) + "s";
-  increaseStats(char, action, char.multiplier);
+  increaseStats(char, action, char.multiplier * manaUsed);
   //Show the percentage of progress for the current action
   node.childNodes[0].childNodes[2].innerHTML =
   Math.floor(((char.originalCost - char.currentCostLeft) / char.originalCost) * 100) + "%";
