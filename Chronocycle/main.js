@@ -100,6 +100,7 @@ function work() {
         break;
       }
       if (i == character.length - 1) {
+        saveProgressListToRecent();
         gameNewCycle();
         return;
       }
@@ -152,8 +153,8 @@ function progressAction(char) {
   //Increase Mana Spent
   node.childNodes[1].childNodes[2].innerHTML = "<br><b>Mana Spent: </b>" +
   (Number((node.childNodes[1].childNodes[2].innerHTML).slice(23)) + 1);
-  node.childNodes[1].childNodes[3].innerHTML = "<br><b>Time Spent: </b>" +
-  (Number(node.childNodes[1].childNodes[3].innerHTML.slice(23).split("s")[0]) + 0.01).toFixed(2) + "s";
+  node.childNodes[1].childNodes[4].innerHTML = "<br><b>Time Spent: </b>" +
+  (Number(node.childNodes[1].childNodes[4].innerHTML.slice(23).split("s")[0]) + 0.01).toFixed(2) + "s";
   increaseStats(char, action, char.multiplier);
   //Show the percentage of progress for the current action
   node.childNodes[0].childNodes[2].innerHTML =
@@ -169,6 +170,8 @@ function progressAction(char) {
     char.currentCycleActionCompleted[char.currentAction]++;
     node.childNodes[0].childNodes[1].innerHTML =
     "(" + char.currentCycleActionCompleted[char.currentAction] + "/" + char.currentCycleActionAmount[char.currentAction] + ")";
+    //Show mana left in tooltip
+    node.childNodes[1].childNodes[3].innerHTML = "<br><b>Mana Left: </b>" + char.mana;
     //Check if the requested amount has been reached
     char.currentAction = null;
   }

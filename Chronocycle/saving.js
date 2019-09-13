@@ -43,6 +43,21 @@ function load() {
       character[i].currentCycleActionCompleted = [];
     }
   }
+  //Previous action lists
+  /*
+  previousLists = [];
+  for (let i = 1; i < 4; i++) {
+    if (saveFile.previousLists && saveFile.previousLists[i] != undefined && saveFile.previousLists[i][j] != undefined) {
+      for (let j = 0; j < saveFile.previousLists[i].length; j++) {
+        let tempDiv = document.createElement("div");
+        tempDiv.outerHTML = saveFile.previousLists[i][j];
+        previousLists[i][j] = tempDiv;
+      }
+    } else {
+      previousLists[i] = [];
+    }
+  }
+  */
   //Making loadouts
   individualLoadoutActions = [];
   individualLoadoutAmount = [];
@@ -102,6 +117,16 @@ function save() {
   for (let i = 0; i < 2; i++) {
     saveFile["character" + i] = character[i];
   }
+  /*
+  saveFile.previousLists = [];
+  for (let i = 1; i < 4; i++) {
+    saveFile.previousLists[i] = [];
+    for (let j = 0; j < previousLists[i].length; j++) {
+      saveFile.previousLists[i][j] = previousLists[i][j].outerHTML;
+    }
+  }
+  saveFile.previousLists = previousLists;
+  */
   saveFile.individualLoadoutActions = individualLoadoutActions;
   saveFile.individualLoadoutAmount = individualLoadoutAmount;
   saveFile.partyLoadoutActions = partyLoadoutActions;

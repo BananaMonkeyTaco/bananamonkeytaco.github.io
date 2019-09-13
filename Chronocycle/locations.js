@@ -103,7 +103,10 @@ function buildTownBox() {
             inputBox.addEventListener("change", reliableLock);
             inputBox.checked = y.reliableFirstLock;
             tempLine.appendChild(inputBox);
-            tempLine.insertAdjacentHTML("beforeend", "Reliable First");
+            inputBox = document.createElement("label");
+            inputBox.htmlFor = y.name + "LootFirst";
+            inputBox.innerHTML = "Reliable First";
+            tempLine.appendChild(inputBox);
             //span for the unchecked resources
             unchecked = document.createElement("span");
             unchecked.style.float = "right";
@@ -671,8 +674,8 @@ location[0] = {
       get unlocked() {
         return (location[1].progressBars.investigateTreesProgressBar.currentLevel >= 40);
       },
-      requirementAction: [],
-      requirementAmount: [],
+      requirementAction: ["Trees Checked"],
+      requirementAmount: ["40%"],
     },
     buyGuide: {
       name: "Buy Guide",

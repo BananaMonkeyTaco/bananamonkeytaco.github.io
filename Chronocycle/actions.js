@@ -308,7 +308,7 @@ var fightWolves = {
   finish: function() {
   },
   get tooltip() { return [
-    "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims",
+    "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims, 30 gold perhaps?",
     "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) per "
   ]},
 };
@@ -435,7 +435,7 @@ var travelToForest = {
     char.currentLocation = 1;
   },
   get tooltip() { return [
-    "Start your adventure out of this one horse town. If you have a guide it only costs 10% of the mana",
+    "Start your adventure out of this one horse town",
     "Only costs 2500 mana if you have a guide with you"
   ]},
 };
@@ -825,7 +825,7 @@ var pickElderberries = {
 };
 
 var makeMinorHealthPotion = {
-  name: "makeMinorHealthPotion",
+  name: "MakeMinorHealthPotion",
   manaCost: function(char) {
     return 5000;
   },

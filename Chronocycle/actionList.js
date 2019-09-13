@@ -113,7 +113,7 @@ function initializeProgressList() {
       progressContainer.appendChild(newProgress);
       //Making the tooltip
       tooltip = document.createElement("tooltip");
-      tooltip.style.width = "150px";
+      tooltip.style.width = "165px";
       tooltip.style.left = "100%";
       tooltip.style.top = "-5px";
       tooltip.style.zIndex = "1";
@@ -128,6 +128,9 @@ function initializeProgressList() {
       tempSpan.innerHTML = "<br><b>Mana Spent: </b>" + 0;
       tooltip.appendChild(tempSpan);
       tempSpan = document.createElement("span");
+      tempSpan.innerHTML = "<br><b>Mana Left: </b>" + "N/A";
+      tooltip.appendChild(tempSpan);
+      tempSpan = document.createElement("span");
       tempSpan.innerHTML = "<br><b>Time Spent: </b>" + "0.00s";
       tooltip.appendChild(tempSpan);
       tempSpan = document.createElement("span");
@@ -140,19 +143,6 @@ function initializeProgressList() {
           tooltip.appendChild(tempSpan);
         }
       }
-      /*
-      tooltip.innerHTML = "<b>Mana cost</b>" +
-      "<br><b>Original Cost: </b>" + (char.currentCycleActionList[j].manaCost(char) * char.currentCycleActionAmount[j]) +
-      "<br><b>Spent: </b>" + 0 +
-      "<br><b>Time: </b>" + 0 +
-      "<br><b>Stats</b>";
-      for (let k = 0; k < statNames.length; k++) {
-        let z = statNames[k];
-        if (char.currentCycleActionList[j].stats[z]) {
-          tooltip.innerHTML += "<br>" + capitalize(statNames[k]) + ": ";
-        }
-      }
-      */
       progressContainer.appendChild(tooltip);
       cycleList.appendChild(progressContainer);
     }
@@ -321,7 +311,7 @@ function saveLoadout() {
       }
     } else if (activeLoadoutType == "party") {
       for (let i = 0; i < character.length; i++) {
-        char = character[i];
+        let char = character[i];
         partyLoadoutActions[activeLoadout][i] = [];
         partyLoadoutAmount[activeLoadout][i] = [];
         for (let j = 0; j < char.nextCycleActionList.length; j++) {
@@ -385,4 +375,112 @@ function changeActiveLoadout(type, num) {
   document.getElementById(type + "Loadout" + num).className = "activeLoadoutButton";
   activeLoadoutType = type;
   activeLoadout = num;
+}
+
+function saveProgressListToRecent() {
+  for (let i = 0; i < character.length; i++) {
+    let char = character[i];
+    recentProgressList[i] = document.getElementById(lowerize(char.name) + "ProgressList").cloneNode(true);
+    recentProgressList[i].removeAttribute("id");
+  }
+}
+
+function showPreviousList(num) {
+  if (num == "recent" && recentProgressList[0] != undefined) {
+    for (let i = 0; i < character.length; i++) {
+      let char = character[i];
+      let node = document.getElementById(lowerize(char.name) + "ProgressList");
+      if (previousProgress == "recent") {
+        node.parentElement.removeChild(node.previousElementSibling);
+      }
+      node.style.display = "none";
+      node.parentElement.insertBefore(recentProgressList[i], node);
+      node.previousElementSibling.style.display = "block";
+    }
+    previousProgress = "recent";
+  }
+  if (1 < num && num < 4 && previousLists[num] != undefined && previousLists[num].length > 0) {
+    for (let i = 0; i < character.length; i++) {
+      let char = character[i];
+      let node = document.getElementById(lowerize(char.name) + "ProgressList");
+      if (previousProgress == num) {
+        node.parentElement.removeChild(node.previousElementSibling);
+      }
+      node.style.display = "none";
+      node.parentElement.insertBefore(previousLists[num][i], node);
+      node.previousElementSibling.style.display = "block";
+    }
+    previousProgress = num;
+  }
+}
+
+function closePreviousList() {
+  if (previousProgress) {
+    for (let i = 0; i < character.length; i++) {
+      let char = character[i];
+      let node = document.getElementById(lowerize(char.name) + "ProgressList");
+      node.parentElement.removeChild(node.previousElementSibling);
+      node.style.display = "block";
+    }
+    previousProgress = false;
+  }
+}
+
+function showSaveNextList() {
+
+}
+
+function showSaveShownList() {
+  let node = document.getElementById("previousListButtons");
+  let tempElement;
+  while (node.hasChildNodes()) {
+    node.removeChild(node.firstChild);
+  }
+  for (let i = 1; i < 4; i++) {
+    tempElement = document.createElement("button");
+    tempElement.type = "button";
+    tempElement.className = "loadoutButton";
+    tempElement.innerHTML = "Save to " + i;
+    tempElement.onclick = function() {
+      previousLists[i] = recentProgressList.slice(0);
+      while (node.hasChildNodes()) {
+        node.removeChild(node.firstChild);
+      }
+      node.innerHTML +=
+      '<button type="button" class="loadoutButton" id="showSaveNextListButton" onclick="showSaveNextList()">Save Next List</button>' +
+      '<button type="button" class="loadoutButton" id="showSaveShownListButton" onclick="showSaveShownList()">Save Recent List</button>' +
+      '<button type="button" class="loadoutButton" id="showDeleteListButton" onclick="showDeleteList()">Delete List</button>';
+    }
+    node.appendChild(tempElement);
+  }
+}
+
+// <button type="button" class="loadoutButton" id="showSaveNextListButton" onclick="showSaveNextList()">Save Next List</button>
+// <button type="button" class="loadoutButton" id="showSaveShownListButton" onclick="showSaveShownList()">Save Recent List</button>
+// <button type="button" class="loadoutButton" id="showDeleteListButton" onclick="showDeleteList()">Delete List</button>
+
+
+function showDeleteList() {
+  let node = document.getElementById("previousListButtons");
+  let tempElement;
+  while (node.hasChildNodes()) {
+    node.removeChild(node.firstChild);
+  }
+  for (let i = 1; i < 4; i++) {
+    tempElement = document.createElement("button");
+    tempElement.type = "button";
+    tempElement.className = "loadoutButton";
+    tempElement.innerHTML = "Delete " + i;
+    tempElement.onclick = function() {
+      previousLists[i] = [recentProgressList.slice(0)];
+      while (node.hasChildNodes()) {
+        node.removeChild(node.firstChild);
+      }
+      node.innerHTML +=
+      '<button type="button" class="loadoutButton" id="showSaveNextListButton" onclick="showSaveNextList()">Save Next List</button>' +
+      '<button type="button" class="loadoutButton" id="showSaveShownListButton" onclick="showSaveShownList()">Save Recent List</button>' +
+      '<button type="button" class="loadoutButton" id="showDeleteListButton" onclick="showDeleteList()">Delete List</button>';
+    }
+    node.appendChild(tempElement);
+  }
 }

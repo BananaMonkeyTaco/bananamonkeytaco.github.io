@@ -56,17 +56,34 @@
       <div>
         <label for="amountChanger" class="textAmount">Amount</label>
         <input type="text" id="amountChanger" name="amountChanger" style=width:90px></input>
-        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(1)>1</button>
-        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(5)>5</button>
-        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(10)>10</button>
-        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(25)>25</button>
-        <button type="button" style="margin: 0px; padding: 2px 6px" onclick=changeChanger(100)>100</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick="changeChanger(1)">1</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick="changeChanger(5)">5</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick="changeChanger(10)">10</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick="changeChanger(25)">25</button>
+        <button type="button" style="margin: 0px; padding: 2px 6px" onclick="changeChanger(100)">100</button>
       </div>
     </div>
     <input type="checkbox" id="repeatLastActionBox" value="repeatLastAction"></input>
     <label for="repeatLastActionBox" class="textAmount">Repeat Last Action</label>
     <div class="loadoutButtons">
-      <span class="textAmount">Individual</span>
+      <button type="button" id="something" onclick="showPreviousList('recent')">Show Previous Cycle</button>
+      <!--
+      <span class="textAmount">Previous Lists</span>
+      <button type="button" class="loadoutButton" id="previousListButton1" onclick="showPreviousList(1)">1</button>
+      <button type="button" class="loadoutButton" id="previousListButton2" onclick="showPreviousList(2)">2</button>
+      <button type="button" class="loadoutButton" id="previousListButton3" onclick="showPreviousList(3)">3</button>
+      -->
+      <button type="button" onclick="closePreviousList()">Close Previous Cycle</button>
+    </div>
+    <!--
+    <div class="loadoutButtons" id="previousListButtons">
+      <button type="button" class="loadoutButton" id="showSaveNextListButton" onclick="showSaveNextList()">Save Next List</button>
+      <button type="button" class="loadoutButton" id="showSaveShownListButton" onclick="showSaveShownList()">Save Recent List</button>
+      <button type="button" class="loadoutButton" id="showDeleteListButton" onclick="showDeleteList()">Delete List</button>
+    </div>
+    -->
+    <div class="loadoutButtons">
+      <span class="textAmount">Individual Loadouts</span>
       <button type="button" class="loadoutButton" id="individualLoadout1" onclick="changeActiveLoadout('individual', 1)">1</button>
       <button type="button" class="loadoutButton" id="individualLoadout2" onclick="changeActiveLoadout('individual', 2)">2</button>
       <button type="button" class="loadoutButton" id="individualLoadout3" onclick="changeActiveLoadout('individual', 3)">3</button>
@@ -74,7 +91,7 @@
       <button type="button" class="loadoutButton" id="individualLoadout5" onclick="changeActiveLoadout('individual', 5)">5</button>
     </div>
     <div class="loadoutButtons">
-      <span class="textAmount">Party</span>
+      <span class="textAmount">Party Loadouts</span>
       <button type="button" class="loadoutButton" id="partyLoadout1" onclick="changeActiveLoadout('party', 1)">1</button>
       <button type="button" class="loadoutButton" id="partyLoadout2" onclick="changeActiveLoadout('party', 2)">2</button>
       <button type="button" class="loadoutButton" id="partyLoadout3" onclick="changeActiveLoadout('party', 3)">3</button>

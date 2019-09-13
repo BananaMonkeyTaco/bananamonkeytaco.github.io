@@ -17,7 +17,7 @@ img {
 }
 
 button {
-  margin: 5px;
+  margin: 4px;
   border-radius: 45px;
   box-shadow: 0 0 8px #fff;
 }
@@ -190,7 +190,7 @@ tooltip {
 
 .actionBox {
   display: grid;
-  grid: auto/ 50% 50%;
+  grid: auto/ 45% 55%;
   width: 300px;
   height: 600px;
   margin: 5px;

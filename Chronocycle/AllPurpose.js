@@ -9,6 +9,7 @@ var directions = ["toNorthWest", "toNorth", "toNorthEast", "toWest", "name",
 "toEast", "toSouthWest", "toSouth", "toSouthEast"];
 var point = [225, 270, 315, 180, 0, 0, 135, 90, 45];
 var character = [];
+var recentProgressList = [];
 var statNames = ["dexterity", "strength", "constitution", "speed", "perception",
 "charisma", "intelligence", "wisdom", "spirit"];
 var skills = ["combat", "alchemy", "manaFlow"];
@@ -22,7 +23,9 @@ var charismaColour = "#e6e600";
 var intelligenceColour = "#33ccff";
 var wisdomColour = "#8080ff";
 var spiritColour = "grey";
-var activeLoadout = 0;
+var activeLoadout;
+var activeLoadoutType;
+var previousProgress = false;
 var combatTooltip = "Stick them with the pointy end";
 var alchemyTooltip = "I'd probably avoid bringing back your dead mother";
 var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by <b>(1 + level)^0.3</b>";
@@ -49,15 +52,16 @@ function changeChanger(num) {
 function checkCharacters() {
   let tempElement = document.getElementById("actionColumn");
   for (let i = 0; i < character.length; i++) {
-    if (character[i].visible) {
+    let char = character[i];
+    if (char.visible) {
       let tempDiv;
       let tempSubDiv;
       //Stat boxes
       //Character selection
       tempDiv = document.createElement("div");
       tempDiv.className = "characterSelectButton";
-      tempDiv.id = "character" + i + "Select";
-      tempDiv.innerHTML = character[i].name;
+      tempDiv.id = lowerize(char.name) + "Select";
+      tempDiv.innerHTML = char.name;
 // TODO: change to event listener
       tempDiv.onclick = function() {
         characterSwitch(i);
@@ -65,28 +69,28 @@ function checkCharacters() {
       document.getElementById("characterSelection").appendChild(tempDiv);
       //Stats
       tempDiv = document.createElement("div");
-      tempDiv.id = "character" + i;
+      tempDiv.id = lowerize(char.name);
       tempDiv.style.display = "none";
       document.getElementById("characterBox").appendChild(tempDiv);
       //Action boxes
       tempDiv = document.createElement("div");
       tempDiv.className = "actionBox";
-      tempDiv.id = "character" + i + "ActionBox";
+      tempDiv.id = lowerize(char.name) + "ActionBox";
       tempDiv.style.display = "none";
       tempSubDiv = document.createElement("div");
       tempSubDiv.className = "actionBoxProgressList";
-      tempSubDiv.id = lowerize(character[i].name) + "ProgressList";
+      tempSubDiv.id = lowerize(char.name) + "ProgressList";
       tempDiv.appendChild(tempSubDiv);
       tempSubDiv = document.createElement("div");
       tempSubDiv.className = "actionBoxActionList";
-      tempSubDiv.id = lowerize(character[i].name) + "ActionList";
+      tempSubDiv.id = lowerize(char.name) + "ActionList";
       tempDiv.appendChild(tempSubDiv);
       tempElement.insertBefore(tempDiv, document.getElementById("actionBoxButtons"));
     }
   }
-  document.getElementById("character0").style.display = "block";
-  document.getElementById("character0Select").className = "characterSelectButtonSelected";
-  document.getElementById("character0ActionBox").style.display = "grid";
+  document.getElementById("you").style.display = "block";
+  document.getElementById("youSelect").className = "characterSelectButtonSelected";
+  document.getElementById("youActionBox").style.display = "grid";
 }
 
 function showTutorial() {
