@@ -190,6 +190,9 @@ var steal = {
   goldGain: function(char) {
     return 15;
   },
+  reputationChange: function(char) {
+    return -1;
+  },
   resource: location[0].progressBars.secretsFoundProgressBar.resource,
   stats: {
     dexterity: .3,
@@ -274,44 +277,59 @@ var fightWolves = {
   canStart: function(char) {
     return (char.currentLocation == 0);
   },
-  progress: function(char, multiplier) {
-    let stat = undefined;
-    let x = 0;
-    let bar = 0;
-    let last = false;
-    for (let i = 0; i < 3; i++) {
-      x = document.getElementById("wolfFightingSegment" + i);
-      if (Number(x.innerHTML) < x.parentElement.previousElementSibling.childNodes[0].getAttribute("data-goal")) {
-        stat = x.parentElement.previousElementSibling.childNodes[0].getAttribute("data-stat");
-        bar = x.parentElement.previousElementSibling.childNodes[0];
-        if (i == 2) {
-          last = true;
-        }
+  progress: function(char) {
+    let x = location[0].progressBars.wolfFightingActionBar;
+    let y = document.getElementById("fightWolvesActionBar");
+    let segment;
+    let num;
+    //Find out which segment we're on
+    for (let i = 1; i < 4; i++) {
+      if (x["segment" + i].progress < x["segment" + i].goal) {
+        segment = x["segment" + i];
+        num = i;
         break;
       }
     }
-    let progress = 1 * multiplier * (1 + char[stat].level / 100) * (char.combat.level) *
+    //Increase the progress for the segment
+    segment.progress += 1 * char.multiplier * (1 + char[segment.stat].level / 100) * (char.combat.level) *
     Math.sqrt(1 + location[0].progressBars.wolfFightingActionBar.completedAmount / 100);
-    x.innerHTML = Math.floor(progress + Number(x.innerHTML));
-    bar.setAttribute("data-progress", String(Number(bar.getAttribute("data-progress")) + progress));
-    bar.style.width = bar.getAttribute("data-progress") / bar.getAttribute("data-goal") * 100 + "%";
-    if (Number(bar.getAttribute("data-progress")) >= bar.getAttribute("data-goal")) {
-      bar.style.width = "100%";
-      x.innerHTML = Number(bar.getAttribute("data-goal"));
-      location[0].progressBars.wolfFightingActionBar.completeSegment(char);
-      if (last == true) {
-        location[0].progressBars.wolfFightingActionBar.completeBar();
-        rebuildActionBar(0, "wolfFightingActionBar");
+    //When the segment is completed
+    if (segment.progress >= segment.goal) {
+      segment.progress = segment.goal;
+      //The character's reward
+      char.gold += 30;
+      updateResourceBox("gold");
+      if (num == 3) {
+        x.segment1.progress = 0;
+        x.segment1.goal = fibonacci(x.segment2.goal, x.segment3.goal);
+        y.childNodes[0].childNodes[0].childNodes[0].style.width = "100%";
+        y.childNodes[0].childNodes[1].innerHTML =
+        "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
+        x.segment2.progress = 0;
+        x.segment2.goal = fibonacci(x.segment3.goal, x.segment1.goal);
+        y.childNodes[1].childNodes[0].childNodes[0].style.width = "100%";
+        y.childNodes[1].childNodes[1].innerHTML =
+        "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
+        x.segment3.progress = 0;
+        x.segment3.goal = fibonacci(x.segment1.goal, x.segment2.goal);
+        y.childNodes[2].childNodes[0].childNodes[0].style.width = "100%";
+        y.childNodes[2].childNodes[1].innerHTML =
+        "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
+        x.completedAmount++;
       }
     }
+    //Update the bar and tooltip
+    y.childNodes[num - 1].childNodes[0].childNodes[0].style.width =
+    (100 - ((segment.progress / segment.goal) * 100) + "%");
+    y.childNodes[num - 1].childNodes[1].innerHTML =
+    "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
   },
-  finish: function() {
-  },
+  finish: function() {},
   get tooltip() { return [
     "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims, 30 gold perhaps?",
-    "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) per "
+    "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) per mana."
   ]},
-};
+}
 
 var buyMana = {
   name: "BuyMana",
@@ -331,7 +349,10 @@ var buyMana = {
     char.gold = 0;
     updateResourceBox("gold");
   },
-  tooltip: "You can spend all your hard earned gold to get some mana. Luckily the shop owner won't ask questions about where you got the gold",
+  get tooltip() { return [
+    "You can spend all your hard earned gold to get some mana. Luckily the shop owner won't ask questions about where you got the gold",
+    "1 Gold will buy you 100 Mana",
+  ]},
 };
 
 var buyMap = {

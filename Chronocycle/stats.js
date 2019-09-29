@@ -23,7 +23,13 @@ function buildStatBox() {
     "<br>50 / ( 1 + (100 / 100)) = 50 / (1 + 1) = 50 / 2 = 25" +
     "<br>So because what should have been 50 mana is now 25, the cost of Wander would then be 75" +
     "<br>Now remember the only stats that matter for an action is what is listed" +
-    "<br>So if you had a bajillionity and 7 levels in Spirit, that's not really going to help you with Wander, maybe something else though :)";
+    "<br>The reduction in mana cost actually does not reduce the amount of xp your stats get" +
+    "<br>This holds true for actions that have their own action bar like Fight Wolves" +
+    "<br>The progress you get per mana spent is increased by your reduction in cost" +
+    "<br>If Fight Wolves only costs half as much as it should, every mana put into the action will give you double the progress" +
+    "<br>So if you had a bajillionity and 7 levels in Spirit, that's not really going to help you with Wander, maybe something else though :)" +
+    "<br><b>Talents</b> increase the amount of xp your stats get while you're going through your cycles. The forumla for that is:" +
+    "<br><b>xp * (mana reduction multiplier) * (1 + (Talent^0.3)/2)";
     titleContainer.appendChild(title);
     titleContainer.appendChild(statTooltip);
     statBox.appendChild(titleContainer);

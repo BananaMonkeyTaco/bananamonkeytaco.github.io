@@ -129,72 +129,66 @@ function buildTownBox() {
           townProgressBarsBox.appendChild(townProgressBar)
           //For action types of bars
         } else if (location[i].progressBars[x].type == "Action") {
+          let tempDiv;
           let townActionBar;
           let nameBar;
+          let name;
           let completedSpan;
-          let completedNumber;
-          let progressEmpty;
-          let progressFill;
+          let actionBar;
+          //Overall bar
           townActionBar = document.createElement("div");
-          townActionBar.className = "townProgressBar";
-          townActionBar.id = y.id + "Bar";
+          townActionBar.className = "townActionBar";
+          //Name/Title for the bar
           nameBar = document.createElement("div");
-          nameBar.style.fontWeight = "bold";
-          nameBar.innerHTML = y.name;
+          name = document.createElement("span");
+          name.className = "text";
+          name.innerHTML = y.name;
+          nameBar.appendChild(name);
+          //Information on the right side
           completedSpan = document.createElement("span");
           completedSpan.style.float = "right";
-          completedSpan.innerHTML = y.completedName;
-          completedNumber = document.createElement("span");
-          completedNumber.style.fontWeight = "normal";
-          completedNumber.id = y.id + "Completed";
-          completedNumber.innerHTML = y.completedAmount;
-          completedSpan.appendChild(completedNumber);
+          tempDiv = document.createElement("span");
+          tempDiv.innerHTML = y.completedText;
+          completedSpan.appendChild(tempDiv);
+          tempDiv = document.createElement("span");
+          tempDiv.id = y.name + "Completed";
+          tempDiv.innerHTML = y.completedAmount;
+          completedSpan.appendChild(tempDiv);
           nameBar.appendChild(completedSpan);
           townActionBar.appendChild(nameBar);
-          //The action part of the action bar
-          let segmentBar = document.createElement("div");
-          segmentBar.className = "actionBar";
-          let previousGoals = [];
-          for (let j = 0; j < y.segmentStats.length; j++) {
+          //Now for the action bit
+          actionBar = document.createElement("div");
+          actionBar.id = y.barId;
+          actionBar.className = "actionBar";
+          for (let i = 1; i < y.segmentAmount + 1; i++) {
+            let segment = y["segment" + i];
             let segmentContainer;
-            let segment;
-            let segmentProgress;
+            let segmentEmpty;
+            let segmentFill;
             let tooltip;
-            let currentProgress;
-            let progressGoal;
+            //Container for the tooltip and action segment
             segmentContainer = document.createElement("div");
-            segmentContainer.style.width = 'calc(' + 100 / y.segmentStats.length + '% - 6px)';
-            segmentContainer.style.margin = "3px";
-            segmentContainer.style.display = "inline-block";
-            segment = document.createElement("div");
-            segment.className = "progressBarEmpty";
-            segment.style.display = "inline-block"; segment.style.height = "8px";
-            segment.style.backgroundColor = window[y.segmentStats[j] + "Colour"];
-            segmentProgress = document.createElement("div");
-            segmentProgress.className = "progressBarFill";
-            segmentProgress.style.width = "0%";
-            segmentProgress.style.backgroundColor = "lightgrey";
-            segmentProgress.setAttribute("data-progress", 0);
-            segmentProgress.setAttribute("data-goal", y.segmentGoal(previousGoals));
-            segmentProgress.setAttribute("data-stat", y.segmentStats[j]);
-            previousGoals.push(segmentProgress.getAttribute("data-goal"));
-            segment.appendChild(segmentProgress);
+            segmentContainer.className = "actionSegment";
+            segmentContainer.style.width = 'calc(' + 100 / y.segmentAmount + '% - 6px)';
+            //Action segment
+            segmentEmpty = document.createElement("div");
+            segmentEmpty.className = "progressBarEmpty actionSegment";
+            segmentFill = document.createElement("div");
+            segmentFill
+            segmentFill.className = "progressBarFill";
+            segmentFill.style.backgroundColor = window[segment.stat + "Colour"];
+            segmentFill.style.float = "right";
+            segmentFill.style.width = (100 - ((segment.progress / segment.goal) * 100) + "%");
+            segmentEmpty.appendChild(segmentFill);
+            segmentContainer.appendChild(segmentEmpty);
+            //Tooltip
             tooltip = document.createElement("tooltip");
-            /*
-            put the fluff stuff here
-            */
-            tooltip.innerHTML = "<b>Stat: " + capitalize(y.segmentStats[j]);
-            currentProgress = document.createElement("span");
-            currentProgress.id = y.id + "Segment" + j;
-            currentProgress.innerHTML = "0";
-            tooltip.innerHTML += "<br>Progress: "
-            tooltip.appendChild(currentProgress);
-            tooltip.innerHTML += "/" + segmentProgress.getAttribute("data-goal");
-            segmentContainer.appendChild(segment);
+            tooltip.innerHTML =
+            "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
             segmentContainer.appendChild(tooltip);
-            segmentBar.appendChild(segmentContainer);
+            actionBar.appendChild(segmentContainer);
           }
-          townActionBar.appendChild(segmentBar);
+          townActionBar.appendChild(actionBar);
           townProgressBarsBox.appendChild(townActionBar);
         }
       }
@@ -252,6 +246,9 @@ function buildTownBox() {
         tooltip.innerHTML += "<br>Mana Cost " + action.manaCost(character[0]);
         if (action.goldCost) {
           tooltip.innerHTML += "<br>Gold Cost " + action.goldCost(character[currentCharacter]);
+        }
+        if (action.reputationChange) {
+          tooltip.innerHTML += "<br>Reputation Change " + action.reputationChange(character[currentCharacter]);
         }
         if (y.unlocked == false) {
           let requirementLine = document.createElement("div");
@@ -395,18 +392,17 @@ function resetActionBars() {
       if (location[i].progressBars[j].type == "Action") {
         let x = location[i].progressBars[j];
         if (x.visible) {
-          let y = document.getElementById(x.id + "Bar");
-          y = y.childNodes[1];
-          let previousGoals = [];
+          let y = document.getElementById(x.barId);
           for (let k = 0; k < y.childElementCount; k++) {
-            let z = y.childNodes[k].firstElementChild;
-            z.firstElementChild.setAttribute("data-progress", 0);
-            z.firstElementChild.setAttribute("data-goal", x.segmentGoal(previousGoals));
-            z.firstElementChild.style.width = "0%";
-            previousGoals.push(x.segmentGoal(previousGoals));
-            document.getElementById(x.id + "Segment" + k).innerHTML = 0;
-            document.getElementById(x.id + "Segment" + k).nextSibling.textContent =
-            " / " + z.firstElementChild.getAttribute("data-goal");
+            let z = y.childNodes[k];
+            let segment = x["segment" + (k + 1)];
+            //Setting the progress and goal back to their starting numbers
+            segment.progress = 0;
+            segment.goal = segment.startingGoal;
+            //Resetting the action bar itself
+            z.childNodes[0].childNodes[0].style.width = "100%";
+            z.childNodes[1].innerHTML =
+            "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress + "/" + segment.goal;
           }
         }
       }
@@ -539,31 +535,32 @@ location[0] = {
     },
     wolfFightingActionBar: {
       type: "Action",
-      name: ["Wolves"],
-      id: "wolfFighting",
-      completedName: "Killed: ",
+      //possible to change to get
+      name: "Wolves",
+      barId: "fightWolvesActionBar",
+      completedText: "Killed: ",
+      //Each char?
       completedAmount: 0,
-      segmentStats: ["dexterity", "constitution", "strength"],
-      segmentGoal: function(previousGoals) {
-        if (previousGoals && previousGoals.length >= 2) {
-          let x = previousGoals.length;
-          return fibonacci(Number(previousGoals[x - 2]), Number(previousGoals[x - 1]));
-        } else {
-          return 20000;
-        }
+      segmentAmount: 3,
+      segment1: {
+        stat: "dexterity",
+        progress: 0,
+        goal: 15000,
+        startingGoal: 15000,
       },
-      segmentProgress: 0,
-      completeSegment: function(char) {
-        char.gold += 30;
-        updateResourceBox("gold");
+      segment2: {
+        stat: "constitution",
+        progress: 0,
+        goal: 15000,
+        startingGoal: 15000,
       },
-      completeBar: function() {
-        this.completedAmount++;
-        document.getElementById("wolfFightingCompleted").innerHTML = this.completedAmount;
+      segment3: {
+        stat: "strength",
+        progress: 0,
+        goal: 30000,
+        startingGoal: 30000,
       },
-      get visible() {
-        return location[0].buttons.fightWolves.visible;
-      },
+      visible: true,
     },
   },
   buttons: {
@@ -608,7 +605,7 @@ location[0] = {
         return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 20);
       },
       requirementAction: ["People Met"],
-      requirementAmount: [30],
+      requirementAmount: [20],
     },
     steal: {
       name: "Steal",
@@ -630,7 +627,7 @@ location[0] = {
         return (location[0].progressBars.meetPeopleProgressBar.currentLevel >= 30)
       },
       requirementAction: ["People Met"],
-      requirementAmount: [20],
+      requirementAmount: [30],
     },
     fightWolves: {
       name: "Fight Wolves",
@@ -694,13 +691,13 @@ location[0] = {
       name: "Travel to Forest",
       direction: "toEast",
       get visible() {
-        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 25)
+        return (location[0].progressBars.secretsFoundProgressBar.currentLevel >= 20)
       },
       get unlocked() {
-        return (character[0].combat.level >= 15);
+        return (character[0].combat.level >= 20);
       },
       requirementAction: ["Combat"],
-      requirementAmount: [15],
+      requirementAmount: [20],
     },
   },
 };

@@ -96,6 +96,7 @@ function load() {
     character.pop()
   }
   tutorial = (saveFile.tutorial != undefined) ? saveFile.tutorial : true;
+  document.getElementById("repeatLastActionBox").checked = (saveFile.repeatLastActionBox !=undefined) ? saveFile.repeatLastActionBox : false;
 }
 
 function save() {
@@ -132,6 +133,7 @@ function save() {
   saveFile.partyLoadoutActions = partyLoadoutActions;
   saveFile.partyLoadoutAmount = partyLoadoutAmount;
   saveFile.tutorial = tutorial;
+  saveFile.repeatLastActionBox = document.getElementById("repeatLastActionBox").checked;
   saveFile.version = "0.6.11";
   localStorage.chronocycleSaveFile = JSON.stringify(saveFile);
 }
