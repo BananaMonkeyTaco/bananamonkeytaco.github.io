@@ -28,7 +28,7 @@ function buildStatBox() {
     "<br>The progress you get per mana spent is increased by your reduction in cost" +
     "<br>If Fight Wolves only costs half as much as it should, every mana put into the action will give you double the progress" +
     "<br>So if you had a bajillionity and 7 levels in Spirit, that's not really going to help you with Wander, maybe something else though :)" +
-    "<br><b>Talents</b> increase the amount of xp your stats get while you're going through your cycles. The forumla for that is:" +
+    "<br><b>Talents</b> increase the amount of xp your stats get while you're going through your cycles. The formula for that is:" +
     "<br><b>xp * (mana reduction multiplier) * (1 + (Talent^0.3)/2)";
     titleContainer.appendChild(title);
     titleContainer.appendChild(statTooltip);

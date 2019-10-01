@@ -300,6 +300,10 @@ var fightWolves = {
       char.gold += 30;
       updateResourceBox("gold");
       if (num == 3) {
+        //Give the character a pelt for each kill
+        char.pelts++;
+        updateResourceBox("pelts");
+        //Resetting the bar with higher values
         x.segment1.progress = 0;
         x.segment1.goal = fibonacci(x.segment2.goal, x.segment3.goal);
         y.childNodes[0].childNodes[0].childNodes[0].style.width = "100%";
@@ -327,7 +331,7 @@ var fightWolves = {
   finish: function() {},
   get tooltip() { return [
     "There's a pack of wolves that hide in a nearby cave. You're sure they must have valuables from their previous victims, 30 gold perhaps?",
-    "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) per mana."
+    "Progress is earned at a rate of <b>Combat * sqrt(1 + Total Wolves Killed / 100) * 3000 over the course of the action",
   ]},
 }
 
@@ -427,9 +431,32 @@ var buyGuide = {
   },
   get tooltip() { return [
     "The path to the next town isn't an easy one. Luckily one of the villagers will help you, for a price of course",
-    "Reduces the mana it takes to travel to the forest by 90%"
+    "Reduces the mana it takes to travel to the forest by 90%",
   ]},
 };
+
+var sellLeather = {
+  name: "SellLeather",
+  manaCost: function(char) {
+    return 250;
+  },
+  stats: {
+    charisma: .9,
+    intelligence: .1,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 0 && char.leather > 0);
+  },
+  finish: function(char) {
+    char.gold += char.leather * 20;
+    updateResourceBox("gold");
+    char.leather = 0;
+    updateResourceBox("leather");
+  },
+  get tooltip() { return [
+    "The town doesn't have a local tannery so you're not quite sure how there's a leatherworker here. Either way you're happy you can earn some money",
+  ]},
+}
 
 var travelToForest = {
   name: "TravelToForest",
@@ -457,7 +484,7 @@ var travelToForest = {
   },
   get tooltip() { return [
     "Start your adventure out of this one horse town",
-    "Only costs 2500 mana if you have a guide with you"
+    "Only costs 2500 mana if you have a guide with you",
   ]},
 };
 
@@ -533,7 +560,7 @@ var investigateTrees = {
   },
   get tooltip() { return [
     "Some of the trees seem to have magical properties. Maybe you can find some that are ripe to take",
-    "<b>Trees Checked XP: </b> 100"
+    "<b>Trees Checked XP: </b> 100",
   ]},
 };
 
@@ -737,7 +764,7 @@ var talkToDryad = {
   },
   get tooltip() { return [
     "The ancient tree spirits might be able to show you some more magical trees that you missed",
-    "<b>Dryad Knowledge Learned XP: </b> 100"
+    "<b>Dryad Knowledge Learned XP: </b> 100",
   ]},
 };
 
@@ -768,7 +795,7 @@ var wizardTraining = {
   },
   get tooltip() { return [
     "There's an old wizard you've stumbled upon that's agreed to teach you magic",
-    "<b>Wizard Training Received XP: </b> 100"
+    "<b>Wizard Training Received XP: </b> 100",
   ]},
 };
 
@@ -793,7 +820,7 @@ var searchForElderberries = {
     }
   },
   get tooltip() { return [
-    "<b>Elderberries Found XP: </b> 100"
+    "<b>Elderberries Found XP: </b> 100",
   ]},
 };
 
@@ -841,7 +868,7 @@ var pickElderberries = {
   },
   get tooltip() { return [
     "A basic alchemical ingrediant",
-    "Every 20 are ripe"
+    "Every 20 are ripe",
   ]},
 };
 
@@ -870,7 +897,7 @@ var makeMinorHealthPotion = {
     "Takes one elderberry and a lot of mana",
     "<b>Alchemy XP: </b> 100",
   ]},
-}
+};
 
 var trainManaFlow = {
   name: "TrainManaFlow",
@@ -888,10 +915,35 @@ var trainManaFlow = {
     increaseSkills(char, "manaFlow", 100);
   },
   get tooltip() { return [
-    "",
+    "The wizards showed you the basics of how mana actually works. You believe that further study will helps you absorb mana from the trees",
     "<b>Mana Flow Skill XP: </b> 100",
   ]},
-}
+};
+
+var tanPelt = {
+  name: "TanPelt",
+  manaCost: function(char) {
+    return 1000;
+  },
+  stats: {
+    dexterity: .7,
+    perception: .1,
+    intelligence: .2,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1 && char.pelts > 0);
+  },
+  finish: function(char) {
+    char.pelts--;
+    updateResourceBox("pelts");
+    char.leather++;
+    updateResourceBox("leather");
+  },
+  get tooltip() { return [
+    "Huh, you wouldn't have expected to find a tannery out in the middle of the game trails but here you go",
+    "You do strongly believe that this might end up in a city at some point though",
+  ]},
+};
 
 //highwayman blocking route?
 /*

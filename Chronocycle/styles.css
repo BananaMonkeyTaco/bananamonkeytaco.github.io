@@ -198,6 +198,7 @@ tooltip {
   1px 1px 15px #80ffff;*/
   background-color: #44beff;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .actionBoxProgressList {

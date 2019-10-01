@@ -1,6 +1,6 @@
 var currentCharacter = 0;
-var resources = ["mana", "gold", "reputation", "wood", "pelts", "elderberries", "minorHealthPotions"];
-var resourcesShown = [true, false, false, false, false, false];
+var resources = ["mana", "gold", "reputation", "wood", "pelts", "leather", "elderberries", "minorHealthPotions"];
+var resourcesShown = [true, false, false, false, false, false, false];
 var gamePaused = true;
 var tutorial = true;
 var location;

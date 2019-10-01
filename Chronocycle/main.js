@@ -129,6 +129,7 @@ function resetCharacter(char) {
   char.reputation = (char.startingReputation) ? char.startingReputation : 0;
   char.wood = (char.startingWood) ? char.startingWood : 0;
   char.pelts = (char.startingPelts) ? char.startingPelts : 0;
+  char.leather = (char.startingLeather) ? char.startingLeather : 0;
   char.elderberries = (char.startingElderberries) ? char.startingElderberries : 0;
   char.minorHealthPotions = (char.startingMinorHealthPotions) ? char.startingMinorHealthPotions : 0;
   char.currentLocation = (char.startingLocation) ? char.startingLocation : 0;

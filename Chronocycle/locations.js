@@ -685,6 +685,17 @@ location[0] = {
       requirementAction: ["People Met"],
       requirementAmount: [40],
     },
+    sellLeather: {
+      name: "Sell Leather",
+      get visible() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 25);
+      },
+      requirementAction: ["Game Trails Explored"],
+      requirementAmount: [25],
+    },
   },
   travelButtons: {
     travelToForest: {
@@ -965,6 +976,17 @@ location[1] = {
       },
       requirementAction: ["Wizard Training"],
       requirementAmount: [20],
+    },
+    tanPelt: {
+      name: "Tan Pelt",
+      get visible() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 10);
+      },
+      get unlocked() {
+        return (location[1].progressBars.mapGameTrailsProgressBar.currentLevel >= 25);
+      },
+      requirementAction: ["Game Trails Explored"],
+      requirementAmount: [25],
     },
   },
   travelButtons: {
