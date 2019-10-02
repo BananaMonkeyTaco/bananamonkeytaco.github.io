@@ -28,7 +28,7 @@ var activeLoadoutType;
 var previousProgress = false;
 var combatTooltip = "Stick them with the pointy end";
 var alchemyTooltip = "I'd probably avoid bringing back your dead mother";
-var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by <b>(1 + level)^0.3</b>";
+var manaFlowTooltip = "Increases the mana you gain from Absorb Mana From Trees by <b>(1 + level/5)^0.3</b>";
 
 function capitalize(string) {
   return string.slice(0, 1).toUpperCase() + string.slice(1);

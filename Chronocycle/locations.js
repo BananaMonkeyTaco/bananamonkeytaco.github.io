@@ -717,7 +717,7 @@ location[1] = {
   name: "Forest",
   visible: false,
   toWest: 0,
-  //toNorth: circus training area?
+  toEast: 2,
   progressBars: {
     exploreForestProgressBar: {
       type: "Progress",
@@ -992,6 +992,32 @@ location[1] = {
   travelButtons: {
     returnToNoobton: {
       name: "Return to Noobton",
+      visible: true,
+      unlocked: true,
+      direction: "toWest",
+    },
+    travelToCyoria: {
+      name: "Travel to Cyoria",
+      visible: false, //Maybe 100 explore forest with a joke about needing to search the whole forest the find the exit?
+      unlocked: false,
+      direction: "toEast",
+    },
+  },
+};
+
+location[2] = {
+  name: "Unknown",
+  visible: false,
+  toWest: 1,
+  progressBars: {
+
+  },
+  buttons: {
+
+  },
+  travelButtons: {
+    headBackToTheForest: {
+      name: "Head Back to the Forest",
       visible: true,
       unlocked: true,
       direction: "toWest",

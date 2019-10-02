@@ -573,7 +573,7 @@ var absorbManaFromTrees = {
     if (char.manaFlow.level == 0) {
       return 175;
     } else {
-      return Number((175 * (Math.pow(1 + char.manaFlow.level, 0.3))).toFixed(0));
+      return Number((175 * (Math.pow(1 + char.manaFlow.level / 5, 0.3))).toFixed(0));
     }
   },
   resource: location[1].progressBars.investigateTreesProgressBar.resource,
@@ -915,7 +915,7 @@ var trainManaFlow = {
     increaseSkills(char, "manaFlow", 100);
   },
   get tooltip() { return [
-    "The wizards showed you the basics of how mana actually works. You believe that further study will helps you absorb mana from the trees",
+    "The wizards showed you the basics of how mana actually works. You believe that further study will help you absorb mana from the trees",
     "<b>Mana Flow Skill XP: </b> 100",
   ]},
 };
@@ -940,8 +940,46 @@ var tanPelt = {
     updateResourceBox("leather");
   },
   get tooltip() { return [
-    "Huh, you wouldn't have expected to find a tannery out in the middle of the game trails but here you go",
-    "You do strongly believe that this might end up in a city at some point though",
+    "Amidst the trees and trails you stumble upon a hunter's lodge. He's willing to let you use it to tan some pelts.",
+    "You're not sure if it's always going to be here though",
+  ]},
+};
+
+var travelToCyoria = {
+  name: "TravelToCyoria",
+  manaCost: function(char) {
+    return 7;
+  },
+  stats: {
+    spirit: 1,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 1);
+  },
+  finish: function(char) {
+    char.currentLocation = 2;
+  },
+  get tooltip() { return [
+    "Leave the forest to head to the big city",
+  ]},
+};
+
+var headBackToTheForest = {
+  name: "HeadBackToTheForest",
+  manaCost: function(char) {
+    return 16;
+  },
+  stats: {
+    spirit: 1,
+  },
+  canStart: function(char) {
+    return (char.currentLocation == 2);
+  },
+  finish: function(char) {
+    char.currentLocation = 1;
+  },
+  get tooltip() { return [
+    "The city can be pretty loud. The silence of the Forest might suit you better",
   ]},
 };
 
