@@ -560,7 +560,9 @@ location[0] = {
         goal: 30000,
         startingGoal: 30000,
       },
-      visible: true,
+      get visible() {
+        return location[0].buttons.fightWolves.unlocked;
+      },
     },
   },
   buttons: {
