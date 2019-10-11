@@ -119,7 +119,6 @@ function work() {
         progressAction(char);
       }
     }
-    updateStats();
   }
 }
 
@@ -152,13 +151,13 @@ function progressAction(char) {
   let action = char.currentCycleActionList[char.currentAction];
   let node = document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction];
   //Increase Mana Spent
-  node.childNodes[1].childNodes[2].innerHTML = "<br><b>Mana Spent: </b>" +
-  (Number((node.childNodes[1].childNodes[2].innerHTML).slice(23)) + 1);
-  node.childNodes[1].childNodes[4].innerHTML = "<br><b>Time Spent: </b>" +
-  (Number(node.childNodes[1].childNodes[4].innerHTML.slice(23).split("s")[0]) + 0.01).toFixed(2) + "s";
+  node.childNodes[1].childNodes[2].childNodes[2].nodeValue =
+  (Number(node.childNodes[1].childNodes[2].childNodes[2].nodeValue) + 1);
+  node.childNodes[1].childNodes[4].childNodes[2].nodeValue =
+  (Number(node.childNodes[1].childNodes[4].childNodes[2].nodeValue.split("s")[0]) + 0.01).toFixed(2) + "s";
   increaseStats(char, action, char.multiplier);
   //Show the percentage of progress for the current action
-  node.childNodes[0].childNodes[2].innerHTML =
+  node.childNodes[0].childNodes[2].firstChild.nodeValue =
   Math.floor(((char.originalCost - char.currentCostLeft) / char.originalCost) * 100) + "%";
   //For when an action has a progress
   if (action.progress) {
@@ -169,10 +168,10 @@ function progressAction(char) {
     action.finish(char);
     //Show the new amount of completed actions
     char.currentCycleActionCompleted[char.currentAction]++;
-    node.childNodes[0].childNodes[1].innerHTML =
+    node.childNodes[0].childNodes[1].firstChild.nodeValue =
     "(" + char.currentCycleActionCompleted[char.currentAction] + "/" + char.currentCycleActionAmount[char.currentAction] + ")";
     //Show mana left in tooltip
-    node.childNodes[1].childNodes[3].innerHTML = "<br><b>Mana Left: </b>" + char.mana;
+    node.childNodes[1].childNodes[3].childNodes[2].nodeValue = char.mana;
     //Check if the requested amount has been reached
     char.currentAction = null;
   }
@@ -215,20 +214,16 @@ function findNextAction(char) {
 }
 
 function updateResourceBox(resource) {
-  document.getElementById("characterList").innerHTML = "";
-  for (let i = 0; i < character.length; i++) {
-    document.getElementById("characterList").innerHTML += "<br><b>" + character[i].name + "</b>";
-  }
+  let container = document.getElementById("resourceContainer");
   if (resource) {
     let x = resources.indexOf(resource);
-    let y = document.getElementById(resource + "Box");
+    let y = container.childNodes[(x + 1) * 2 + 1];
     if (resourcesShown[x] == false) {
       y.style.display = "inline-block";
       resourcesShown[x] = true;
     }
-    y.innerHTML = "<b>" + capitalize(resource) + "</b>";
     for (let i = 0; i < character.length; i++) {
-      y.innerHTML += "<br>" + character[i][resource];
+      y.childNodes[(i + 1) * 2].nodeValue = character[i][resource];
     }
   } else {
     document.getElementById("characterList").innerHTML = "";

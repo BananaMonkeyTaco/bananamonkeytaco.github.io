@@ -151,20 +151,35 @@ function characterSwitch(target) {
 }
 
 function increaseStats(char, action, multiplier) {
+  var characterBox = document.getElementById("characterBox");
   let i = 6;
   for (x in action.stats) {
+    let y = statNames.indexOf(x) + 1;
     char[x].levelXP += action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2);
-    document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction].childNodes[1].childNodes[i].innerHTML =
-    "<br><b>" + capitalize(x) + ": </b>" +
-    (Number(document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction].childNodes[1].childNodes[i].innerHTML.split("</b>")[1]) +
-    (action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2))).toFixed(1);
+    //Update the progress bars
+    characterBox.childNodes[character.indexOf(char) + 3].firstChild.childNodes[y].firstChild.childNodes[3].firstChild.style.width =
+    (char[x].levelXP / char[x].toNextLevel) * 100 + "%";
+    characterBox.childNodes[character.indexOf(char) + 3].firstChild.childNodes[y].firstChild.childNodes[4].firstChild.style.width =
+    (char[x].talentXP / char[x].toNextTalent) * 100 + "%";
+    //Update the tooltip
+    let tooltip = characterBox.childNodes[character.indexOf(char) + 3].firstChild.childNodes[y].lastChild;
+    tooltip.childNodes[3].nodeValue = char[x].level;
+    tooltip.childNodes[6].nodeValue = char[x].levelXP.toFixed(0) + " / " + char[x].toNextLevel;
+    tooltip.childNodes[9].nodeValue = char[x].talent;
+    tooltip.childNodes[12].nodeValue = char[x].talentXP.toFixed(0) + " / " + char[x].toNextTalent;
+    tooltip.childNodes[15].nodeValue = (1 + Math.pow(char[x].talent, .3) / 2).toFixed(2);
+    //Update the actions tooltip in the action list
+    tooltip = document.getElementById(lowerize(char.name + "ProgressList")).childNodes[char.currentAction].childNodes[1].childNodes[i].childNodes[2];
+    tooltip.nodeValue = (Number(tooltip.nodeValue) + (action.stats[x] * multiplier * (1 + Math.pow(char[x].talent, .3) / 2))).toFixed(1);
     i++;
     if (char[x].levelXP >= char[x].toNextLevel) {
       levelUp(char, x, "level");
+      characterBox.childNodes[character.indexOf(char) + 3].firstChild.childNodes[y].firstChild.childNodes[1].firstChild.nodeValue = char[x].level;
     }
     char[x].talentXP += (action.stats[x] * multiplier) / 100;
     if (char[x].talentXP >= char[x].toNextTalent) {
       levelUp(char, x, "talent");
+      characterBox.childNodes[character.indexOf(char) + 3].firstChild.childNodes[y].firstChild.childNodes[2].firstChild.nodeValue = char[x].talent;
     }
   }
 }
@@ -193,6 +208,7 @@ function increaseSkills(char, skill, amount) {
   "<br><b>Level XP: </b>" + char[skill].levelXP + " / " + char[skill].toNextLevel;
 }
 
+//Not Used
 function updateStats() {
   for (let i = 0; i < character.length; i++) {
     for (let j = 0; j < statNames.length; j++) {
@@ -263,6 +279,8 @@ function newPersonPrep(num) {
   tempSubDiv.id = lowerize(character[num].name) + "ActionList";
   tempDiv.appendChild(tempSubDiv);
   tempElement.insertBefore(tempDiv, document.getElementById("actionBoxButtons"));
+  //Adding the character to the resource bar
+  updateResourceBox();
 }
 
 function Person (name) {

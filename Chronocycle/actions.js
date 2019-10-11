@@ -303,6 +303,9 @@ var fightWolves = {
         //Give the character a pelt for each kill
         char.pelts++;
         updateResourceBox("pelts");
+        //Count the kill
+        x.completedAmount++;
+        document.getElementById("WolvesCompleted").childNodes[0].nodeValue = x.completedAmount;
         //Resetting the bar with higher values
         x.segment1.progress = 0;
         x.segment1.goal = fibonacci(x.segment2.goal, x.segment3.goal);
@@ -325,8 +328,7 @@ var fightWolves = {
     //Update the bar and tooltip
     y.childNodes[num - 1].childNodes[0].childNodes[0].style.width =
     (100 - ((segment.progress / segment.goal) * 100) + "%");
-    y.childNodes[num - 1].childNodes[1].innerHTML =
-    "<b>Stat: " + capitalize(segment.stat) + "</b><br>Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
+    y.childNodes[num - 1].childNodes[1].childNodes[2].nodeValue = "Progress: " + segment.progress.toFixed(0) + "/" + segment.goal;
   },
   finish: function() {},
   get tooltip() { return [

@@ -141,7 +141,7 @@ function buildTownBox() {
           //Name/Title for the bar
           nameBar = document.createElement("div");
           name = document.createElement("span");
-          name.className = "text";
+          name.className = "bold";
           name.innerHTML = y.name;
           nameBar.appendChild(name);
           //Information on the right side
